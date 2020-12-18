@@ -1,3 +1,8 @@
+[unstable]
+# So we can get the log crate working with it complaining about std
+# https://github.com/rust-lang/cargo/issues/7915
+features = ["host_dep"]
+
 [build]
 target = "x86_64-pc-windows-msvc"
 
