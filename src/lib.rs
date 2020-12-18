@@ -10,7 +10,7 @@ extern crate alloc;
 
 use log::*;
 
-use crate::kernel::get_kernel_module;
+use crate::kernel::{get_kernel_module, get_kernel_module_export};
 use crate::util::log::KernelLogger;
 
 pub mod include;
@@ -46,7 +46,7 @@ pub extern "system" fn driver_entry() -> u32 {
     }
     info!("kernel-rs loaded");
 
-    let result = unsafe { get_kernel_module("\\SystemRoot\\System32\\drivers\\dxgkrnl.sys") };
+    let result = unsafe { get_kernel_module_export("\\SystemRoot\\System32\\drivers\\dxgkrnl.sys", "NtQueryCompositionSurfaceStatistics") };
     info!("{:?}", result);
 
     0xdeadbeef

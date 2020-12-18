@@ -86,6 +86,7 @@ fn main() {
 
         .whitelist_function("MmCopyVirtualMemory")
         .whitelist_function("ZwQuerySystemInformation")
+        .whitelist_function("RtlFindExportedRoutineByName")
         .whitelist_type("PRTL_PROCESS_MODULES")
         .whitelist_type("*SystemModuleInformation")
 

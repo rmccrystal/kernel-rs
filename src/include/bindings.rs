@@ -4,7 +4,9 @@ pub type ULONG_PTR = crate::include::raw::c_ulonglong;
 pub type SIZE_T = ULONG_PTR;
 pub type PSIZE_T = *mut ULONG_PTR;
 pub type PVOID = *mut crate::include::raw::c_void;
+pub type CHAR = crate::include::raw::c_char;
 pub type LONG = crate::include::raw::c_long;
+pub type PCCH = *const CHAR;
 pub type UCHAR = crate::include::raw::c_uchar;
 pub type USHORT = crate::include::raw::c_ushort;
 pub type ULONG = crate::include::raw::c_ulong;
@@ -218,6 +220,9 @@ fn bindgen_test_layout__RTL_PROCESS_MODULES() {
     );
 }
 pub type PRTL_PROCESS_MODULES = *mut _RTL_PROCESS_MODULES;
+extern "C" {
+    pub fn RtlFindExportedRoutineByName(ImageBase: PVOID, RoutineName: PCCH) -> PVOID;
+}
 extern "C" {
     pub fn MmCopyVirtualMemory(
         SourceProcess: PEPROCESS, SourceAddress: PVOID, TargetProcess: PEPROCESS, TargetAddress: PVOID,

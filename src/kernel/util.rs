@@ -3,12 +3,13 @@ use core::ptr::null_mut;
 
 use log::*;
 
-use crate::include::{_RTL_PROCESS_MODULES, ZwQuerySystemInformation, RTL_PROCESS_MODULE_INFORMATION};
+use crate::include::{_RTL_PROCESS_MODULES, ZwQuerySystemInformation, RTL_PROCESS_MODULE_INFORMATION, RtlFindExportedRoutineByName};
 use crate::util::VariableSizedBox;
 
 use super::KernelError;
 use super::ToKernelResult;
-use cstr_core::CStr;
+use cstr_core::{CStr, CString};
+use winapi::km::wdm::KPROCESSOR_MODE::KernelMode;
 
 pub unsafe fn get_kernel_module(module_name: &str) -> Result<*mut c_void, KernelError> {
     // get size of system information
@@ -57,4 +58,15 @@ pub unsafe fn get_kernel_module(module_name: &str) -> Result<*mut c_void, Kernel
     }
 
     module_base.ok_or(KernelError::Message("could not find module"))
+}
+
+pub unsafe fn get_kernel_module_export(module_name: &str, func_name: &str) -> Result<*mut c_void, KernelError> {
+    let module = get_kernel_module(module_name)?;
+    let addr = RtlFindExportedRoutineByName(module, CString::new(func_name).unwrap().as_ptr());
+    if addr.is_null() {
+        Err(KernelError::Message("could not find module"))
+    } else {
+        debug!("Found address for {}: {:p}", func_name, addr);
+        Ok(addr)
+    }
 }
