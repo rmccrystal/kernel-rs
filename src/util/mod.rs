@@ -1,3 +1,8 @@
+pub use self::alloc::KernelAlloc;
+pub use vsb::VariableSizedBox;
+
 pub mod log;
 pub mod string;
-pub mod alloc;
+mod alloc;
+mod vsb;
+

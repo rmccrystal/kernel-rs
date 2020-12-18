@@ -1,13 +1,17 @@
 #![no_std]
 #![feature(alloc_error_handler)]
 #![feature(const_generics)]
+#![feature(new_uninit)]
+#![feature(raw_vec_internals)]
+#![allow(clippy::missing_safety_doc)]
 
 extern crate alloc;
 
-use crate::util::log::KernelLogger;
+
 use log::*;
+
 use crate::kernel::get_kernel_module;
-use alloc::vec::Vec;
+use crate::util::log::KernelLogger;
 
 pub mod include;
 pub mod kernel;
@@ -24,7 +28,7 @@ pub extern "system" fn __CxxFrameHandler3(_: *mut u8, _: *mut u8, _: *mut u8, _:
 static _FLTUSED: i32 = 0;
 
 #[global_allocator]
-static GLOBAL: util::alloc::KernelAlloc = util::alloc::KernelAlloc;
+static GLOBAL: util::KernelAlloc = util::KernelAlloc;
 // static GLOBAL: kernel_alloc::KernelAlloc = kernel_alloc::KernelAlloc;
 
 #[panic_handler]
@@ -42,8 +46,8 @@ pub extern "system" fn driver_entry() -> u32 {
     }
     info!("kernel-rs loaded");
 
-    // let result = unsafe { get_kernel_module("\\SystemRoot\\System32\\drivers\\dxgkrnl.sys") };
-    // info!("{:?}", result);
+    let result = unsafe { get_kernel_module("\\SystemRoot\\System32\\drivers\\dxgkrnl.sys") };
+    info!("{:?}", result);
 
     0xdeadbeef
 }

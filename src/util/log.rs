@@ -1,9 +1,10 @@
 use alloc::string::String;
+use core::fmt::UpperHex;
+
+use log::{Level, LevelFilter, Metadata, Record, SetLoggerError};
+use winapi::_core::fmt::Formatter;
 pub use winapi::km::wdm::DbgPrint;
 use winapi::km::wdm::DbgPrintEx;
-use log::{Record, Metadata, SetLoggerError, Level, LevelFilter};
-use core::fmt::UpperHex;
-use winapi::_core::fmt::Formatter;
 
 /// Prints a string using DbgPrintEx. Automatically adds a null terminator
 pub fn __kernel_print(mut text: String) {

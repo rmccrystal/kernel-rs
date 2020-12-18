@@ -1,5 +1,7 @@
 #![allow(non_camel_case_types)]
 
+pub use core::ffi::c_void;
+
 pub type c_char = i8;
 pub type c_schar = i8;
 pub type c_uchar = u8;
@@ -14,4 +16,3 @@ pub type c_ulonglong = u64;
 pub type c_float = f32;
 pub type c_double = f64;
 
-pub use core::ffi::c_void;

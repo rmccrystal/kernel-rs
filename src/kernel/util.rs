@@ -1,14 +1,14 @@
-use alloc::vec::Vec;
 use core::ffi::c_void;
 use core::ptr::null_mut;
 
-use cstr_core::CStr;
 use log::*;
 
-use crate::include::{_RTL_PROCESS_MODULE_INFORMATION, _RTL_PROCESS_MODULES, PRTL_PROCESS_MODULES, RTL_PROCESS_MODULE_INFORMATION, ZwQuerySystemInformation};
+use crate::include::{_RTL_PROCESS_MODULES, ZwQuerySystemInformation, RTL_PROCESS_MODULE_INFORMATION};
+use crate::util::VariableSizedBox;
 
 use super::KernelError;
 use super::ToKernelResult;
+use cstr_core::CStr;
 
 pub unsafe fn get_kernel_module(module_name: &str) -> Result<*mut c_void, KernelError> {
     // get size of system information
@@ -25,32 +25,30 @@ pub unsafe fn get_kernel_module(module_name: &str) -> Result<*mut c_void, Kernel
     }
     trace!("Found ZwQuerySystemInformation size: {:X}", size);
 
-
-    let module_list: *mut _RTL_PROCESS_MODULES = Vec::with_capacity(size as _).as_mut_ptr();
+    let mut buf: VariableSizedBox<_RTL_PROCESS_MODULES> = VariableSizedBox::new(size as _);
     trace!("Allocated {:X} bytes", size);
-
-    return Err(KernelError::Message("success"));
 
     ZwQuerySystemInformation(
         0x0B, // SystemModuleInformation
-        module_list as _,
+        buf.as_mut_ptr() as _,
         size,
         &mut size
     ).to_kernel_result()?;
 
+    let module_list = buf.as_ref();
 
-    /*
-    let modules: *mut RTL_PROCESS_MODULE_INFORMATION = (*module_list).Modules.as_mut_ptr();
+    trace!("Found {} modules", module_list.NumberOfModules);
+
+    let modules = core::slice::from_raw_parts(module_list.Modules.as_ptr(), module_list.NumberOfModules as _);
 
     let mut module_base = None;
 
-    for i in 0..(*module_list).NumberOfModules as isize {
-        let module = modules.offset(i);
-        let name = CStr::from_ptr((*module).FullPathName.as_ptr() as _).to_str().unwrap();
+    for module in modules {
+        let name = CStr::from_ptr(module.FullPathName.as_ptr() as _).to_str().unwrap();
         trace!("Found kernel module {}", name);
 
         if name == module_name {
-            module_base = Some((*module).ImageBase)
+            module_base = Some(module.ImageBase)
         }
     }
 
@@ -59,5 +57,4 @@ pub unsafe fn get_kernel_module(module_name: &str) -> Result<*mut c_void, Kernel
     }
 
     module_base.ok_or(KernelError::Message("could not find module"))
-     */
 }

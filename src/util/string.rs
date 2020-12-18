@@ -1,5 +1,7 @@
+use alloc::string::{String, ToString};
+
 use winapi::shared::ntdef::UNICODE_STRING;
-use alloc::string::{ToString, String};
+
 use crate::include::UCHAR;
 
 pub fn create_unicode_string(s: &[u16]) -> UNICODE_STRING {
