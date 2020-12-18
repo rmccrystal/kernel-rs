@@ -3,10 +3,6 @@
 
 extern crate alloc;
 
-use core::{panic::PanicInfo};
-use winapi::{
-    km::wdm::{DbgPrint, DbgPrintEx},
-};
 use crate::util::log::KernelLogger;
 use log::*;
 
@@ -28,7 +24,7 @@ static _FLTUSED: i32 = 0;
 static GLOBAL: kernel_alloc::KernelAlloc = kernel_alloc::KernelAlloc;
 
 #[panic_handler]
-fn panic(_info: &PanicInfo) -> ! { loop {} }
+fn panic(_info: &core::panic::PanicInfo) -> ! { loop {} }
 
 static LOG_LEVEL: LevelFilter = LevelFilter::Trace;
 
