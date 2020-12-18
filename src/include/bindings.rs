@@ -5,6 +5,11 @@ pub type SIZE_T = ULONG_PTR;
 pub type PSIZE_T = *mut ULONG_PTR;
 pub type PVOID = *mut crate::include::raw::c_void;
 pub type LONG = crate::include::raw::c_long;
+pub type UCHAR = crate::include::raw::c_uchar;
+pub type USHORT = crate::include::raw::c_ushort;
+pub type ULONG = crate::include::raw::c_ulong;
+pub type PULONG = *mut ULONG;
+pub type HANDLE = *mut crate::include::raw::c_void;
 pub type CCHAR = crate::include::raw::c_char;
 pub type NTSTATUS = LONG;
 #[repr(C)]
@@ -13,10 +18,212 @@ pub struct _KPROCESS {
     _unused: [u8; 0],
 }
 pub type PEPROCESS = *mut _KPROCESS;
+pub use self::_POOL_TYPE as POOL_TYPE;
 pub type KPROCESSOR_MODE = CCHAR;
+pub const _POOL_TYPE_NonPagedPool: _POOL_TYPE = 0;
+pub const _POOL_TYPE_NonPagedPoolExecute: _POOL_TYPE = 0;
+pub const _POOL_TYPE_PagedPool: _POOL_TYPE = 1;
+pub const _POOL_TYPE_NonPagedPoolMustSucceed: _POOL_TYPE = 2;
+pub const _POOL_TYPE_DontUseThisType: _POOL_TYPE = 3;
+pub const _POOL_TYPE_NonPagedPoolCacheAligned: _POOL_TYPE = 4;
+pub const _POOL_TYPE_PagedPoolCacheAligned: _POOL_TYPE = 5;
+pub const _POOL_TYPE_NonPagedPoolCacheAlignedMustS: _POOL_TYPE = 6;
+pub const _POOL_TYPE_MaxPoolType: _POOL_TYPE = 7;
+pub const _POOL_TYPE_NonPagedPoolBase: _POOL_TYPE = 0;
+pub const _POOL_TYPE_NonPagedPoolBaseMustSucceed: _POOL_TYPE = 2;
+pub const _POOL_TYPE_NonPagedPoolBaseCacheAligned: _POOL_TYPE = 4;
+pub const _POOL_TYPE_NonPagedPoolBaseCacheAlignedMustS: _POOL_TYPE = 6;
+pub const _POOL_TYPE_NonPagedPoolSession: _POOL_TYPE = 32;
+pub const _POOL_TYPE_PagedPoolSession: _POOL_TYPE = 33;
+pub const _POOL_TYPE_NonPagedPoolMustSucceedSession: _POOL_TYPE = 34;
+pub const _POOL_TYPE_DontUseThisTypeSession: _POOL_TYPE = 35;
+pub const _POOL_TYPE_NonPagedPoolCacheAlignedSession: _POOL_TYPE = 36;
+pub const _POOL_TYPE_PagedPoolCacheAlignedSession: _POOL_TYPE = 37;
+pub const _POOL_TYPE_NonPagedPoolCacheAlignedMustSSession: _POOL_TYPE = 38;
+pub const _POOL_TYPE_NonPagedPoolNx: _POOL_TYPE = 512;
+pub const _POOL_TYPE_NonPagedPoolNxCacheAligned: _POOL_TYPE = 516;
+pub const _POOL_TYPE_NonPagedPoolSessionNx: _POOL_TYPE = 544;
+pub type _POOL_TYPE = crate::include::raw::c_int;
+extern "C" {
+    pub fn ExAllocatePoolWithTag(PoolType: POOL_TYPE, NumberOfBytes: SIZE_T, Tag: ULONG) -> PVOID;
+}
+extern "C" {
+    pub fn ExFreePoolWithTag(P: PVOID, Tag: ULONG);
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct _RTL_PROCESS_MODULE_INFORMATION {
+    pub Section: HANDLE,
+    pub MappedBase: PVOID,
+    pub ImageBase: PVOID,
+    pub ImageSize: ULONG,
+    pub Flags: ULONG,
+    pub LoadOrderIndex: USHORT,
+    pub InitOrderIndex: USHORT,
+    pub LoadCount: USHORT,
+    pub OffsetToFileName: USHORT,
+    pub FullPathName: [UCHAR; 256usize],
+}
+#[test]
+fn bindgen_test_layout__RTL_PROCESS_MODULE_INFORMATION() {
+    assert_eq!(
+        ::std::mem::size_of::<_RTL_PROCESS_MODULE_INFORMATION>(),
+        296usize,
+        concat!("Size of: ", stringify!(_RTL_PROCESS_MODULE_INFORMATION))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<_RTL_PROCESS_MODULE_INFORMATION>(),
+        8usize,
+        concat!("Alignment of ", stringify!(_RTL_PROCESS_MODULE_INFORMATION))
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_RTL_PROCESS_MODULE_INFORMATION>())).Section as *const _ as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_RTL_PROCESS_MODULE_INFORMATION),
+            "::",
+            stringify!(Section)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_RTL_PROCESS_MODULE_INFORMATION>())).MappedBase as *const _ as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_RTL_PROCESS_MODULE_INFORMATION),
+            "::",
+            stringify!(MappedBase)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_RTL_PROCESS_MODULE_INFORMATION>())).ImageBase as *const _ as usize },
+        16usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_RTL_PROCESS_MODULE_INFORMATION),
+            "::",
+            stringify!(ImageBase)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_RTL_PROCESS_MODULE_INFORMATION>())).ImageSize as *const _ as usize },
+        24usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_RTL_PROCESS_MODULE_INFORMATION),
+            "::",
+            stringify!(ImageSize)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_RTL_PROCESS_MODULE_INFORMATION>())).Flags as *const _ as usize },
+        28usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_RTL_PROCESS_MODULE_INFORMATION),
+            "::",
+            stringify!(Flags)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_RTL_PROCESS_MODULE_INFORMATION>())).LoadOrderIndex as *const _ as usize },
+        32usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_RTL_PROCESS_MODULE_INFORMATION),
+            "::",
+            stringify!(LoadOrderIndex)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_RTL_PROCESS_MODULE_INFORMATION>())).InitOrderIndex as *const _ as usize },
+        34usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_RTL_PROCESS_MODULE_INFORMATION),
+            "::",
+            stringify!(InitOrderIndex)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_RTL_PROCESS_MODULE_INFORMATION>())).LoadCount as *const _ as usize },
+        36usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_RTL_PROCESS_MODULE_INFORMATION),
+            "::",
+            stringify!(LoadCount)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_RTL_PROCESS_MODULE_INFORMATION>())).OffsetToFileName as *const _ as usize },
+        38usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_RTL_PROCESS_MODULE_INFORMATION),
+            "::",
+            stringify!(OffsetToFileName)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_RTL_PROCESS_MODULE_INFORMATION>())).FullPathName as *const _ as usize },
+        40usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_RTL_PROCESS_MODULE_INFORMATION),
+            "::",
+            stringify!(FullPathName)
+        )
+    );
+}
+pub type RTL_PROCESS_MODULE_INFORMATION = _RTL_PROCESS_MODULE_INFORMATION;
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct _RTL_PROCESS_MODULES {
+    pub NumberOfModules: ULONG,
+    pub Modules: [RTL_PROCESS_MODULE_INFORMATION; 1usize],
+}
+#[test]
+fn bindgen_test_layout__RTL_PROCESS_MODULES() {
+    assert_eq!(
+        ::std::mem::size_of::<_RTL_PROCESS_MODULES>(),
+        304usize,
+        concat!("Size of: ", stringify!(_RTL_PROCESS_MODULES))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<_RTL_PROCESS_MODULES>(),
+        8usize,
+        concat!("Alignment of ", stringify!(_RTL_PROCESS_MODULES))
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_RTL_PROCESS_MODULES>())).NumberOfModules as *const _ as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_RTL_PROCESS_MODULES),
+            "::",
+            stringify!(NumberOfModules)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<_RTL_PROCESS_MODULES>())).Modules as *const _ as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_RTL_PROCESS_MODULES),
+            "::",
+            stringify!(Modules)
+        )
+    );
+}
+pub type PRTL_PROCESS_MODULES = *mut _RTL_PROCESS_MODULES;
 extern "C" {
     pub fn MmCopyVirtualMemory(
-        FromProcess: PEPROCESS, FromAddress: PVOID, ToProcess: PEPROCESS, ToAddress: PVOID, BufferSize: SIZE_T,
-        PreviousMode: KPROCESSOR_MODE, NumberOfBytesCopied: PSIZE_T,
+        SourceProcess: PEPROCESS, SourceAddress: PVOID, TargetProcess: PEPROCESS, TargetAddress: PVOID,
+        BufferSize: SIZE_T, PreviousMode: KPROCESSOR_MODE, ReturnSize: PSIZE_T,
     ) -> NTSTATUS;
+}
+extern "C" {
+    pub fn ZwQuerySystemInformation(InfoClass: ULONG, Buffer: PVOID, Length: ULONG, ReturnLength: PULONG) -> NTSTATUS;
 }

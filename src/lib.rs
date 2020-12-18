@@ -1,10 +1,13 @@
 #![no_std]
 #![feature(alloc_error_handler)]
+#![feature(const_generics)]
 
 extern crate alloc;
 
 use crate::util::log::KernelLogger;
 use log::*;
+use crate::kernel::get_kernel_module;
+use alloc::vec::Vec;
 
 pub mod include;
 pub mod kernel;
@@ -21,18 +24,27 @@ pub extern "system" fn __CxxFrameHandler3(_: *mut u8, _: *mut u8, _: *mut u8, _:
 static _FLTUSED: i32 = 0;
 
 #[global_allocator]
-static GLOBAL: kernel_alloc::KernelAlloc = kernel_alloc::KernelAlloc;
+static GLOBAL: util::alloc::KernelAlloc = util::alloc::KernelAlloc;
+// static GLOBAL: kernel_alloc::KernelAlloc = kernel_alloc::KernelAlloc;
 
 #[panic_handler]
-fn panic(_info: &core::panic::PanicInfo) -> ! { loop {} }
+fn panic(info: &core::panic::PanicInfo) -> ! {
+    error!("panic: {:?}", info);
+    loop {}
+}
 
 static LOG_LEVEL: LevelFilter = LevelFilter::Trace;
 
 #[no_mangle]
 pub extern "system" fn driver_entry() -> u32 {
-    KernelLogger::init(LOG_LEVEL);
+    if let Err(e) = KernelLogger::init(LOG_LEVEL) {
+        println!("Error setting logger: {:?}", e);
+    }
+    info!("kernel-rs loaded");
 
-    info!("Hello world! 1+1={}", 1+1);
+    // let result = unsafe { get_kernel_module("\\SystemRoot\\System32\\drivers\\dxgkrnl.sys") };
+    // info!("{:?}", result);
 
     0xdeadbeef
 }
+

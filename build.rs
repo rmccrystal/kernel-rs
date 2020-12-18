@@ -85,6 +85,12 @@ fn main() {
         .clang_arg(format!("-I{}", km_include_dir))
 
         .whitelist_function("MmCopyVirtualMemory")
+        .whitelist_function("ZwQuerySystemInformation")
+        .whitelist_type("PRTL_PROCESS_MODULES")
+        .whitelist_type("*SystemModuleInformation")
+
+        .whitelist_function("ExAllocatePoolWithTag")
+        .whitelist_function("ExFreePoolWithTag")
 
         .ctypes_prefix("crate::include::raw")
         .generate()

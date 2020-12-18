@@ -2,11 +2,20 @@ use alloc::string::String;
 pub use winapi::km::wdm::DbgPrint;
 use winapi::km::wdm::DbgPrintEx;
 use log::{Record, Metadata, SetLoggerError, Level, LevelFilter};
+use core::fmt::UpperHex;
+use winapi::_core::fmt::Formatter;
 
 /// Prints a string using DbgPrintEx. Automatically adds a null terminator
-fn __kernel_print(mut text: String) {
+pub fn __kernel_print(mut text: String) {
     text.push('\0');
     unsafe { DbgPrintEx(0, 0, text.as_ptr()) };
+}
+
+#[macro_export]
+macro_rules! println {
+    ($($arg:tt)*) => ({
+        $crate::util::log::__kernel_print(alloc::format!($($arg)*));
+    })
 }
 
 pub struct KernelLogger;
@@ -21,8 +30,8 @@ impl KernelLogger {
 }
 
 impl log::Log for KernelLogger {
-    fn enabled(&self, metadata: &Metadata) -> bool {
-        metadata.level() <= Level::Info
+    fn enabled(&self, _metadata: &Metadata) -> bool {
+        true
     }
 
     fn log(&self, record: &Record) {

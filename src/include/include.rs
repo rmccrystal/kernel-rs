@@ -5,8 +5,6 @@ pub type HANDLE = PVOID;
 
 extern "system" {
     pub fn MmIsAddressValid(virtual_address: PVOID) -> bool;
-
     pub fn PsLookupProcessByProcessId(process_id: HANDLE, process: *mut PEPROCESS) -> NTSTATUS;
-
     pub fn ObfDereferenceObject(object: PVOID);
 }

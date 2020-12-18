@@ -10,9 +10,9 @@ path = "src/lib.rs"
 crate-type = ["cdylib"]
 
 [dependencies]
-kernel-alloc = "0.1.0"
 obfstr = "0.1.1"
 log = "0.4.11"
+cstr_core = "0.2.2"
 
 [dependencies.winapi]
 git = "https://github.com/Trantect/winapi-rs.git"
@@ -20,7 +20,8 @@ branch = "feature/km"
 features = [
     "wdm",
     "ntstatus",
-    "ntdef"
+    "ntdef",
+    "winbase"
 ]
 
 [build-dependencies]
