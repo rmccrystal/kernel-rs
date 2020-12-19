@@ -3,17 +3,11 @@
 
 extern crate alloc;
 
-<<<<<<< Updated upstream
-use crate::{include::MmIsAddressValid, process::Process, string::create_unicode_string};
-use core::panic::PanicInfo;
-=======
-
 use log::*;
 
 use crate::kernel::{get_kernel_module, get_kernel_module_export};
 use crate::util::log::KernelLogger;
 use core::ffi::c_void;
->>>>>>> Stashed changes
 
 pub mod include;
 pub mod log;
@@ -34,34 +28,6 @@ static GLOBAL: kernel_alloc::KernelAlloc = kernel_alloc::KernelAlloc;
 static _FLTUSED: i32 = 0;
 
 #[panic_handler]
-<<<<<<< Updated upstream
-fn panic(_info: &PanicInfo) -> ! { loop {} }
-
-#[no_mangle]
-pub extern "system" fn driver_entry() -> u32 {
-    // MmIsAddressValid
-    //
-    let is_valid = unsafe { MmIsAddressValid(0 as _) };
-    log!("MmIsAddressValid(0) returned %i", is_valid as u64);
-
-    // String
-    //
-    let string = create_unicode_string(obfstr::wide!("Hello World!\0"));
-    log!("String: %ws", string.Buffer);
-
-    // Process
-    //
-    let process = Process::by_id(4 as _);
-    log!("Process found: %i", process.is_some() as u64);
-
-    // kernel-print
-    //
-    kernel_print::kernel_dbg!(2 + 2);
-    kernel_print::kernel_print!("{} + {} = {}\n", 2, 2, 2 + 2);
-    kernel_print::kernel_println!("{} + {} = {}", 2, 2, 2 + 2);
-
-    0 /* STATUS_SUCCESS */
-=======
 fn panic(info: &core::panic::PanicInfo) -> ! {
     error!("panic: {:?}", info);
     loop {}
@@ -90,5 +56,4 @@ pub extern "system" fn driver_entry() -> u32 {
     unsafe { kernel::hook_function(address, hook) };
 
     0xdeadbeef
->>>>>>> Stashed changes
 }
