@@ -55,7 +55,7 @@ pub extern "system" fn driver_entry() -> u32 {
 
     unsafe { kernel::hook_function(address, dispatch::hook) };
 
-    debug!("{:?}", Process::by_id(22620).unwrap().get_module_info_64("user32.dll"));
+    debug!("{:?}", Process::by_id(22620).unwrap().get_modules_64());
 
     0xdeadbeef
 }

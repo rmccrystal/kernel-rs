@@ -8,6 +8,7 @@ use winapi::_core::intrinsics::transmute;
 use cstr_core::{CString, CStr};
 use crate::util::string::unicode_string_to_string;
 use alloc::string::String;
+use alloc::vec::Vec;
 
 #[derive(Clone, Debug)]
 pub struct ModuleInfo {
@@ -27,7 +28,7 @@ impl Process {
         Ok(Self { process: process as _ })
     }
 
-    pub fn get_module_info_64(&self, module_name: &str) -> Result<ModuleInfo> {
+    pub fn get_modules_64(&self) -> Result<Vec<ModuleInfo>> {
         let attach = unsafe { ProcessAttachment::attach(self.process) };
         let peb = unsafe { PsGetProcessPeb(self.process) };
 
@@ -42,20 +43,13 @@ impl Process {
             }
 
             let iter: ListEntryIterator<_LDR_DATA_TABLE_ENTRY, 0> = ListEntryIterator::new(&mut (*ldr).ModuleListLoadOrder);
-            for entry in iter {
-                let name = unicode_string_to_string(&entry.BaseDllName);
-                if name.to_lowercase() == module_name.to_lowercase() {
-                    return Ok(ModuleInfo{
-                        base_address: entry.DllBase as _,
-                        size: entry.SizeOfImage as _,
-                        module_name: name
-                    })
-                }
-                trace!("{}: {:?}", entry.BaseDllName.Length, name);
-            }
-        };
 
-        Err(KernelError::Message("module not found"))
+            Ok(iter.map(|entry| ModuleInfo{
+                base_address: entry.DllBase as _,
+                size: entry.SizeOfImage as _,
+                module_name: unicode_string_to_string(&entry.BaseDllName)
+            }).collect())
+        }
     }
 }
 
