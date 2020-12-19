@@ -1,5 +1,8 @@
 use failure::{format_err, Error};
-use std::{env::var, path::{Path, PathBuf}};
+use std::{
+    env::var,
+    path::{Path, PathBuf},
+};
 use winreg::{enums::*, RegKey};
 
 /// Returns the path to the `Windows Kits` directory. It's by default at
@@ -16,26 +19,6 @@ fn get_windows_kits_dir() -> Result<PathBuf, Error> {
 /// `C:\Program Files (x86)\Windows Kits\10\lib\10.0.18362.0\km`.
 fn get_km_dir(windows_kits_dir: &PathBuf) -> Result<PathBuf, Error> {
     let readdir = Path::new(windows_kits_dir).join("lib").read_dir()?;
-
-    let max_libdir = readdir
-        .filter_map(|dir| dir.ok())
-        .map(|dir| dir.path())
-        .filter(|dir| {
-            dir.components()
-                .last()
-                .and_then(|c| c.as_os_str().to_str())
-                .map(|c| c.starts_with("10.") && dir.join("km").is_dir())
-                .unwrap_or(false)
-        })
-        .max()
-        .ok_or_else(|| format_err!("Can not find a valid km dir in `{:?}`", windows_kits_dir))?;
-
-    Ok(max_libdir.join("km"))
-}
-
-
-fn get_km_include_dir(windows_kits_dir: &PathBuf) -> Result<PathBuf, Error> {
-    let readdir = Path::new(windows_kits_dir).join("include").read_dir()?;
 
     let max_libdir = readdir
         .filter_map(|dir| dir.ok())
@@ -73,6 +56,8 @@ fn internal_link_search() {
 fn extra_link_search() {}
 
 fn main() {
+<<<<<<< Updated upstream
+=======
     let km_include_dir = get_km_include_dir(&get_windows_kits_dir().unwrap()).unwrap();
     let km_include_dir = km_include_dir.to_str().unwrap();
 
@@ -90,10 +75,21 @@ fn main() {
         .whitelist_type("PRTL_PROCESS_MODULES")
         .whitelist_type("*SystemModuleInformation")
 
+        .whitelist_function("RtlSecureZeroMemory")
+
+        .whitelist_function("IoAllocateMdl")
+        .whitelist_function("MmProbeAndLockPages")
+        .whitelist_function("MmMapLockedPagesSpecifyCache")
+        .whitelist_function("MmProtectMdlSystemAddress")
+        .whitelist_function("MmUnmapLockedPages")
+        .whitelist_function("MmUnlockPages")
+        .whitelist_function("IoFreeMdl")
+
         .whitelist_function("ExAllocatePoolWithTag")
         .whitelist_function("ExFreePoolWithTag")
 
         .ctypes_prefix("crate::include::raw")
+        .use_core()
         .generate()
         .expect("Unable to generate bindings");
 
@@ -102,6 +98,7 @@ fn main() {
         .write_to_file("src/include/bindings.rs")
         .expect("Couldn't write bindings!");
 
+>>>>>>> Stashed changes
     if var(format!("CARGO_FEATURE_{}", "extra_link_search".to_uppercase())).is_ok() {
         extra_link_search()
     } else {

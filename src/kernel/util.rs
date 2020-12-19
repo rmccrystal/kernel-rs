@@ -3,13 +3,41 @@ use core::ptr::null_mut;
 
 use log::*;
 
-use crate::include::{_RTL_PROCESS_MODULES, ZwQuerySystemInformation, RTL_PROCESS_MODULE_INFORMATION, RtlFindExportedRoutineByName};
+use crate::include::{_RTL_PROCESS_MODULES, ZwQuerySystemInformation, RTL_PROCESS_MODULE_INFORMATION, RtlFindExportedRoutineByName, IoAllocateMdl, MmProbeAndLockPages, _LOCK_OPERATION_IoReadAccess, MmMapLockedPagesSpecifyCache, _MEMORY_CACHING_TYPE_MmNonCached, MmProtectMdlSystemAddress, MmUnmapLockedPages, MmUnlockPages, IoFreeMdl};
 use crate::util::VariableSizedBox;
 
 use super::KernelError;
 use super::ToKernelResult;
 use cstr_core::{CStr, CString};
+use winapi::shared::ntdef::FALSE;
 use winapi::km::wdm::KPROCESSOR_MODE::KernelMode;
+
+pub unsafe fn safe_copy<T>(src: *const T, dst: *mut T, count: usize) -> Result<(), KernelError> {
+    let mdl = IoAllocateMdl(dst as _, count as _, FALSE, FALSE, null_mut());
+    if mdl.is_null() {
+        return Err(KernelError::Message("could not allocate mdl"));
+    }
+
+    MmProbeAndLockPages(mdl, KernelMode as _, _LOCK_OPERATION_IoReadAccess);
+    let map = MmMapLockedPagesSpecifyCache(
+        mdl,
+        KernelMode as _,
+        _MEMORY_CACHING_TYPE_MmNonCached,
+        null_mut(),
+        FALSE as u32,
+        16 // NormalPagePriority
+    );
+
+    MmProtectMdlSystemAddress(mdl, 0x04 /* PAGE_READWRITE */).to_kernel_result()?;
+
+    core::ptr::copy_nonoverlapping(src, dst, count);
+
+    MmUnmapLockedPages(map, mdl);
+    MmUnlockPages(mdl);
+    IoFreeMdl(mdl);
+
+    Ok(())
+}
 
 pub unsafe fn get_kernel_module(module_name: &str) -> Result<*mut c_void, KernelError> {
     // get size of system information
