@@ -16,6 +16,7 @@ use core::intrinsics::abort;
 pub mod include;
 pub mod kernel;
 pub mod util;
+pub mod dispatch;
 
 /// When using the alloc crate it seems like it does some unwinding. Adding this
 /// export satisfies the compiler but may introduce undefined behaviour when a
@@ -36,10 +37,6 @@ fn panic(info: &core::panic::PanicInfo) -> ! {
     unsafe { abort() }
 }
 
-fn hook(data: *mut c_void) {
-    info!("hook!");
-}
-
 static LOG_LEVEL: LevelFilter = LevelFilter::Trace;
 
 #[no_mangle]
@@ -50,13 +47,12 @@ pub extern "system" fn driver_entry() -> u32 {
     info!("kernel-rs loaded");
 
     let result = unsafe { get_kernel_module_export("\\SystemRoot\\System32\\drivers\\dxgkrnl.sys", "NtQueryCompositionSurfaceStatistics") };
-    info!("{:?}", result);
     if result.is_err() {
         return 1;
     }
     let address = result.unwrap();
 
-    unsafe { kernel::hook_function(address, hook) };
+    unsafe { kernel::hook_function(address, dispatch::hook) };
 
     0xdeadbeef
 }

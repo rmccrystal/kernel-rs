@@ -1,5 +1,4 @@
 use core::ffi::c_void;
-use core::ptr;
 use core::mem;
 use crate::kernel::safe_copy;
 use log::*;
