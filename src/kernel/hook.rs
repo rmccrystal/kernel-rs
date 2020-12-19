@@ -15,9 +15,7 @@ pub unsafe fn hook_function(address: *mut c_void, hook_fn: fn(*mut c_void)) {
     original_fn[2..=9].clone_from_slice(&(hook_fn as *const () as u64).to_le_bytes());
     original_fn[10..=11].clone_from_slice(&jmp_rax);
 
-    info!("{:X?}", original_fn);
-    info!("hook_fn: {:p}", hook_fn);
     if let Err(e) = safe_copy(original_fn.as_ptr(), address as _, mem::size_of_val(&original_fn)) {
-        error!("Error hooking function: {:?}", e);
+        error!("Error copying hook: {:?}", e);
     }
 }
