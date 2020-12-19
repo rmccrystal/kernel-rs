@@ -8,11 +8,11 @@ use log::*;
 use crate::kernel::{get_kernel_module, get_kernel_module_export};
 use crate::util::log::KernelLogger;
 use core::ffi::c_void;
+use crate::util::KernelAlloc;
 
 pub mod include;
-pub mod log;
-pub mod process;
-pub mod string;
+pub mod kernel;
+pub mod util;
 
 /// When using the alloc crate it seems like it does some unwinding. Adding this
 /// export satisfies the compiler but may introduce undefined behaviour when a
@@ -21,7 +21,7 @@ pub mod string;
 pub extern "system" fn __CxxFrameHandler3(_: *mut u8, _: *mut u8, _: *mut u8, _: *mut u8) -> i32 { unimplemented!() }
 
 #[global_allocator]
-static GLOBAL: kernel_alloc::KernelAlloc = kernel_alloc::KernelAlloc;
+static GLOBAL: KernelAlloc = KernelAlloc;
 
 /// Explanation can be found here: https://github.com/Trantect/win_driver_example/issues/4
 #[export_name = "_fltused"]
