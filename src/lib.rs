@@ -1,5 +1,7 @@
 #![no_std]
 #![feature(alloc_error_handler)]
+#![allow(clippy::missing_safety_doc)]
+#![feature(core_intrinsics)]
 
 extern crate alloc;
 
@@ -9,6 +11,7 @@ use crate::kernel::{get_kernel_module, get_kernel_module_export};
 use crate::util::log::KernelLogger;
 use core::ffi::c_void;
 use crate::util::KernelAlloc;
+use core::intrinsics::abort;
 
 pub mod include;
 pub mod kernel;
@@ -30,7 +33,7 @@ static _FLTUSED: i32 = 0;
 #[panic_handler]
 fn panic(info: &core::panic::PanicInfo) -> ! {
     error!("panic: {:?}", info);
-    loop {}
+    unsafe { abort() }
 }
 
 fn hook(data: *mut c_void) {

@@ -12,8 +12,8 @@ use cstr_core::{CStr, CString};
 use winapi::shared::ntdef::FALSE;
 use winapi::km::wdm::KPROCESSOR_MODE::KernelMode;
 
-pub unsafe fn safe_copy<T>(src: *const T, dst: *mut T, count: usize) -> Result<(), KernelError> {
-    let mdl = IoAllocateMdl(dst as _, count as _, FALSE, FALSE, null_mut());
+pub unsafe fn safe_copy(src: *const u8, dst: *mut u8, len: usize) -> Result<(), KernelError> {
+    let mdl = IoAllocateMdl(dst as _, len as _, FALSE, FALSE, null_mut());
     if mdl.is_null() {
         return Err(KernelError::Message("could not allocate mdl"));
     }
@@ -30,7 +30,11 @@ pub unsafe fn safe_copy<T>(src: *const T, dst: *mut T, count: usize) -> Result<(
 
     MmProtectMdlSystemAddress(mdl, 0x04 /* PAGE_READWRITE */).to_kernel_result()?;
 
-    core::ptr::copy_nonoverlapping(src, dst, count);
+    // core::ptr::copy_nonoverlapping(src, dst, len);
+    {
+        let bytes = core::slice::from_raw_parts(src, len);
+        trace!("Copied {:X?} to {:p}", bytes, dst);
+    }
 
     MmUnmapLockedPages(map, mdl);
     MmUnlockPages(mdl);
@@ -74,7 +78,6 @@ pub unsafe fn get_kernel_module(module_name: &str) -> Result<*mut c_void, Kernel
 
     for module in modules {
         let name = CStr::from_ptr(module.FullPathName.as_ptr() as _).to_str().unwrap();
-        trace!("Found kernel module {}", name);
 
         if name == module_name {
             module_base = Some(module.ImageBase)
