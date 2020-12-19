@@ -29,7 +29,7 @@ impl Process {
     }
 
     pub fn get_modules_64(&self) -> Result<Vec<ModuleInfo>> {
-        let attach = unsafe { ProcessAttachment::attach(self.process) };
+        let _attach = unsafe { ProcessAttachment::attach(self.process) };
         let peb = unsafe { PsGetProcessPeb(self.process) };
 
         if peb.is_null() {
