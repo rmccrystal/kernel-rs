@@ -3,7 +3,7 @@ use core::mem;
 use crate::kernel::safe_copy;
 use log::*;
 
-pub unsafe fn hook_function(address: *mut c_void, hook_fn: fn(*mut c_void)) {
+pub unsafe fn hook_function(address: *mut c_void, hook_fn: unsafe fn(*mut c_void)) {
     let mov_rax = [ 0x48_u8, 0xB8 ];
     let jmp_rax = [ 0xFF_u8, 0xE0 ];
 

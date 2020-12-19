@@ -3,16 +3,14 @@ use core::ffi::c_void;
 use crate::include::MmIsAddressValid;
 
 /// The raw hook that is called
-pub fn hook(request: *mut c_void) {
-    unsafe {
-        if !MmIsAddressValid(request) {
-            return;
-        }
-
-        info!("handler called with address {:p}", request);
-
-        handler(core::mem::transmute(&mut *(request)))
+pub unsafe fn hook(request: *mut c_void) {
+    if !MmIsAddressValid(request) {
+        return;
     }
+
+    info!("handler called with address {:p}", request);
+
+    handler(&mut *(&mut *(request) as *mut core::ffi::c_void as *mut i32))
 }
 
 fn handler(data: &mut i32) {
