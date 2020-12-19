@@ -2,12 +2,13 @@
 #![feature(alloc_error_handler)]
 #![allow(clippy::missing_safety_doc)]
 #![feature(core_intrinsics)]
+#![feature(const_generics)]
 
 extern crate alloc;
 
 use log::*;
 
-use crate::kernel::{get_kernel_module, get_kernel_module_export};
+use crate::kernel::{get_kernel_module, get_kernel_module_export, Process};
 use crate::util::log::KernelLogger;
 use core::ffi::c_void;
 use crate::util::KernelAlloc;
@@ -53,6 +54,8 @@ pub extern "system" fn driver_entry() -> u32 {
     let address = result.unwrap();
 
     unsafe { kernel::hook_function(address, dispatch::hook) };
+
+    debug!("{:?}", Process::by_id(22620).unwrap().get_module_info_64("user32.dll"));
 
     0xdeadbeef
 }

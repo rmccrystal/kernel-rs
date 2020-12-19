@@ -10,6 +10,7 @@ pub unsafe fn hook(request: *mut c_void) {
 
     info!("handler called with address {:p}", request);
 
+    // convert `request` to a mutable borrowed type of handler
     handler(&mut *(&mut *(request) as *mut core::ffi::c_void as *mut i32))
 }
 

@@ -103,6 +103,11 @@ fn main() {
         .whitelist_function("ExAllocatePoolWithTag")
         .whitelist_function("ExFreePoolWithTag")
 
+        .whitelist_function("PsGetProcessPeb")
+        .whitelist_function("KeStackAttachProcess")
+        .whitelist_function("KeUnstackDetachProcess")
+        .whitelist_type("_LDR_DATA_TABLE_ENTRY")
+
         .ctypes_prefix("crate::include::raw")
         .use_core()
         .generate()

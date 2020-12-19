@@ -8,3 +8,5 @@ mod util;
 mod error;
 mod hook;
 
+pub type Result<T> = core::result::Result<T, error::KernelError>;
+

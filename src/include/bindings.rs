@@ -426,6 +426,7 @@ pub struct _IO_TIMER {
     _unused: [u8; 0],
 }
 pub type PIO_TIMER = *mut _IO_TIMER;
+pub type PRKPROCESS = *mut _KPROCESS;
 pub type PSECURITY_QUALITY_OF_SERVICE = *mut _SECURITY_QUALITY_OF_SERVICE;
 pub type PVPB = *mut _VPB;
 pub type PFILE_GET_QUOTA_INFORMATION = *mut _FILE_GET_QUOTA_INFORMATION;
@@ -13476,6 +13477,7 @@ extern "C" {
 extern "C" {
     pub fn IoFreeMdl(Mdl: PMDL);
 }
+pub type PPEB = *mut _PEB;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _SID_IDENTIFIER_AUTHORITY {
@@ -13607,6 +13609,243 @@ fn bindgen_test_layout__FILE_GET_QUOTA_INFORMATION() {
         )
     );
 }
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct _KAPC_STATE {
+    pub ApcListHead: [LIST_ENTRY; 2usize],
+    pub Process: *mut _KPROCESS,
+    pub __bindgen_anon_1: _KAPC_STATE__bindgen_ty_1,
+    pub KernelApcPending: BOOLEAN,
+    pub __bindgen_anon_2: _KAPC_STATE__bindgen_ty_2,
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union _KAPC_STATE__bindgen_ty_1 {
+    pub InProgressFlags: UCHAR,
+    pub __bindgen_anon_1: _KAPC_STATE__bindgen_ty_1__bindgen_ty_1,
+    _bindgen_union_align: u8,
+}
+#[repr(C, packed)]
+#[derive(Debug, Copy, Clone)]
+pub struct _KAPC_STATE__bindgen_ty_1__bindgen_ty_1 {
+    pub _bitfield_1: __BindgenBitfieldUnit<[u8; 1usize], u8>,
+}
+#[test]
+fn bindgen_test_layout__KAPC_STATE__bindgen_ty_1__bindgen_ty_1() {
+    assert_eq!(
+        ::core::mem::size_of::<_KAPC_STATE__bindgen_ty_1__bindgen_ty_1>(),
+        1usize,
+        concat!("Size of: ", stringify!(_KAPC_STATE__bindgen_ty_1__bindgen_ty_1))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<_KAPC_STATE__bindgen_ty_1__bindgen_ty_1>(),
+        1usize,
+        concat!("Alignment of ", stringify!(_KAPC_STATE__bindgen_ty_1__bindgen_ty_1))
+    );
+}
+impl _KAPC_STATE__bindgen_ty_1__bindgen_ty_1 {
+    #[inline]
+    pub fn KernelApcInProgress(&self) -> BOOLEAN {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(0usize, 1u8) as u8) }
+    }
+
+    #[inline]
+    pub fn set_KernelApcInProgress(&mut self, val: BOOLEAN) {
+        unsafe {
+            let val: u8 = ::core::mem::transmute(val);
+            self._bitfield_1.set(0usize, 1u8, val as u64)
+        }
+    }
+
+    #[inline]
+    pub fn SpecialApcInProgress(&self) -> BOOLEAN {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(1usize, 1u8) as u8) }
+    }
+
+    #[inline]
+    pub fn set_SpecialApcInProgress(&mut self, val: BOOLEAN) {
+        unsafe {
+            let val: u8 = ::core::mem::transmute(val);
+            self._bitfield_1.set(1usize, 1u8, val as u64)
+        }
+    }
+
+    #[inline]
+    pub fn new_bitfield_1(
+        KernelApcInProgress: BOOLEAN, SpecialApcInProgress: BOOLEAN,
+    ) -> __BindgenBitfieldUnit<[u8; 1usize], u8> {
+        let mut __bindgen_bitfield_unit: __BindgenBitfieldUnit<[u8; 1usize], u8> = Default::default();
+        __bindgen_bitfield_unit.set(0usize, 1u8, {
+            let KernelApcInProgress: u8 = unsafe { ::core::mem::transmute(KernelApcInProgress) };
+            KernelApcInProgress as u64
+        });
+        __bindgen_bitfield_unit.set(1usize, 1u8, {
+            let SpecialApcInProgress: u8 = unsafe { ::core::mem::transmute(SpecialApcInProgress) };
+            SpecialApcInProgress as u64
+        });
+        __bindgen_bitfield_unit
+    }
+}
+#[test]
+fn bindgen_test_layout__KAPC_STATE__bindgen_ty_1() {
+    assert_eq!(
+        ::core::mem::size_of::<_KAPC_STATE__bindgen_ty_1>(),
+        1usize,
+        concat!("Size of: ", stringify!(_KAPC_STATE__bindgen_ty_1))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<_KAPC_STATE__bindgen_ty_1>(),
+        1usize,
+        concat!("Alignment of ", stringify!(_KAPC_STATE__bindgen_ty_1))
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_KAPC_STATE__bindgen_ty_1>())).InProgressFlags as *const _ as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_KAPC_STATE__bindgen_ty_1),
+            "::",
+            stringify!(InProgressFlags)
+        )
+    );
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union _KAPC_STATE__bindgen_ty_2 {
+    pub UserApcPendingAll: BOOLEAN,
+    pub __bindgen_anon_1: _KAPC_STATE__bindgen_ty_2__bindgen_ty_1,
+    _bindgen_union_align: u8,
+}
+#[repr(C, packed)]
+#[derive(Debug, Copy, Clone)]
+pub struct _KAPC_STATE__bindgen_ty_2__bindgen_ty_1 {
+    pub _bitfield_1: __BindgenBitfieldUnit<[u8; 1usize], u8>,
+}
+#[test]
+fn bindgen_test_layout__KAPC_STATE__bindgen_ty_2__bindgen_ty_1() {
+    assert_eq!(
+        ::core::mem::size_of::<_KAPC_STATE__bindgen_ty_2__bindgen_ty_1>(),
+        1usize,
+        concat!("Size of: ", stringify!(_KAPC_STATE__bindgen_ty_2__bindgen_ty_1))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<_KAPC_STATE__bindgen_ty_2__bindgen_ty_1>(),
+        1usize,
+        concat!("Alignment of ", stringify!(_KAPC_STATE__bindgen_ty_2__bindgen_ty_1))
+    );
+}
+impl _KAPC_STATE__bindgen_ty_2__bindgen_ty_1 {
+    #[inline]
+    pub fn SpecialUserApcPending(&self) -> BOOLEAN {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(0usize, 1u8) as u8) }
+    }
+
+    #[inline]
+    pub fn set_SpecialUserApcPending(&mut self, val: BOOLEAN) {
+        unsafe {
+            let val: u8 = ::core::mem::transmute(val);
+            self._bitfield_1.set(0usize, 1u8, val as u64)
+        }
+    }
+
+    #[inline]
+    pub fn UserApcPending(&self) -> BOOLEAN {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(1usize, 1u8) as u8) }
+    }
+
+    #[inline]
+    pub fn set_UserApcPending(&mut self, val: BOOLEAN) {
+        unsafe {
+            let val: u8 = ::core::mem::transmute(val);
+            self._bitfield_1.set(1usize, 1u8, val as u64)
+        }
+    }
+
+    #[inline]
+    pub fn new_bitfield_1(
+        SpecialUserApcPending: BOOLEAN, UserApcPending: BOOLEAN,
+    ) -> __BindgenBitfieldUnit<[u8; 1usize], u8> {
+        let mut __bindgen_bitfield_unit: __BindgenBitfieldUnit<[u8; 1usize], u8> = Default::default();
+        __bindgen_bitfield_unit.set(0usize, 1u8, {
+            let SpecialUserApcPending: u8 = unsafe { ::core::mem::transmute(SpecialUserApcPending) };
+            SpecialUserApcPending as u64
+        });
+        __bindgen_bitfield_unit.set(1usize, 1u8, {
+            let UserApcPending: u8 = unsafe { ::core::mem::transmute(UserApcPending) };
+            UserApcPending as u64
+        });
+        __bindgen_bitfield_unit
+    }
+}
+#[test]
+fn bindgen_test_layout__KAPC_STATE__bindgen_ty_2() {
+    assert_eq!(
+        ::core::mem::size_of::<_KAPC_STATE__bindgen_ty_2>(),
+        1usize,
+        concat!("Size of: ", stringify!(_KAPC_STATE__bindgen_ty_2))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<_KAPC_STATE__bindgen_ty_2>(),
+        1usize,
+        concat!("Alignment of ", stringify!(_KAPC_STATE__bindgen_ty_2))
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_KAPC_STATE__bindgen_ty_2>())).UserApcPendingAll as *const _ as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_KAPC_STATE__bindgen_ty_2),
+            "::",
+            stringify!(UserApcPendingAll)
+        )
+    );
+}
+#[test]
+fn bindgen_test_layout__KAPC_STATE() {
+    assert_eq!(
+        ::core::mem::size_of::<_KAPC_STATE>(),
+        48usize,
+        concat!("Size of: ", stringify!(_KAPC_STATE))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<_KAPC_STATE>(),
+        8usize,
+        concat!("Alignment of ", stringify!(_KAPC_STATE))
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_KAPC_STATE>())).ApcListHead as *const _ as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_KAPC_STATE),
+            "::",
+            stringify!(ApcListHead)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_KAPC_STATE>())).Process as *const _ as usize },
+        32usize,
+        concat!("Offset of field: ", stringify!(_KAPC_STATE), "::", stringify!(Process))
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_KAPC_STATE>())).KernelApcPending as *const _ as usize },
+        41usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_KAPC_STATE),
+            "::",
+            stringify!(KernelApcPending)
+        )
+    );
+}
+pub type PRKAPC_STATE = *mut _KAPC_STATE;
+extern "C" {
+    pub fn KeStackAttachProcess(PROCESS: PRKPROCESS, ApcState: PRKAPC_STATE);
+}
+extern "C" {
+    pub fn KeUnstackDetachProcess(ApcState: PRKAPC_STATE);
+}
+pub type BYTE = crate::include::raw::c_uchar;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct _RTL_PROCESS_MODULE_INFORMATION {
@@ -13775,8 +14014,488 @@ fn bindgen_test_layout__RTL_PROCESS_MODULES() {
     );
 }
 pub type PRTL_PROCESS_MODULES = *mut _RTL_PROCESS_MODULES;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct _PEB_LDR_DATA {
+    pub Length: ULONG,
+    pub Initialized: BOOLEAN,
+    pub SsHandle: PVOID,
+    pub ModuleListLoadOrder: LIST_ENTRY,
+    pub ModuleListMemoryOrder: LIST_ENTRY,
+    pub ModuleListInitOrder: LIST_ENTRY,
+}
+#[test]
+fn bindgen_test_layout__PEB_LDR_DATA() {
+    assert_eq!(
+        ::core::mem::size_of::<_PEB_LDR_DATA>(),
+        64usize,
+        concat!("Size of: ", stringify!(_PEB_LDR_DATA))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<_PEB_LDR_DATA>(),
+        8usize,
+        concat!("Alignment of ", stringify!(_PEB_LDR_DATA))
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB_LDR_DATA>())).Length as *const _ as usize },
+        0usize,
+        concat!("Offset of field: ", stringify!(_PEB_LDR_DATA), "::", stringify!(Length))
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB_LDR_DATA>())).Initialized as *const _ as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_PEB_LDR_DATA),
+            "::",
+            stringify!(Initialized)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB_LDR_DATA>())).SsHandle as *const _ as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_PEB_LDR_DATA),
+            "::",
+            stringify!(SsHandle)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB_LDR_DATA>())).ModuleListLoadOrder as *const _ as usize },
+        16usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_PEB_LDR_DATA),
+            "::",
+            stringify!(ModuleListLoadOrder)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB_LDR_DATA>())).ModuleListMemoryOrder as *const _ as usize },
+        32usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_PEB_LDR_DATA),
+            "::",
+            stringify!(ModuleListMemoryOrder)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB_LDR_DATA>())).ModuleListInitOrder as *const _ as usize },
+        48usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_PEB_LDR_DATA),
+            "::",
+            stringify!(ModuleListInitOrder)
+        )
+    );
+}
+pub type PPEB_LDR_DATA = *mut _PEB_LDR_DATA;
+pub type PPS_POST_PROCESS_INIT_ROUTINE = ::core::option::Option<unsafe extern "C" fn()>;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct _RTL_USER_PROCESS_PARAMETERS {
+    pub Reserved1: [BYTE; 16usize],
+    pub Reserved2: [PVOID; 10usize],
+    pub ImagePathName: UNICODE_STRING,
+    pub CommandLine: UNICODE_STRING,
+}
+#[test]
+fn bindgen_test_layout__RTL_USER_PROCESS_PARAMETERS() {
+    assert_eq!(
+        ::core::mem::size_of::<_RTL_USER_PROCESS_PARAMETERS>(),
+        128usize,
+        concat!("Size of: ", stringify!(_RTL_USER_PROCESS_PARAMETERS))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<_RTL_USER_PROCESS_PARAMETERS>(),
+        8usize,
+        concat!("Alignment of ", stringify!(_RTL_USER_PROCESS_PARAMETERS))
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_RTL_USER_PROCESS_PARAMETERS>())).Reserved1 as *const _ as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_RTL_USER_PROCESS_PARAMETERS),
+            "::",
+            stringify!(Reserved1)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_RTL_USER_PROCESS_PARAMETERS>())).Reserved2 as *const _ as usize },
+        16usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_RTL_USER_PROCESS_PARAMETERS),
+            "::",
+            stringify!(Reserved2)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_RTL_USER_PROCESS_PARAMETERS>())).ImagePathName as *const _ as usize },
+        96usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_RTL_USER_PROCESS_PARAMETERS),
+            "::",
+            stringify!(ImagePathName)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_RTL_USER_PROCESS_PARAMETERS>())).CommandLine as *const _ as usize },
+        112usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_RTL_USER_PROCESS_PARAMETERS),
+            "::",
+            stringify!(CommandLine)
+        )
+    );
+}
+pub type PRTL_USER_PROCESS_PARAMETERS = *mut _RTL_USER_PROCESS_PARAMETERS;
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct _PEB {
+    pub Reserved1: [BYTE; 2usize],
+    pub BeingDebugged: BYTE,
+    pub Reserved2: [BYTE; 1usize],
+    pub Reserved3: [PVOID; 2usize],
+    pub Ldr: PPEB_LDR_DATA,
+    pub ProcessParameters: PRTL_USER_PROCESS_PARAMETERS,
+    pub Reserved4: [PVOID; 3usize],
+    pub AtlThunkSListPtr: PVOID,
+    pub Reserved5: PVOID,
+    pub Reserved6: ULONG,
+    pub Reserved7: PVOID,
+    pub Reserved8: ULONG,
+    pub AtlThunkSListPtr32: ULONG,
+    pub Reserved9: [PVOID; 45usize],
+    pub Reserved10: [BYTE; 96usize],
+    pub PostProcessInitRoutine: PPS_POST_PROCESS_INIT_ROUTINE,
+    pub Reserved11: [BYTE; 128usize],
+    pub Reserved12: [PVOID; 1usize],
+    pub SessionId: ULONG,
+}
+#[test]
+fn bindgen_test_layout__PEB() {
+    assert_eq!(
+        ::core::mem::size_of::<_PEB>(),
+        712usize,
+        concat!("Size of: ", stringify!(_PEB))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<_PEB>(),
+        8usize,
+        concat!("Alignment of ", stringify!(_PEB))
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB>())).Reserved1 as *const _ as usize },
+        0usize,
+        concat!("Offset of field: ", stringify!(_PEB), "::", stringify!(Reserved1))
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB>())).BeingDebugged as *const _ as usize },
+        2usize,
+        concat!("Offset of field: ", stringify!(_PEB), "::", stringify!(BeingDebugged))
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB>())).Reserved2 as *const _ as usize },
+        3usize,
+        concat!("Offset of field: ", stringify!(_PEB), "::", stringify!(Reserved2))
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB>())).Reserved3 as *const _ as usize },
+        8usize,
+        concat!("Offset of field: ", stringify!(_PEB), "::", stringify!(Reserved3))
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB>())).Ldr as *const _ as usize },
+        24usize,
+        concat!("Offset of field: ", stringify!(_PEB), "::", stringify!(Ldr))
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB>())).ProcessParameters as *const _ as usize },
+        32usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_PEB),
+            "::",
+            stringify!(ProcessParameters)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB>())).Reserved4 as *const _ as usize },
+        40usize,
+        concat!("Offset of field: ", stringify!(_PEB), "::", stringify!(Reserved4))
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB>())).AtlThunkSListPtr as *const _ as usize },
+        64usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_PEB),
+            "::",
+            stringify!(AtlThunkSListPtr)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB>())).Reserved5 as *const _ as usize },
+        72usize,
+        concat!("Offset of field: ", stringify!(_PEB), "::", stringify!(Reserved5))
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB>())).Reserved6 as *const _ as usize },
+        80usize,
+        concat!("Offset of field: ", stringify!(_PEB), "::", stringify!(Reserved6))
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB>())).Reserved7 as *const _ as usize },
+        88usize,
+        concat!("Offset of field: ", stringify!(_PEB), "::", stringify!(Reserved7))
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB>())).Reserved8 as *const _ as usize },
+        96usize,
+        concat!("Offset of field: ", stringify!(_PEB), "::", stringify!(Reserved8))
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB>())).AtlThunkSListPtr32 as *const _ as usize },
+        100usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_PEB),
+            "::",
+            stringify!(AtlThunkSListPtr32)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB>())).Reserved9 as *const _ as usize },
+        104usize,
+        concat!("Offset of field: ", stringify!(_PEB), "::", stringify!(Reserved9))
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB>())).Reserved10 as *const _ as usize },
+        464usize,
+        concat!("Offset of field: ", stringify!(_PEB), "::", stringify!(Reserved10))
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB>())).PostProcessInitRoutine as *const _ as usize },
+        560usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_PEB),
+            "::",
+            stringify!(PostProcessInitRoutine)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB>())).Reserved11 as *const _ as usize },
+        568usize,
+        concat!("Offset of field: ", stringify!(_PEB), "::", stringify!(Reserved11))
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB>())).Reserved12 as *const _ as usize },
+        696usize,
+        concat!("Offset of field: ", stringify!(_PEB), "::", stringify!(Reserved12))
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB>())).SessionId as *const _ as usize },
+        704usize,
+        concat!("Offset of field: ", stringify!(_PEB), "::", stringify!(SessionId))
+    );
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct _LDR_DATA_TABLE_ENTRY {
+    pub InLoadOrderModuleList: LIST_ENTRY,
+    pub InMemoryOrderModuleList: LIST_ENTRY,
+    pub InInitializationOrderModuleList: LIST_ENTRY,
+    pub DllBase: PVOID,
+    pub EntryPoint: PVOID,
+    pub SizeOfImage: ULONG,
+    pub FullDllName: UNICODE_STRING,
+    pub BaseDllName: UNICODE_STRING,
+    pub Flags: ULONG,
+    pub LoadCount: USHORT,
+    pub TlsIndex: USHORT,
+    pub HashLinks: LIST_ENTRY,
+    pub SectionPointer: PVOID,
+    pub CheckSum: ULONG,
+    pub TimeDateStamp: ULONG,
+}
+#[test]
+fn bindgen_test_layout__LDR_DATA_TABLE_ENTRY() {
+    assert_eq!(
+        ::core::mem::size_of::<_LDR_DATA_TABLE_ENTRY>(),
+        144usize,
+        concat!("Size of: ", stringify!(_LDR_DATA_TABLE_ENTRY))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<_LDR_DATA_TABLE_ENTRY>(),
+        8usize,
+        concat!("Alignment of ", stringify!(_LDR_DATA_TABLE_ENTRY))
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_LDR_DATA_TABLE_ENTRY>())).InLoadOrderModuleList as *const _ as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_LDR_DATA_TABLE_ENTRY),
+            "::",
+            stringify!(InLoadOrderModuleList)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_LDR_DATA_TABLE_ENTRY>())).InMemoryOrderModuleList as *const _ as usize },
+        16usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_LDR_DATA_TABLE_ENTRY),
+            "::",
+            stringify!(InMemoryOrderModuleList)
+        )
+    );
+    assert_eq!(
+        unsafe {
+            &(*(::core::ptr::null::<_LDR_DATA_TABLE_ENTRY>())).InInitializationOrderModuleList as *const _ as usize
+        },
+        32usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_LDR_DATA_TABLE_ENTRY),
+            "::",
+            stringify!(InInitializationOrderModuleList)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_LDR_DATA_TABLE_ENTRY>())).DllBase as *const _ as usize },
+        48usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_LDR_DATA_TABLE_ENTRY),
+            "::",
+            stringify!(DllBase)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_LDR_DATA_TABLE_ENTRY>())).EntryPoint as *const _ as usize },
+        56usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_LDR_DATA_TABLE_ENTRY),
+            "::",
+            stringify!(EntryPoint)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_LDR_DATA_TABLE_ENTRY>())).SizeOfImage as *const _ as usize },
+        64usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_LDR_DATA_TABLE_ENTRY),
+            "::",
+            stringify!(SizeOfImage)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_LDR_DATA_TABLE_ENTRY>())).FullDllName as *const _ as usize },
+        72usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_LDR_DATA_TABLE_ENTRY),
+            "::",
+            stringify!(FullDllName)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_LDR_DATA_TABLE_ENTRY>())).BaseDllName as *const _ as usize },
+        88usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_LDR_DATA_TABLE_ENTRY),
+            "::",
+            stringify!(BaseDllName)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_LDR_DATA_TABLE_ENTRY>())).Flags as *const _ as usize },
+        104usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_LDR_DATA_TABLE_ENTRY),
+            "::",
+            stringify!(Flags)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_LDR_DATA_TABLE_ENTRY>())).LoadCount as *const _ as usize },
+        108usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_LDR_DATA_TABLE_ENTRY),
+            "::",
+            stringify!(LoadCount)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_LDR_DATA_TABLE_ENTRY>())).TlsIndex as *const _ as usize },
+        110usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_LDR_DATA_TABLE_ENTRY),
+            "::",
+            stringify!(TlsIndex)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_LDR_DATA_TABLE_ENTRY>())).HashLinks as *const _ as usize },
+        112usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_LDR_DATA_TABLE_ENTRY),
+            "::",
+            stringify!(HashLinks)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_LDR_DATA_TABLE_ENTRY>())).SectionPointer as *const _ as usize },
+        128usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_LDR_DATA_TABLE_ENTRY),
+            "::",
+            stringify!(SectionPointer)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_LDR_DATA_TABLE_ENTRY>())).CheckSum as *const _ as usize },
+        136usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_LDR_DATA_TABLE_ENTRY),
+            "::",
+            stringify!(CheckSum)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_LDR_DATA_TABLE_ENTRY>())).TimeDateStamp as *const _ as usize },
+        140usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_LDR_DATA_TABLE_ENTRY),
+            "::",
+            stringify!(TimeDateStamp)
+        )
+    );
+}
 extern "C" {
     pub fn RtlFindExportedRoutineByName(ImageBase: PVOID, RoutineName: PCCH) -> PVOID;
+}
+extern "C" {
+    pub fn PsGetProcessPeb(Process: PEPROCESS) -> PPEB;
 }
 extern "C" {
     pub fn MmCopyVirtualMemory(

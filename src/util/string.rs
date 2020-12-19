@@ -1,9 +1,11 @@
 use alloc::string::{String, ToString};
 
-use winapi::shared::ntdef::UNICODE_STRING;
+use crate::include::UNICODE_STRING;
 
 use crate::include::UCHAR;
 use cstr_core::CString;
+use core::convert::TryInto;
+use alloc::vec::Vec;
 
 pub fn create_unicode_string(s: &[u16]) -> UNICODE_STRING {
     let len = s.len();
@@ -17,6 +19,15 @@ pub fn create_unicode_string(s: &[u16]) -> UNICODE_STRING {
     }
 }
 
+pub fn unicode_string_to_string(string: &UNICODE_STRING) -> String {
+    let mut buf = Vec::new();
+
+    for i in 0..(string.Length/2) {
+        unsafe { buf.push(string.Buffer.add(i as _).read()) };
+    }
+
+    String::from_utf16_lossy(&buf)
+}
 
 // impl<const S: usize> ToString for [UCHAR; S] {
 //     fn to_string(&self) -> String {
