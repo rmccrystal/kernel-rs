@@ -30,7 +30,7 @@ pub unsafe fn safe_copy(src: *const u8, dst: *mut u8, len: usize) -> Result<(), 
 
     MmProtectMdlSystemAddress(mdl, 0x04 /* PAGE_READWRITE */).to_kernel_result()?;
 
-    // core::ptr::copy_nonoverlapping(src, dst, len);
+    core::ptr::copy_nonoverlapping(src, map as _, len);
     {
         let bytes = core::slice::from_raw_parts(src, len);
         trace!("Copied {:X?} to {:p}", bytes, dst);
