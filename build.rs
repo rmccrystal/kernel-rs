@@ -56,6 +56,49 @@ fn internal_link_search() {
 fn extra_link_search() {}
 
 fn main() {
+<<<<<<< Updated upstream
+=======
+    let km_include_dir = get_km_include_dir(&get_windows_kits_dir().unwrap()).unwrap();
+    let km_include_dir = km_include_dir.to_str().unwrap();
+
+    println!("{}", km_include_dir);
+
+    println!("cargo:rerun-if-changed=include.h");
+    let bindings = bindgen::Builder::default()
+        .header("src/include/bindings.h")
+        .parse_callbacks(Box::new(bindgen::CargoCallbacks))
+        .clang_arg(format!("-I{}", km_include_dir))
+
+        .whitelist_function("MmCopyVirtualMemory")
+        .whitelist_function("ZwQuerySystemInformation")
+        .whitelist_function("RtlFindExportedRoutineByName")
+        .whitelist_type("PRTL_PROCESS_MODULES")
+        .whitelist_type("*SystemModuleInformation")
+
+        .whitelist_function("RtlSecureZeroMemory")
+
+        .whitelist_function("IoAllocateMdl")
+        .whitelist_function("MmProbeAndLockPages")
+        .whitelist_function("MmMapLockedPagesSpecifyCache")
+        .whitelist_function("MmProtectMdlSystemAddress")
+        .whitelist_function("MmUnmapLockedPages")
+        .whitelist_function("MmUnlockPages")
+        .whitelist_function("IoFreeMdl")
+
+        .whitelist_function("ExAllocatePoolWithTag")
+        .whitelist_function("ExFreePoolWithTag")
+
+        .ctypes_prefix("crate::include::raw")
+        .use_core()
+        .generate()
+        .expect("Unable to generate bindings");
+
+    // Write the bindings to the $OUT_DIR/bindings.rs file.
+    bindings
+        .write_to_file("src/include/bindings.rs")
+        .expect("Couldn't write bindings!");
+
+>>>>>>> Stashed changes
     if var(format!("CARGO_FEATURE_{}", "extra_link_search".to_uppercase())).is_ok() {
         extra_link_search()
     } else {

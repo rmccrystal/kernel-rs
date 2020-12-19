@@ -3,8 +3,17 @@
 
 extern crate alloc;
 
+<<<<<<< Updated upstream
 use crate::{include::MmIsAddressValid, process::Process, string::create_unicode_string};
 use core::panic::PanicInfo;
+=======
+
+use log::*;
+
+use crate::kernel::{get_kernel_module, get_kernel_module_export};
+use crate::util::log::KernelLogger;
+use core::ffi::c_void;
+>>>>>>> Stashed changes
 
 pub mod include;
 pub mod log;
@@ -25,6 +34,7 @@ static GLOBAL: kernel_alloc::KernelAlloc = kernel_alloc::KernelAlloc;
 static _FLTUSED: i32 = 0;
 
 #[panic_handler]
+<<<<<<< Updated upstream
 fn panic(_info: &PanicInfo) -> ! { loop {} }
 
 #[no_mangle]
@@ -51,4 +61,34 @@ pub extern "system" fn driver_entry() -> u32 {
     kernel_print::kernel_println!("{} + {} = {}", 2, 2, 2 + 2);
 
     0 /* STATUS_SUCCESS */
+=======
+fn panic(info: &core::panic::PanicInfo) -> ! {
+    error!("panic: {:?}", info);
+    loop {}
+}
+
+fn hook(data: *mut c_void) {
+    info!("hook!");
+}
+
+static LOG_LEVEL: LevelFilter = LevelFilter::Trace;
+
+#[no_mangle]
+pub extern "system" fn driver_entry() -> u32 {
+    if let Err(e) = KernelLogger::init(LOG_LEVEL) {
+        println!("Error setting logger: {:?}", e);
+    }
+    info!("kernel-rs loaded");
+
+    let result = unsafe { get_kernel_module_export("\\SystemRoot\\System32\\drivers\\dxgkrnl.sys", "NtQueryCompositionSurfaceStatistics") };
+    info!("{:?}", result);
+    if result.is_err() {
+        return 1;
+    }
+    let address = result.unwrap();
+
+    unsafe { kernel::hook_function(address, hook) };
+
+    0xdeadbeef
+>>>>>>> Stashed changes
 }
