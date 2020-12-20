@@ -21,7 +21,7 @@ pub unsafe fn hook(buf: *mut c_void) {
     trace!("Received data from hooked fn: {:?}", &data);
 
     match data {
-        Data::RunRequest { req, return_bytes } => {
+        Data::RunRequest { req, response } => {
             trace!("Received request: {:?}", req);
             // handle the request
             let resp = req.handle();
@@ -40,7 +40,7 @@ pub unsafe fn hook(buf: *mut c_void) {
             trace!("Serialized {} bytes", response_buf.len());
 
             // set the serialized length
-            **return_bytes = response_buf.len();
+            **response = RunRequestResponse::AllocBuffer(response_buf.len());
 
             // write the response hold
             RESPONSE_HOLD = Some(response_buf);

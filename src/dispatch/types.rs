@@ -13,11 +13,20 @@ pub enum Data {
     RunRequest {
         req: Request,
         // number of bytes that will be returned when WriteBuffer is called
-        return_bytes: *mut usize
+        response: *mut RunRequestResponse
     },
     WriteBuffer {
         buffer: Vec<u8>,
     }
+}
+
+// Returned when RunRequest is returned
+pub enum RunRequestResponse {
+    Null,
+    // the caller should allocate a buffer and call again
+    AllocBuffer(usize),
+    // there is no need to allocate and a response can be immediately sent
+    Response(Result<Response, KernelError>)
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
