@@ -13477,6 +13477,9 @@ extern "C" {
 extern "C" {
     pub fn IoFreeMdl(Mdl: PMDL);
 }
+extern "C" {
+    pub fn IoGetCurrentProcess() -> PEPROCESS;
+}
 pub type PPEB = *mut _PEB;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]

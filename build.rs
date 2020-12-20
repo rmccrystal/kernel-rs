@@ -78,7 +78,7 @@ fn main() {
 
     println!("{}", km_include_dir);
 
-    // println!("cargo:rerun-if-changed=include.h");
+    println!("cargo:rerun-if-changed=build.rs");
     let bindings = bindgen::Builder::default()
         .header("src/include/bindings.h")
         .parse_callbacks(Box::new(bindgen::CargoCallbacks))
@@ -106,6 +106,7 @@ fn main() {
         .whitelist_function("PsGetProcessPeb")
         .whitelist_function("KeStackAttachProcess")
         .whitelist_function("KeUnstackDetachProcess")
+        .whitelist_function("IoGetCurrentProcess")
         .whitelist_type("_LDR_DATA_TABLE_ENTRY")
 
         .ctypes_prefix("crate::include::raw")
