@@ -78,7 +78,7 @@ fn main() {
 
     println!("{}", km_include_dir);
 
-    println!("cargo:rerun-if-changed=include.h");
+    // println!("cargo:rerun-if-changed=include.h");
     let bindings = bindgen::Builder::default()
         .header("src/include/bindings.h")
         .parse_callbacks(Box::new(bindgen::CargoCallbacks))
