@@ -104,6 +104,11 @@ fn main() {
         .whitelist_function("ExFreePoolWithTag")
 
         .whitelist_function("PsGetProcessPeb")
+        .whitelist_function("PsGetProcessWow64Process")
+        .whitelist_type("PPEB32")
+        .whitelist_type("PPEB_LDR_DATA32")
+        .whitelist_type("PLDR_DATA_TABLE_ENTRY32")
+        .whitelist_type("LDR_DATA_TABLE_ENTRY32")
         .whitelist_function("KeStackAttachProcess")
         .whitelist_function("KeUnstackDetachProcess")
         .whitelist_function("IoGetCurrentProcess")

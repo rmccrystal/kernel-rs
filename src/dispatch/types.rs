@@ -13,11 +13,11 @@ pub enum Data {
     RunRequest {
         req: Request,
         // number of bytes that will be returned when WriteBuffer is called
-        response: *mut RunRequestResponse
+        response: *mut RunRequestResponse,
     },
     WriteBuffer {
         buffer: Vec<u8>,
-    }
+    },
 }
 
 // Returned when RunRequest is returned
@@ -26,17 +26,31 @@ pub enum RunRequestResponse {
     // the caller should allocate a buffer and call again
     AllocBuffer(usize),
     // there is no need to allocate and a response can be immediately sent
-    Response(Result<Response, KernelError>)
+    Response(Result<Response, KernelError>),
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum Request {
     Ping,
-    ModuleInfo(Pid)
+    ModuleInfo(Pid),
+    GetPebAddress(Pid),
+    ReadMemory {
+        pid: Pid,
+        address: u64,
+        size: u64,
+    },
+    WriteMemory {
+        pid: Pid,
+        address: u64,
+        buf: Vec<u8>
+    },
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum Response {
     Pong,
-    ModuleInfo(Vec<ModuleInfo>)
+    ModuleInfo(Vec<ModuleInfo>),
+    PebAddress(u64),
+    ReadMemory(Vec<u8>),
+    WriteMemory,
 }

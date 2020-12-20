@@ -37,11 +37,9 @@ pub unsafe fn hook(buf: *mut c_void) {
             // true if response has elements of String or Vec or whatever.
             // if this is true we need to serialize and create a buffer from usermode.
             let dynamic_response_size = match &resp {
-                Ok(response_data) => match response_data {
-                    Response::Pong => false,
-                    _ => true
-                },
-                Err(_) => true
+                Ok(response_data) => !matches!(response_data, Response::Pong | Response::WriteMemory | Response::PebAddress(_)),
+                Err(KernelError::Message(_)) => true,
+                Err(KernelError::Status(_)) => false
             };
 
             if dynamic_response_size {

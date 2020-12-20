@@ -1,6 +1,6 @@
 use alloc::string::{String, ToString};
 
-use crate::include::UNICODE_STRING;
+use crate::include::{UNICODE_STRING, UNICODE_STRING32};
 
 use crate::include::UCHAR;
 use cstr_core::CString;
@@ -24,6 +24,16 @@ pub fn unicode_string_to_string(string: &UNICODE_STRING) -> String {
 
     for i in 0..(string.Length/2) {
         unsafe { buf.push(string.Buffer.add(i as _).read()) };
+    }
+
+    String::from_utf16_lossy(&buf)
+}
+
+pub fn unicode32_string_to_string(string: &UNICODE_STRING32) -> String {
+    let mut buf = Vec::new();
+
+    for i in 0..(string.Length/2) {
+        unsafe { buf.push((string.Buffer as *mut u16).add(i as _).read()) };
     }
 
     String::from_utf16_lossy(&buf)

@@ -366,6 +366,77 @@ fn bindgen_test_layout__SINGLE_LIST_ENTRY() {
 pub type SINGLE_LIST_ENTRY = _SINGLE_LIST_ENTRY;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
+pub struct LIST_ENTRY32 {
+    pub Flink: ULONG,
+    pub Blink: ULONG,
+}
+#[test]
+fn bindgen_test_layout_LIST_ENTRY32() {
+    assert_eq!(
+        ::core::mem::size_of::<LIST_ENTRY32>(),
+        8usize,
+        concat!("Size of: ", stringify!(LIST_ENTRY32))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<LIST_ENTRY32>(),
+        4usize,
+        concat!("Alignment of ", stringify!(LIST_ENTRY32))
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<LIST_ENTRY32>())).Flink as *const _ as usize },
+        0usize,
+        concat!("Offset of field: ", stringify!(LIST_ENTRY32), "::", stringify!(Flink))
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<LIST_ENTRY32>())).Blink as *const _ as usize },
+        4usize,
+        concat!("Offset of field: ", stringify!(LIST_ENTRY32), "::", stringify!(Blink))
+    );
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct _STRING32 {
+    pub Length: USHORT,
+    pub MaximumLength: USHORT,
+    pub Buffer: ULONG,
+}
+#[test]
+fn bindgen_test_layout__STRING32() {
+    assert_eq!(
+        ::core::mem::size_of::<_STRING32>(),
+        8usize,
+        concat!("Size of: ", stringify!(_STRING32))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<_STRING32>(),
+        4usize,
+        concat!("Alignment of ", stringify!(_STRING32))
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_STRING32>())).Length as *const _ as usize },
+        0usize,
+        concat!("Offset of field: ", stringify!(_STRING32), "::", stringify!(Length))
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_STRING32>())).MaximumLength as *const _ as usize },
+        2usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_STRING32),
+            "::",
+            stringify!(MaximumLength)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_STRING32>())).Buffer as *const _ as usize },
+        4usize,
+        concat!("Offset of field: ", stringify!(_STRING32), "::", stringify!(Buffer))
+    );
+}
+pub type STRING32 = _STRING32;
+pub type UNICODE_STRING32 = STRING32;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
 pub struct _GUID {
     pub Data1: crate::include::raw::c_ulong,
     pub Data2: crate::include::raw::c_ushort,
@@ -14019,6 +14090,423 @@ fn bindgen_test_layout__RTL_PROCESS_MODULES() {
 pub type PRTL_PROCESS_MODULES = *mut _RTL_PROCESS_MODULES;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
+pub struct _PEB_LDR_DATA32 {
+    pub Length: ULONG,
+    pub Initialized: UCHAR,
+    pub SsHandle: ULONG,
+    pub InLoadOrderModuleList: LIST_ENTRY32,
+    pub InMemoryOrderModuleList: LIST_ENTRY32,
+    pub InInitializationOrderModuleList: LIST_ENTRY32,
+}
+#[test]
+fn bindgen_test_layout__PEB_LDR_DATA32() {
+    assert_eq!(
+        ::core::mem::size_of::<_PEB_LDR_DATA32>(),
+        36usize,
+        concat!("Size of: ", stringify!(_PEB_LDR_DATA32))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<_PEB_LDR_DATA32>(),
+        4usize,
+        concat!("Alignment of ", stringify!(_PEB_LDR_DATA32))
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB_LDR_DATA32>())).Length as *const _ as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_PEB_LDR_DATA32),
+            "::",
+            stringify!(Length)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB_LDR_DATA32>())).Initialized as *const _ as usize },
+        4usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_PEB_LDR_DATA32),
+            "::",
+            stringify!(Initialized)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB_LDR_DATA32>())).SsHandle as *const _ as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_PEB_LDR_DATA32),
+            "::",
+            stringify!(SsHandle)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB_LDR_DATA32>())).InLoadOrderModuleList as *const _ as usize },
+        12usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_PEB_LDR_DATA32),
+            "::",
+            stringify!(InLoadOrderModuleList)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB_LDR_DATA32>())).InMemoryOrderModuleList as *const _ as usize },
+        20usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_PEB_LDR_DATA32),
+            "::",
+            stringify!(InMemoryOrderModuleList)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB_LDR_DATA32>())).InInitializationOrderModuleList as *const _ as usize },
+        28usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_PEB_LDR_DATA32),
+            "::",
+            stringify!(InInitializationOrderModuleList)
+        )
+    );
+}
+pub type PPEB_LDR_DATA32 = *mut _PEB_LDR_DATA32;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct _LDR_DATA_TABLE_ENTRY32 {
+    pub InLoadOrderLinks: LIST_ENTRY32,
+    pub InMemoryOrderLinks: LIST_ENTRY32,
+    pub InInitializationOrderLinks: LIST_ENTRY32,
+    pub DllBase: ULONG,
+    pub EntryPoint: ULONG,
+    pub SizeOfImage: ULONG,
+    pub FullDllName: UNICODE_STRING32,
+    pub BaseDllName: UNICODE_STRING32,
+    pub Flags: ULONG,
+    pub LoadCount: USHORT,
+    pub TlsIndex: USHORT,
+    pub HashLinks: LIST_ENTRY32,
+    pub TimeDateStamp: ULONG,
+}
+#[test]
+fn bindgen_test_layout__LDR_DATA_TABLE_ENTRY32() {
+    assert_eq!(
+        ::core::mem::size_of::<_LDR_DATA_TABLE_ENTRY32>(),
+        72usize,
+        concat!("Size of: ", stringify!(_LDR_DATA_TABLE_ENTRY32))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<_LDR_DATA_TABLE_ENTRY32>(),
+        4usize,
+        concat!("Alignment of ", stringify!(_LDR_DATA_TABLE_ENTRY32))
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_LDR_DATA_TABLE_ENTRY32>())).InLoadOrderLinks as *const _ as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_LDR_DATA_TABLE_ENTRY32),
+            "::",
+            stringify!(InLoadOrderLinks)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_LDR_DATA_TABLE_ENTRY32>())).InMemoryOrderLinks as *const _ as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_LDR_DATA_TABLE_ENTRY32),
+            "::",
+            stringify!(InMemoryOrderLinks)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_LDR_DATA_TABLE_ENTRY32>())).InInitializationOrderLinks as *const _ as usize },
+        16usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_LDR_DATA_TABLE_ENTRY32),
+            "::",
+            stringify!(InInitializationOrderLinks)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_LDR_DATA_TABLE_ENTRY32>())).DllBase as *const _ as usize },
+        24usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_LDR_DATA_TABLE_ENTRY32),
+            "::",
+            stringify!(DllBase)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_LDR_DATA_TABLE_ENTRY32>())).EntryPoint as *const _ as usize },
+        28usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_LDR_DATA_TABLE_ENTRY32),
+            "::",
+            stringify!(EntryPoint)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_LDR_DATA_TABLE_ENTRY32>())).SizeOfImage as *const _ as usize },
+        32usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_LDR_DATA_TABLE_ENTRY32),
+            "::",
+            stringify!(SizeOfImage)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_LDR_DATA_TABLE_ENTRY32>())).FullDllName as *const _ as usize },
+        36usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_LDR_DATA_TABLE_ENTRY32),
+            "::",
+            stringify!(FullDllName)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_LDR_DATA_TABLE_ENTRY32>())).BaseDllName as *const _ as usize },
+        44usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_LDR_DATA_TABLE_ENTRY32),
+            "::",
+            stringify!(BaseDllName)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_LDR_DATA_TABLE_ENTRY32>())).Flags as *const _ as usize },
+        52usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_LDR_DATA_TABLE_ENTRY32),
+            "::",
+            stringify!(Flags)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_LDR_DATA_TABLE_ENTRY32>())).LoadCount as *const _ as usize },
+        56usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_LDR_DATA_TABLE_ENTRY32),
+            "::",
+            stringify!(LoadCount)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_LDR_DATA_TABLE_ENTRY32>())).TlsIndex as *const _ as usize },
+        58usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_LDR_DATA_TABLE_ENTRY32),
+            "::",
+            stringify!(TlsIndex)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_LDR_DATA_TABLE_ENTRY32>())).HashLinks as *const _ as usize },
+        60usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_LDR_DATA_TABLE_ENTRY32),
+            "::",
+            stringify!(HashLinks)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_LDR_DATA_TABLE_ENTRY32>())).TimeDateStamp as *const _ as usize },
+        68usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_LDR_DATA_TABLE_ENTRY32),
+            "::",
+            stringify!(TimeDateStamp)
+        )
+    );
+}
+pub type LDR_DATA_TABLE_ENTRY32 = _LDR_DATA_TABLE_ENTRY32;
+pub type PLDR_DATA_TABLE_ENTRY32 = *mut _LDR_DATA_TABLE_ENTRY32;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct _PEB32 {
+    pub InheritedAddressSpace: UCHAR,
+    pub ReadImageFileExecOptions: UCHAR,
+    pub BeingDebugged: UCHAR,
+    pub BitField: UCHAR,
+    pub Mutant: ULONG,
+    pub ImageBaseAddress: ULONG,
+    pub Ldr: ULONG,
+    pub ProcessParameters: ULONG,
+    pub SubSystemData: ULONG,
+    pub ProcessHeap: ULONG,
+    pub FastPebLock: ULONG,
+    pub AtlThunkSListPtr: ULONG,
+    pub IFEOKey: ULONG,
+    pub CrossProcessFlags: ULONG,
+    pub UserSharedInfoPtr: ULONG,
+    pub SystemReserved: ULONG,
+    pub AtlThunkSListPtr32: ULONG,
+    pub ApiSetMap: ULONG,
+}
+#[test]
+fn bindgen_test_layout__PEB32() {
+    assert_eq!(
+        ::core::mem::size_of::<_PEB32>(),
+        60usize,
+        concat!("Size of: ", stringify!(_PEB32))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<_PEB32>(),
+        4usize,
+        concat!("Alignment of ", stringify!(_PEB32))
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB32>())).InheritedAddressSpace as *const _ as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_PEB32),
+            "::",
+            stringify!(InheritedAddressSpace)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB32>())).ReadImageFileExecOptions as *const _ as usize },
+        1usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_PEB32),
+            "::",
+            stringify!(ReadImageFileExecOptions)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB32>())).BeingDebugged as *const _ as usize },
+        2usize,
+        concat!("Offset of field: ", stringify!(_PEB32), "::", stringify!(BeingDebugged))
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB32>())).BitField as *const _ as usize },
+        3usize,
+        concat!("Offset of field: ", stringify!(_PEB32), "::", stringify!(BitField))
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB32>())).Mutant as *const _ as usize },
+        4usize,
+        concat!("Offset of field: ", stringify!(_PEB32), "::", stringify!(Mutant))
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB32>())).ImageBaseAddress as *const _ as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_PEB32),
+            "::",
+            stringify!(ImageBaseAddress)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB32>())).Ldr as *const _ as usize },
+        12usize,
+        concat!("Offset of field: ", stringify!(_PEB32), "::", stringify!(Ldr))
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB32>())).ProcessParameters as *const _ as usize },
+        16usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_PEB32),
+            "::",
+            stringify!(ProcessParameters)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB32>())).SubSystemData as *const _ as usize },
+        20usize,
+        concat!("Offset of field: ", stringify!(_PEB32), "::", stringify!(SubSystemData))
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB32>())).ProcessHeap as *const _ as usize },
+        24usize,
+        concat!("Offset of field: ", stringify!(_PEB32), "::", stringify!(ProcessHeap))
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB32>())).FastPebLock as *const _ as usize },
+        28usize,
+        concat!("Offset of field: ", stringify!(_PEB32), "::", stringify!(FastPebLock))
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB32>())).AtlThunkSListPtr as *const _ as usize },
+        32usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_PEB32),
+            "::",
+            stringify!(AtlThunkSListPtr)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB32>())).IFEOKey as *const _ as usize },
+        36usize,
+        concat!("Offset of field: ", stringify!(_PEB32), "::", stringify!(IFEOKey))
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB32>())).CrossProcessFlags as *const _ as usize },
+        40usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_PEB32),
+            "::",
+            stringify!(CrossProcessFlags)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB32>())).UserSharedInfoPtr as *const _ as usize },
+        44usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_PEB32),
+            "::",
+            stringify!(UserSharedInfoPtr)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB32>())).SystemReserved as *const _ as usize },
+        48usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_PEB32),
+            "::",
+            stringify!(SystemReserved)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB32>())).AtlThunkSListPtr32 as *const _ as usize },
+        52usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(_PEB32),
+            "::",
+            stringify!(AtlThunkSListPtr32)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<_PEB32>())).ApiSetMap as *const _ as usize },
+        56usize,
+        concat!("Offset of field: ", stringify!(_PEB32), "::", stringify!(ApiSetMap))
+    );
+}
+pub type PPEB32 = *mut _PEB32;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
 pub struct _PEB_LDR_DATA {
     pub Length: ULONG,
     pub Initialized: BOOLEAN,
@@ -14496,6 +14984,9 @@ fn bindgen_test_layout__LDR_DATA_TABLE_ENTRY() {
 }
 extern "C" {
     pub fn RtlFindExportedRoutineByName(ImageBase: PVOID, RoutineName: PCCH) -> PVOID;
+}
+extern "C" {
+    pub fn PsGetProcessWow64Process(Process: PEPROCESS) -> PVOID;
 }
 extern "C" {
     pub fn PsGetProcessPeb(Process: PEPROCESS) -> PPEB;
