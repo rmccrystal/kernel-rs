@@ -1,13 +1,14 @@
-use alloc::string::String;
+use alloc::string::{String, ToString};
 
 use cstr_core::{CStr, CString};
 use winapi::_core::fmt::Formatter;
 use winapi::shared::ntdef::{LANG_NEUTRAL, MAKELANGID, NT_SUCCESS, NTSTATUS, NULL, SUBLANG_DEFAULT};
 use winapi::um::winbase::{FORMAT_MESSAGE_FROM_SYSTEM, FORMAT_MESSAGE_IGNORE_INSERTS, FormatMessageA};
+use serde::{Serialize, Deserialize};
 
-#[derive(Copy, Clone)]
+#[derive(Clone, Serialize, Deserialize)]
 pub enum KernelError {
-    Message(&'static str),
+    Message(String),
     Status(NTSTATUS)
 }
 
@@ -21,6 +22,12 @@ impl core::fmt::Debug for KernelError {
             }
         };
         Ok(())
+    }
+}
+
+impl KernelError {
+    pub fn text(text: &str) -> Self {
+        Self::Message(text.to_string())
     }
 }
 

@@ -15,7 +15,7 @@ use winapi::km::wdm::KPROCESSOR_MODE::KernelMode;
 pub unsafe fn safe_copy(src: *const u8, dst: *mut u8, len: usize) -> Result<(), KernelError> {
     let mdl = IoAllocateMdl(dst as _, len as _, FALSE, FALSE, null_mut());
     if mdl.is_null() {
-        return Err(KernelError::Message("could not allocate mdl"));
+        return Err(KernelError::text("could not allocate mdl"));
     }
 
     MmProbeAndLockPages(mdl, KernelMode as _, _LOCK_OPERATION_IoReadAccess);
@@ -54,7 +54,7 @@ pub unsafe fn get_kernel_module(module_name: &str) -> Result<*mut c_void, Kernel
     );
 
     if size == 0 {
-        return Err(KernelError::Message("getting ZwQuerySystemInformation size failed"));
+        return Err(KernelError::text("getting ZwQuerySystemInformation size failed"));
     }
     trace!("Found ZwQuerySystemInformation size: {:X}", size);
 
@@ -88,14 +88,14 @@ pub unsafe fn get_kernel_module(module_name: &str) -> Result<*mut c_void, Kernel
         debug!("Found module base address for {}: {:p}", module_name, base);
     }
 
-    module_base.ok_or(KernelError::Message("could not find module"))
+    module_base.ok_or(KernelError::text("could not find module"))
 }
 
 pub unsafe fn get_kernel_module_export(module_name: &str, func_name: &str) -> Result<*mut c_void, KernelError> {
     let module = get_kernel_module(module_name)?;
     let addr = RtlFindExportedRoutineByName(module, CString::new(func_name).unwrap().as_ptr());
     if addr.is_null() {
-        Err(KernelError::Message("could not find module"))
+        Err(KernelError::text("could not find module"))
     } else {
         debug!("Found address for {}: {:p}", func_name, addr);
         Ok(addr)

@@ -13,6 +13,8 @@ crate-type = ["cdylib"]
 obfstr = "0.1.1"
 log = "0.4.11"
 cstr_core = "0.2.2"
+serde = { version = "1.0.118", default-features = false, features = ["alloc"] }
+postcard = { version = "0.5.1", features = ["alloc"] }
 
 [dependencies.winapi]
 git = "https://github.com/Trantect/winapi-rs.git"

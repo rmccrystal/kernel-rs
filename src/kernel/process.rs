@@ -9,8 +9,9 @@ use cstr_core::{CString, CStr};
 use crate::util::string::unicode_string_to_string;
 use alloc::string::String;
 use alloc::vec::Vec;
+use serde::{Serialize, Deserialize};
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct ModuleInfo {
     pub base_address: u64,
     pub size: u64,
@@ -34,13 +35,13 @@ impl Process {
         let peb = unsafe { process.get_peb() };
 
         if peb.is_null() {
-            return Err(KernelError::Message("peb was null"));
+            return Err(KernelError::text("peb was null"));
         }
 
         unsafe {
             let ldr = (*peb).Ldr;
             if peb.is_null() {
-                return Err(KernelError::Message("peb ldr was null"));
+                return Err(KernelError::text("peb ldr was null"));
             }
 
             let iter: ListEntryIterator<_LDR_DATA_TABLE_ENTRY, 0> = ListEntryIterator::new(&mut (*ldr).ModuleListLoadOrder);
