@@ -31,10 +31,12 @@ pub enum RunRequestResponse {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum Request {
+    Ping,
     ModuleInfo(Pid)
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum Response {
+    Pong,
     ModuleInfo(Vec<ModuleInfo>)
 }
