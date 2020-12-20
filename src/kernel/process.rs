@@ -1,4 +1,4 @@
-use crate::include::{ObfDereferenceObject, PsLookupProcessByProcessId, PsGetProcessPeb, PEPROCESS, KeStackAttachProcess, _KAPC_STATE, KeUnstackDetachProcess, _LDR_DATA_TABLE_ENTRY};
+use crate::include::{ObfDereferenceObject, PsLookupProcessByProcessId, PsGetProcessPeb, PEPROCESS, KeStackAttachProcess, _KAPC_STATE, KeUnstackDetachProcess, _LDR_DATA_TABLE_ENTRY, PPEB};
 use super::Result;
 use super::ToKernelResult;
 use crate::kernel::KernelError;
@@ -14,9 +14,10 @@ use alloc::vec::Vec;
 pub struct ModuleInfo {
     pub base_address: u64,
     pub size: u64,
-    pub module_name: String
+    pub module_name: String,
 }
 
+#[derive(Clone, Debug)]
 pub struct Process {
     pub process: PEPROCESS,
 }
@@ -29,8 +30,8 @@ impl Process {
     }
 
     pub fn get_modules_64(&self) -> Result<Vec<ModuleInfo>> {
-        let _attach = unsafe { ProcessAttachment::attach(self.process) };
-        let peb = unsafe { PsGetProcessPeb(self.process) };
+        let process = unsafe { ProcessAttachment::attach(self.process) };
+        let peb = unsafe { process.get_peb() };
 
         if peb.is_null() {
             return Err(KernelError::Message("peb was null"));
@@ -44,10 +45,10 @@ impl Process {
 
             let iter: ListEntryIterator<_LDR_DATA_TABLE_ENTRY, 0> = ListEntryIterator::new(&mut (*ldr).ModuleListLoadOrder);
 
-            Ok(iter.map(|entry| ModuleInfo{
+            Ok(iter.map(|entry| ModuleInfo {
                 base_address: entry.DllBase as _,
                 size: entry.SizeOfImage as _,
-                module_name: unicode_string_to_string(&entry.BaseDllName)
+                module_name: unicode_string_to_string(&entry.BaseDllName),
             }).collect())
         }
     }
@@ -61,7 +62,7 @@ impl Drop for Process {
     }
 }
 
-pub struct ProcessAttachment {
+struct ProcessAttachment {
     process: PEPROCESS,
     state: _KAPC_STATE,
 }
@@ -72,6 +73,10 @@ impl ProcessAttachment {
         KeStackAttachProcess(process, &mut state as _);
         trace!("Attached to process");
         Self { process, state }
+    }
+
+    pub unsafe fn get_peb(&self) -> PPEB {
+        PsGetProcessPeb(self.process)
     }
 }
 

@@ -1,20 +1,30 @@
 use log::*;
 use core::ffi::c_void;
 use crate::include::MmIsAddressValid;
+use super::types::*;
+use crate::kernel::{KernelError, Process};
 
 /// The raw hook that is called
-pub unsafe fn hook(request: *mut c_void) {
-    if !MmIsAddressValid(request) {
+pub unsafe fn hook(buf: *mut c_void) {
+    if !MmIsAddressValid(buf) {
         return;
     }
 
-    info!("handler called with address {:p}", request);
+    info!("handler called with address {:p}", buf);
 
-    // convert `request` to a mutable borrowed type of handler
-    handler(&mut *(&mut *(request) as *mut core::ffi::c_void as *mut i32))
+    let data: &mut Data = &mut *(buf as *mut _);
+
+    let response = if let Data::Request(req) = data {
+        handler(&req)
+    } else {
+        Err(KernelError::Message("kernel received response type as a request"))
+    };
 }
 
-fn handler(data: &mut i32) {
-    info!("num: {}", data);
-    *data = 1;
+fn handler(request: &Request) -> Result<Response, KernelError> {
+    Ok(match request {
+        Request::ModuleInfo(pid) => {
+            Response::ModuleInfo(Process::by_id(*pid)?.get_modules_64()?)
+        }
+    })
 }

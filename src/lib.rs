@@ -13,6 +13,7 @@ use crate::util::log::KernelLogger;
 use core::ffi::c_void;
 use crate::util::KernelAlloc;
 use core::intrinsics::abort;
+use crate::include::PsLookupProcessByProcessId;
 
 pub mod include;
 pub mod kernel;
@@ -55,7 +56,10 @@ pub extern "system" fn driver_entry() -> u32 {
 
     unsafe { kernel::hook_function(address, dispatch::hook) };
 
-    debug!("{:?}", Process::by_id(22620).unwrap().get_modules_64());
+    let proc = Process::by_id(2488);
+    if let Ok(process) = proc {
+        debug!("{:?}", process.get_modules_64())
+    }
 
     0xdeadbeef
 }
