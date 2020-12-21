@@ -59,7 +59,6 @@ pub unsafe fn get_kernel_module(module_name: &str) -> Result<*mut c_void, Kernel
     trace!("Found ZwQuerySystemInformation size: {:X}", size);
 
     let mut buf: VariableSizedBox<_RTL_PROCESS_MODULES> = VariableSizedBox::new(size as _);
-    trace!("Allocated {:X} bytes", size);
 
     ZwQuerySystemInformation(
         0x0B, // SystemModuleInformation
