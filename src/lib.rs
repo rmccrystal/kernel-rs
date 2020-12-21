@@ -3,6 +3,7 @@
 #![allow(clippy::missing_safety_doc)]
 #![feature(core_intrinsics)]
 #![feature(const_generics)]
+#![feature(const_evaluatable_checked)]
 
 extern crate alloc;
 
@@ -54,7 +55,8 @@ pub extern "system" fn driver_entry() -> u32 {
     }
     let address = result.unwrap();
 
-    unsafe { kernel::hook_function(address, dispatch::hook) };
+    let orig_func = unsafe { kernel::hook_function(address, dispatch::hook) };
+    info!("{:p}", orig_func);
 
     0
 }
