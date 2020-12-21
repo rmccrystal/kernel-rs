@@ -1,11 +1,13 @@
-use log::*;
-use core::ffi::c_void;
-use crate::include::MmIsAddressValid;
-use super::types::*;
-use crate::kernel::{KernelError, Process};
 use alloc::vec::Vec;
+use core::ffi::c_void;
+
+use log::*;
 use winapi::_core::intrinsics::copy;
 
+use crate::include::MmIsAddressValid;
+use crate::kernel::{KernelError};
+
+use super::types::*;
 
 /// Holds the response after RunRequest is called
 // TODO: Maybe add some kind of ID so we can verify integrity

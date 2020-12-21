@@ -1,7 +1,8 @@
-use crate::kernel::{KernelError, ModuleInfo};
-use alloc::string::String;
 use alloc::vec::Vec;
-use serde::{Serialize, Deserialize};
+
+use serde::{Deserialize, Serialize};
+
+use crate::kernel::{KernelError, ModuleInfo};
 
 pub type Pid = u64;
 

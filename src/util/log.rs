@@ -1,8 +1,6 @@
 use alloc::string::String;
-use core::fmt::UpperHex;
 
 use log::{Level, LevelFilter, Metadata, Record, SetLoggerError};
-use winapi::_core::fmt::Formatter;
 pub use winapi::km::wdm::DbgPrint;
 use winapi::km::wdm::DbgPrintEx;
 

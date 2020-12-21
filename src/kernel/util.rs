@@ -1,16 +1,16 @@
 use core::ffi::c_void;
 use core::ptr::null_mut;
 
+use cstr_core::{CStr, CString};
 use log::*;
+use winapi::km::wdm::KPROCESSOR_MODE::KernelMode;
+use winapi::shared::ntdef::FALSE;
 
-use crate::include::{_RTL_PROCESS_MODULES, ZwQuerySystemInformation, RTL_PROCESS_MODULE_INFORMATION, RtlFindExportedRoutineByName, IoAllocateMdl, MmProbeAndLockPages, _LOCK_OPERATION_IoReadAccess, MmMapLockedPagesSpecifyCache, _MEMORY_CACHING_TYPE_MmNonCached, MmProtectMdlSystemAddress, MmUnmapLockedPages, MmUnlockPages, IoFreeMdl};
+use crate::include::*;
 use crate::util::VariableSizedBox;
 
 use super::KernelError;
 use super::ToKernelResult;
-use cstr_core::{CStr, CString};
-use winapi::shared::ntdef::FALSE;
-use winapi::km::wdm::KPROCESSOR_MODE::KernelMode;
 
 pub unsafe fn safe_copy(src: *const u8, dst: *mut u8, len: usize) -> Result<(), KernelError> {
     let mdl = IoAllocateMdl(dst as _, len as _, FALSE, FALSE, null_mut());

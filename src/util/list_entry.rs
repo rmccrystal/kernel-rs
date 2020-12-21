@@ -1,4 +1,5 @@
 use winapi::_core::marker::PhantomData;
+
 use crate::include::{_LIST_ENTRY, LIST_ENTRY32};
 
 pub struct ListEntryIterator<T, const OFFSET: isize> {

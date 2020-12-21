@@ -1,27 +1,24 @@
 #![no_std]
 #![feature(alloc_error_handler)]
 #![allow(clippy::missing_safety_doc)]
+#![allow(incomplete_features)]
 #![feature(core_intrinsics)]
 #![feature(const_generics)]
-#![feature(const_evaluatable_checked)]
 
 extern crate alloc;
 
+use core::intrinsics::abort;
+
 use log::*;
 
-use crate::kernel::{get_kernel_module, get_kernel_module_export, Process};
-use crate::util::log::KernelLogger;
-use core::ffi::c_void;
+use crate::kernel::{get_kernel_module_export};
 use crate::util::KernelAlloc;
-use core::intrinsics::abort;
-use crate::include::{PsLookupProcessByProcessId, MmGetSystemRoutineAddress};
-use crate::hooks::init_hooks;
+use crate::util::log::KernelLogger;
 
 pub mod include;
 pub mod kernel;
 pub mod util;
 pub mod dispatch;
-mod hooks;
 
 /// When using the alloc crate it seems like it does some unwinding. Adding this
 /// export satisfies the compiler but may introduce undefined behaviour when a
@@ -39,6 +36,7 @@ static _FLTUSED: i32 = 0;
 #[panic_handler]
 fn panic(info: &core::panic::PanicInfo) -> ! {
     error!("panic: {:?}", info);
+    #[allow(unused_unsafe)]
     unsafe { abort() }
 }
 
@@ -59,10 +57,6 @@ pub extern "system" fn driver_entry() -> u32 {
     let address = result.unwrap();
 
     unsafe { kernel::hook_function(address, dispatch::hook) };
-
-    // init_hooks();
-    let bitblt = unsafe { MmGetSystemRoutineAddress(&mut util::to_unicode_string("BitBlt") as _) };
-    println!("{:p}", bitblt);
 
     0
 }

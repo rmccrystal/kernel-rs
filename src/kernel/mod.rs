@@ -1,7 +1,7 @@
 pub use error::*;
+pub use hook::*;
 pub use process::*;
 pub use util::*;
-pub use hook::*;
 
 mod process;
 mod util;

@@ -1,9 +1,11 @@
+use alloc::boxed::Box;
 use core::ffi::c_void;
 use core::mem;
-use crate::kernel::safe_copy;
-use log::*;
 use core::ptr::copy;
-use alloc::boxed::Box;
+
+use log::*;
+
+use crate::kernel::safe_copy;
 
 unsafe fn jump_to_address_bytecode(dest: *mut c_void) -> [u8; 12] {
     let mov_rax = [ 0x48_u8, 0xB8 ];

@@ -1,14 +1,7 @@
 use core::alloc::{GlobalAlloc, Layout};
 
-use log::*;
 
 use crate::include::{_POOL_TYPE_NonPagedPool, ExAllocatePoolWithTag, ExFreePoolWithTag};
-
-#[repr(C)]
-pub enum PoolType {
-    NonPagedPool,
-    NonPagedPoolExecute,
-}
 
 static ALLOC_TAG: u32 = unsafe { core::mem::transmute(*b"test") };
 
@@ -17,7 +10,7 @@ pub struct KernelAlloc;
 
 unsafe impl GlobalAlloc for KernelAlloc {
     unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
-        let pool = ExAllocatePoolWithTag(crate::include::_POOL_TYPE_NonPagedPool, layout.size() as _, ALLOC_TAG);
+        let pool = ExAllocatePoolWithTag(_POOL_TYPE_NonPagedPool, layout.size() as _, ALLOC_TAG);
 
         if pool.is_null() {
             panic!("[kernel-alloc] failed to allocate pool.");

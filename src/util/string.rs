@@ -1,8 +1,7 @@
-use alloc::string::{String, ToString};
+use alloc::string::{String};
+use alloc::vec::Vec;
 
 use crate::include::{UNICODE_STRING, UNICODE_STRING32};
-
-use alloc::vec::Vec;
 
 pub fn to_unicode_string(string: &str) -> UNICODE_STRING {
     create_unicode_string(&string.encode_utf16().collect::<Vec<_>>())

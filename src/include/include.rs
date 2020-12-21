@@ -1,6 +1,4 @@
 use winapi::{km::wdm::PEPROCESS, shared::ntdef::NTSTATUS};
-use winapi::shared::ntdef::HRESULT;
-use super::{HDC};
 
 pub type PVOID = *mut core::ffi::c_void;
 pub type HANDLE = PVOID;
