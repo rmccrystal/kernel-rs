@@ -4293,6 +4293,9 @@ fn bindgen_test_layout__IO_RESOURCE_REQUIREMENTS_LIST() {
     );
 }
 pub type PIO_RESOURCE_REQUIREMENTS_LIST = *mut _IO_RESOURCE_REQUIREMENTS_LIST;
+extern "C" {
+    pub fn MmGetSystemRoutineAddress(SystemRoutineName: PUNICODE_STRING) -> PVOID;
+}
 pub use self::_POOL_TYPE as POOL_TYPE;
 pub type KPROCESSOR_MODE = CCHAR;
 #[repr(C)]
@@ -13920,6 +13923,30 @@ extern "C" {
     pub fn KeUnstackDetachProcess(ApcState: PRKAPC_STATE);
 }
 pub type BYTE = crate::include::raw::c_uchar;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct HDC__ {
+    pub unused: crate::include::raw::c_int,
+}
+#[test]
+fn bindgen_test_layout_HDC__() {
+    assert_eq!(
+        ::core::mem::size_of::<HDC__>(),
+        4usize,
+        concat!("Size of: ", stringify!(HDC__))
+    );
+    assert_eq!(
+        ::core::mem::align_of::<HDC__>(),
+        4usize,
+        concat!("Alignment of ", stringify!(HDC__))
+    );
+    assert_eq!(
+        unsafe { &(*(::core::ptr::null::<HDC__>())).unused as *const _ as usize },
+        0usize,
+        concat!("Offset of field: ", stringify!(HDC__), "::", stringify!(unused))
+    );
+}
+pub type HDC = *mut HDC__;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct _RTL_PROCESS_MODULE_INFORMATION {

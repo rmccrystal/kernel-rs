@@ -43,7 +43,7 @@ unsafe fn trampoline_bytecode(original_bytes: &[u8; 12], original_func: unsafe f
     opcodes
 }
 
-pub unsafe fn hook_function(address: *mut c_void, hook_fn: unsafe fn(*mut c_void)) -> unsafe fn(*mut c_void) {
+pub unsafe fn hook_function(address: *mut c_void, hook_fn: unsafe fn(*mut c_void)) -> *mut c_void {
     // backup the original bytes
     let mut original_bytes: [u8; 12] = mem::zeroed();
     copy(hook_fn as _, original_bytes.as_mut_ptr(), 12);
@@ -59,5 +59,5 @@ pub unsafe fn hook_function(address: *mut c_void, hook_fn: unsafe fn(*mut c_void
         error!("Error copying hook: {:?}", e);
     };
 
-    mem::transmute(original_func.as_mut_ptr())
+    original_func.as_mut_ptr() as _
 }

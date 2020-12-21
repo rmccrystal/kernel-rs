@@ -4,4 +4,6 @@
 #include "ntstructs.h"
 #include "ntos.h"
 
+#include "wingdi.h"
+
 

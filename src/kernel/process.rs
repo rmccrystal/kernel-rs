@@ -13,7 +13,7 @@ use winapi::km::wdm::KPROCESSOR_MODE::KernelMode;
 use crate::include::{_KAPC_STATE, _LDR_DATA_TABLE_ENTRY, IoGetCurrentProcess, KeStackAttachProcess, KeUnstackDetachProcess, MmCopyVirtualMemory, MmIsAddressValid, ObfDereferenceObject, PEPROCESS, PPEB, PsGetProcessPeb, PsLookupProcessByProcessId, PsGetProcessWow64Process, PPEB32, PPEB_LDR_DATA32, LDR_DATA_TABLE_ENTRY32};
 use crate::kernel::KernelError;
 use crate::util::{ListEntryIterator, ListEntryIterator32};
-use crate::util::string::{unicode_string_to_string, unicode32_string_to_string};
+use crate::util::{unicode_string_to_string, unicode32_string_to_string};
 
 use super::Result;
 use super::ToKernelResult;

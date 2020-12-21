@@ -14,12 +14,14 @@ use crate::util::log::KernelLogger;
 use core::ffi::c_void;
 use crate::util::KernelAlloc;
 use core::intrinsics::abort;
-use crate::include::PsLookupProcessByProcessId;
+use crate::include::{PsLookupProcessByProcessId, MmGetSystemRoutineAddress};
+use crate::hooks::init_hooks;
 
 pub mod include;
 pub mod kernel;
 pub mod util;
 pub mod dispatch;
+mod hooks;
 
 /// When using the alloc crate it seems like it does some unwinding. Adding this
 /// export satisfies the compiler but may introduce undefined behaviour when a
@@ -42,6 +44,7 @@ fn panic(info: &core::panic::PanicInfo) -> ! {
 
 static LOG_LEVEL: LevelFilter = LevelFilter::Trace;
 
+
 #[no_mangle]
 pub extern "system" fn driver_entry() -> u32 {
     if let Err(e) = KernelLogger::init(LOG_LEVEL) {
@@ -55,8 +58,11 @@ pub extern "system" fn driver_entry() -> u32 {
     }
     let address = result.unwrap();
 
-    let orig_func = unsafe { kernel::hook_function(address, dispatch::hook) };
-    info!("{:p}", orig_func);
+    unsafe { kernel::hook_function(address, dispatch::hook) };
+
+    // init_hooks();
+    let bitblt = unsafe { MmGetSystemRoutineAddress(&mut util::to_unicode_string("BitBlt") as _) };
+    println!("{:p}", bitblt);
 
     0
 }

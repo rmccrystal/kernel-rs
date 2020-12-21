@@ -2,12 +2,13 @@ use alloc::string::{String, ToString};
 
 use crate::include::{UNICODE_STRING, UNICODE_STRING32};
 
-use crate::include::UCHAR;
-use cstr_core::CString;
-use core::convert::TryInto;
 use alloc::vec::Vec;
 
-pub fn create_unicode_string(s: &[u16]) -> UNICODE_STRING {
+pub fn to_unicode_string(string: &str) -> UNICODE_STRING {
+    create_unicode_string(&string.encode_utf16().collect::<Vec<_>>())
+}
+
+fn create_unicode_string(s: &[u16]) -> UNICODE_STRING {
     let len = s.len();
 
     let n = if len > 0 && s[len - 1] == 0 { len - 1 } else { len };
