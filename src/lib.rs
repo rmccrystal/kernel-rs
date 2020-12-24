@@ -53,6 +53,9 @@ unsafe fn main() -> Result<u32, KernelError> {
 
     kernel::hook_function(address, dispatch::hook);
 
+    let win32k = find_kernel_module(&modules, "win32kfull.sys").ok_or("could not find win32k.sys")?;
+    let nt_gdi_bit_blt = get_kernel_module_export(win32k, "NtGdiBitBlt").ok_or("could not find NtGdiBitBlt")?;
+    info!("{:p}", nt_gdi_bit_blt);
 
     Ok(0x420)
 }

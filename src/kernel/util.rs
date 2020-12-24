@@ -45,7 +45,12 @@ pub unsafe fn safe_copy(src: *const u8, dst: *mut u8, len: usize) -> Result<(), 
     Ok(())
 }
 
-pub unsafe fn get_kernel_modules() -> Result<Vec<(String, *mut c_void)>, KernelError> {
+pub struct KernelModule {
+    pub name: String,
+    pub address: *mut c_void
+}
+
+pub unsafe fn get_kernel_modules() -> Result<Vec<KernelModule>, KernelError> {
     // get size of system information
     let mut size = 0;
     ZwQuerySystemInformation(
@@ -74,17 +79,17 @@ pub unsafe fn get_kernel_modules() -> Result<Vec<(String, *mut c_void)>, KernelE
 
     let modules = core::slice::from_raw_parts(module_list.Modules.as_ptr(), module_list.NumberOfModules as _);
 
-    Ok(modules.iter().map(|module| (
-        CStr::from_ptr(module.FullPathName.as_ptr() as _).to_str().unwrap().to_string(),
-        module.ImageBase
-    )).collect())
+    Ok(modules.iter().map(|module| KernelModule {
+        name: CStr::from_ptr(module.FullPathName.as_ptr() as _).to_str().unwrap().to_string(),
+        address: module.ImageBase
+    }).collect())
 }
 
-pub unsafe fn find_kernel_module(modules: &[(String, *mut c_void)], module_name: &str) -> Option<*mut c_void> {
+pub unsafe fn find_kernel_module(modules: &[KernelModule], module_name: &str) -> Option<*mut c_void> {
     Some(modules
         .iter()
-        .find(|&module| module.0.contains(&module_name))?
-        .1)
+        .find(|&module| module.name.contains(&module_name))?
+        .address)
 }
 
 pub unsafe fn get_kernel_module_export(module_base: *mut c_void, func_name: &str) -> Option<*mut c_void> {
