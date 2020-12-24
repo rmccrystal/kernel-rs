@@ -138,6 +138,8 @@ fn main() {
         .whitelist_function("IoGetCurrentProcess")
         .whitelist_type("_LDR_DATA_TABLE_ENTRY")
 
+        .whitelist_function("NtGdiBitBlt")
+
         .ctypes_prefix("crate::include::raw")
         .use_core()
         .generate()

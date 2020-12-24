@@ -11,6 +11,8 @@ use crate::util::VariableSizedBox;
 
 use super::KernelError;
 use super::ToKernelResult;
+use alloc::string::{String, ToString};
+use alloc::vec::Vec;
 
 pub unsafe fn safe_copy(src: *const u8, dst: *mut u8, len: usize) -> Result<(), KernelError> {
     let mdl = IoAllocateMdl(dst as _, len as _, FALSE, FALSE, null_mut());
@@ -43,7 +45,7 @@ pub unsafe fn safe_copy(src: *const u8, dst: *mut u8, len: usize) -> Result<(), 
     Ok(())
 }
 
-pub unsafe fn get_kernel_module(module_name: &str) -> Result<*mut c_void, KernelError> {
+pub unsafe fn get_kernel_modules() -> Result<Vec<(String, *mut c_void)>, KernelError> {
     // get size of system information
     let mut size = 0;
     ZwQuerySystemInformation(
@@ -56,7 +58,6 @@ pub unsafe fn get_kernel_module(module_name: &str) -> Result<*mut c_void, Kernel
     if size == 0 {
         return Err(KernelError::text("getting ZwQuerySystemInformation size failed"));
     }
-    trace!("Found ZwQuerySystemInformation size: {:X}", size);
 
     let mut buf: VariableSizedBox<_RTL_PROCESS_MODULES> = VariableSizedBox::new(size as _);
 
@@ -73,30 +74,25 @@ pub unsafe fn get_kernel_module(module_name: &str) -> Result<*mut c_void, Kernel
 
     let modules = core::slice::from_raw_parts(module_list.Modules.as_ptr(), module_list.NumberOfModules as _);
 
-    let mut module_base = None;
-
-    for module in modules {
-        let name = CStr::from_ptr(module.FullPathName.as_ptr() as _).to_str().unwrap();
-
-        if name == module_name {
-            module_base = Some(module.ImageBase)
-        }
-    }
-
-    if let Some(base) = module_base {
-        debug!("Found module base address for {}: {:p}", module_name, base);
-    }
-
-    module_base.ok_or(KernelError::text("could not find module"))
+    Ok(modules.iter().map(|module| (
+        CStr::from_ptr(module.FullPathName.as_ptr() as _).to_str().unwrap().to_string(),
+        module.ImageBase
+    )).collect())
 }
 
-pub unsafe fn get_kernel_module_export(module_name: &str, func_name: &str) -> Result<*mut c_void, KernelError> {
-    let module = get_kernel_module(module_name)?;
-    let addr = RtlFindExportedRoutineByName(module, CString::new(func_name).unwrap().as_ptr());
+pub unsafe fn find_kernel_module(modules: &[(String, *mut c_void)], module_name: &str) -> Option<*mut c_void> {
+    Some(modules
+        .iter()
+        .find(|&module| module.0.contains(&module_name))?
+        .1)
+}
+
+pub unsafe fn get_kernel_module_export(module_base: *mut c_void, func_name: &str) -> Option<*mut c_void> {
+    let addr = RtlFindExportedRoutineByName(module_base, CString::new(func_name).unwrap().as_ptr());
     if addr.is_null() {
-        Err(KernelError::text("could not find module"))
+        None
     } else {
         debug!("Found address for {}: {:p}", func_name, addr);
-        Ok(addr)
+        Some(addr)
     }
 }

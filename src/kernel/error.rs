@@ -23,6 +23,12 @@ impl core::fmt::Debug for KernelError {
     }
 }
 
+impl From<&str> for KernelError {
+    fn from(text: &str) -> Self {
+        Self::Message(text.to_string())
+    }
+}
+
 impl KernelError {
     pub fn text(text: &str) -> Self {
         Self::Message(text.to_string())

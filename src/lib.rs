@@ -11,7 +11,7 @@ use core::intrinsics::abort;
 
 use log::*;
 
-use crate::kernel::{get_kernel_module_export};
+use crate::kernel::{get_kernel_module_export, KernelError, get_kernel_modules, find_kernel_module};
 use crate::util::KernelAlloc;
 use crate::util::log::KernelLogger;
 
@@ -37,26 +37,37 @@ static _FLTUSED: i32 = 0;
 fn panic(info: &core::panic::PanicInfo) -> ! {
     error!("panic: {:?}", info);
     #[allow(unused_unsafe)]
-    unsafe { abort() }
+        unsafe { abort() }
 }
 
 static LOG_LEVEL: LevelFilter = LevelFilter::Trace;
 
+unsafe fn main() -> Result<u32, KernelError> {
+    info!("kernel-rs loaded");
+
+    let modules = get_kernel_modules()?;
+
+    let dxgkrnl = find_kernel_module(&modules, "dxgkrnl.sys").ok_or("could not find dxgkrnl")?;
+    let address = get_kernel_module_export(dxgkrnl, "NtQueryCompositionSurfaceStatistics")
+        .ok_or("could not find NtQueryCompositionSurfaceStatistics")?;
+
+    kernel::hook_function(address, dispatch::hook);
+
+
+    Ok(0x420)
+}
 
 #[no_mangle]
 pub extern "system" fn driver_entry() -> u32 {
     if let Err(e) = KernelLogger::init(LOG_LEVEL) {
-        println!("Error setting logger: {:?}", e);
+        error!("Error setting logger: {:?}", e);
     }
-    info!("kernel-rs loaded");
 
-    let result = unsafe { get_kernel_module_export("\\SystemRoot\\System32\\drivers\\dxgkrnl.sys", "NtQueryCompositionSurfaceStatistics") };
-    if result.is_err() {
-        return 1;
+    match unsafe { main() } {
+        Ok(code) => code,
+        Err(err) => {
+            error!("{:?}", err);
+            1
+        }
     }
-    let address = result.unwrap();
-
-    unsafe { kernel::hook_function(address, dispatch::hook) };
-
-    0
 }
