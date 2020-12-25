@@ -1,3 +1,6 @@
+[env]
+DRIVER_NAME = "kernel-rs"
+
 [env.development]
 TARGET_PATH = "target/x86_64-pc-windows-msvc/debug"
 
@@ -22,4 +25,13 @@ script = [
 dependencies = ["rename"]
 script = [
     "kdmapper.exe %TARGET_PATH%/driver.sys"
+]
+
+[tasks.load]
+dependencies = ["rename"]
+script = [
+    "sc stop %DRIVER_NAME%",
+    "sc delete %DRIVER_NAME%",
+    "sc create %DRIVER_NAME% binPath= %CARGO_MAKE_WORKING_DIRECTORY%/%TARGET_PATH%/driver.sys type= kernel",
+    "sc start %DRIVER_NAME%"
 ]
