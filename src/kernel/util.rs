@@ -94,7 +94,7 @@ pub unsafe fn find_kernel_module(modules: &[KernelModule], module_name: &str) ->
 
 pub unsafe fn get_kernel_module_export(module_base: *mut c_void, func_name: &str) -> Option<*mut c_void> {
     if !MmIsAddressValid(module_base) {
-        error!("Tried to get the export {} from module base {:p} but the module base was not valid", func_name, module_base, module_base);
+        error!("Tried to get the export {} from module base {:p} but the module base was not valid", func_name, module_base);
         return None;
     }
     let addr = RtlFindExportedRoutineByName(module_base, CString::new(func_name).unwrap().as_ptr());
