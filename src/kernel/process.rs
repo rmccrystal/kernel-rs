@@ -56,8 +56,8 @@ impl Process {
     }
 
     fn get_modules_64(&self) -> Result<Vec<ModuleInfo>> {
-        let process = unsafe { ProcessAttachment::attach(self.process) };
-        let peb = unsafe { process.get_peb() };
+        let _attach = self.attach();
+        let peb = unsafe { _attach.get_peb() };
 
         if peb.is_null() {
             return Err(KernelError::text("peb was null"));
@@ -80,7 +80,7 @@ impl Process {
     }
 
     fn get_modules_32(&self) -> Result<Vec<ModuleInfo>> {
-        let _process = unsafe { ProcessAttachment::attach(self.process) };
+        let _attach = self.attach();
         let peb32: PPEB32 = unsafe { PsGetProcessWow64Process(self.process) as _ };
 
         if peb32.is_null() {
@@ -104,7 +104,7 @@ impl Process {
     }
 
     pub fn read_memory(&self, address: u64, size: u64) -> Result<Vec<u8>> {
-        let _process = unsafe { ProcessAttachment::attach(self.process) };
+        let _attach = self.attach();
 
         if !unsafe { MmIsAddressValid(address as _) } {
             return Err(KernelError::text(&format!("{:X} is not a valid address", address)));
@@ -143,7 +143,7 @@ impl Process {
     }
 
     pub fn write_memory(&self, address: u64, buf: &[u8]) -> Result<()> {
-        let _process = unsafe { ProcessAttachment::attach(self.process) };
+        let _attach = self.attach();
 
         if !unsafe { MmIsAddressValid(address as _) } {
             return Err(KernelError::text(&format!("{:X} is not a valid address", address)));
@@ -182,6 +182,10 @@ impl Process {
     pub fn get_peb(&self) -> PPEB {
         unsafe { ProcessAttachment::attach(self.process).get_peb() }
     }
+
+    pub fn attach(&self) -> ProcessAttachment {
+        unsafe { ProcessAttachment::attach(self.process) }
+    }
 }
 
 impl Drop for Process {
@@ -192,7 +196,7 @@ impl Drop for Process {
     }
 }
 
-struct ProcessAttachment {
+pub struct ProcessAttachment {
     process: PEPROCESS,
     state: _KAPC_STATE,
 }

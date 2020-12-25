@@ -8,13 +8,14 @@ use winapi::shared::ntdef::FALSE;
 
 use crate::include::*;
 use crate::util::VariableSizedBox;
+use super::Result;
 
 use super::KernelError;
 use super::ToKernelResult;
 use alloc::string::{String, ToString};
 use alloc::vec::Vec;
 
-pub unsafe fn safe_copy(src: *const u8, dst: *mut u8, len: usize) -> Result<(), KernelError> {
+pub unsafe fn safe_copy(src: *const u8, dst: *mut u8, len: usize) -> Result<()> {
     let mdl = IoAllocateMdl(dst as _, len as _, FALSE, FALSE, null_mut());
     if mdl.is_null() {
         return Err(KernelError::text("could not allocate mdl"));
@@ -45,26 +46,21 @@ pub unsafe fn safe_copy(src: *const u8, dst: *mut u8, len: usize) -> Result<(), 
     Ok(())
 }
 
-pub struct KernelModule {
-    pub name: String,
-    pub address: *mut c_void
-}
-
-pub unsafe fn get_kernel_modules() -> Result<Vec<KernelModule>, KernelError> {
+pub unsafe fn query_system_information<T>(info_class: u32) -> Result<VariableSizedBox<T>> {
     // get size of system information
     let mut size = 0;
     ZwQuerySystemInformation(
-        0x0B, // SystemModuleInformation
+        info_class,
         null_mut(),
         size,
         &mut size
     );
 
     if size == 0 {
-        return Err(KernelError::text("getting ZwQuerySystemInformation size failed"));
+        return Err(KernelError::text("getting size failed"));
     }
 
-    let mut buf: VariableSizedBox<_RTL_PROCESS_MODULES> = VariableSizedBox::new(size as _);
+    let mut buf: VariableSizedBox<T> = VariableSizedBox::new(size as _);
 
     ZwQuerySystemInformation(
         0x0B, // SystemModuleInformation
@@ -72,6 +68,17 @@ pub unsafe fn get_kernel_modules() -> Result<Vec<KernelModule>, KernelError> {
         size,
         &mut size
     ).to_kernel_result()?;
+
+    Ok(buf)
+}
+
+pub struct KernelModule {
+    pub name: String,
+    pub address: *mut c_void
+}
+
+pub unsafe fn get_kernel_modules() -> Result<Vec<KernelModule>> {
+    let buf = query_system_information::<_RTL_PROCESS_MODULES>(0x0b /* SystemModuleInformation */ )?;
 
     let module_list = buf.as_ref();
 
