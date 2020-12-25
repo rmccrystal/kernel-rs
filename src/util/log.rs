@@ -6,6 +6,7 @@ use winapi::km::wdm::DbgPrintEx;
 
 /// Prints a string using DbgPrintEx. Automatically adds a null terminator
 pub fn __kernel_print(mut text: String) {
+    text.push('\n');
     text.push('\0');
     unsafe { DbgPrintEx(0, 0, text.as_ptr()) };
 }

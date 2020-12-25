@@ -2615,6 +2615,7 @@ pub struct _DRIVER_OBJECT {
     pub DriverUnload: PDRIVER_UNLOAD,
     pub MajorFunction: [PDRIVER_DISPATCH; 28usize],
 }
+pub type PDRIVER_OBJECT = *mut _DRIVER_OBJECT;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _SECTION_OBJECT_POINTERS {

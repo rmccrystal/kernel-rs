@@ -140,6 +140,8 @@ fn main() {
 
         .whitelist_function("NtGdiBitBlt")
 
+        .whitelist_type("PDRIVER_OBJECT")
+
         .ctypes_prefix("crate::include::raw")
         .use_core()
         .layout_tests(false)
