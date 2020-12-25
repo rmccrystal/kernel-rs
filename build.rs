@@ -142,6 +142,7 @@ fn main() {
 
         .ctypes_prefix("crate::include::raw")
         .use_core()
+        .layout_tests(false)
         .generate()
         .expect("Unable to generate bindings");
 
