@@ -1,5 +1,5 @@
 use alloc::format;
-use alloc::string::String;
+use alloc::string::{String, ToString};
 use alloc::vec;
 use alloc::vec::Vec;
 
@@ -10,7 +10,6 @@ use winapi::km::wdm::KPROCESSOR_MODE::KernelMode;
 use crate::include::{_KAPC_STATE, _LDR_DATA_TABLE_ENTRY, IoGetCurrentProcess, KeStackAttachProcess, KeUnstackDetachProcess, LDR_DATA_TABLE_ENTRY32, MmCopyVirtualMemory, MmIsAddressValid, ObfDereferenceObject, PEPROCESS, PPEB, PPEB32, PPEB_LDR_DATA32, PsGetProcessPeb, PsGetProcessWow64Process, PsLookupProcessByProcessId};
 use crate::kernel::KernelError;
 use crate::util::{ListEntryIterator, ListEntryIterator32};
-use crate::util::{unicode32_string_to_string, unicode_string_to_string};
 
 use super::Result;
 use super::ToKernelResult;
@@ -74,7 +73,7 @@ impl Process {
             Ok(iter.map(|entry| ModuleInfo {
                 base_address: entry.DllBase as _,
                 size: entry.SizeOfImage as _,
-                module_name: unicode_string_to_string(&entry.BaseDllName),
+                module_name: entry.BaseDllName.to_string(),
             }).collect())
         }
     }
@@ -98,7 +97,7 @@ impl Process {
             Ok(iter.map(|entry| ModuleInfo {
                 base_address: entry.DllBase as _,
                 size: entry.SizeOfImage as _,
-                module_name: unicode32_string_to_string(&entry.BaseDllName),
+                module_name: entry.BaseDllName.to_string(),
             }).collect())
         }
     }

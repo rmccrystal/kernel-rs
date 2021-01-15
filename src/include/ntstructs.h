@@ -153,3 +153,17 @@ typedef struct _LDR_DATA_TABLE_ENTRY {
 	//    // seems they are exist only on XP !!! PVOID
 	//    EntryPointActivationContext;	// -same-
 } LDR_DATA_TABLE_ENTRY, * PLDR_DATA_TABLE_ENTRY;
+
+typedef struct _SYSTEM_PROCESS_INFO
+{
+    ULONG                   NextEntryOffset;
+    ULONG                   NumberOfThreads;
+    LARGE_INTEGER           Reserved[3];
+    LARGE_INTEGER           CreateTime;
+    LARGE_INTEGER           UserTime;
+    LARGE_INTEGER           KernelTime;
+    UNICODE_STRING          ImageName;
+    ULONG                   BasePriority;
+    HANDLE                  ProcessId;
+    HANDLE                  InheritedFromProcessId;
+}SYSTEM_PROCESS_INFO,*PSYSTEM_PROCESS_INFO;

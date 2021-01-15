@@ -226,11 +226,14 @@ pub struct _PRIVILEGE_SET {
     pub Privilege: [LUID_AND_ATTRIBUTES; 1usize],
 }
 pub type PRIVILEGE_SET = _PRIVILEGE_SET;
-pub const _SECURITY_IMPERSONATION_LEVEL_SecurityAnonymous: _SECURITY_IMPERSONATION_LEVEL = 0;
-pub const _SECURITY_IMPERSONATION_LEVEL_SecurityIdentification: _SECURITY_IMPERSONATION_LEVEL = 1;
-pub const _SECURITY_IMPERSONATION_LEVEL_SecurityImpersonation: _SECURITY_IMPERSONATION_LEVEL = 2;
-pub const _SECURITY_IMPERSONATION_LEVEL_SecurityDelegation: _SECURITY_IMPERSONATION_LEVEL = 3;
-pub type _SECURITY_IMPERSONATION_LEVEL = crate::include::raw::c_int;
+#[repr(i32)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum _SECURITY_IMPERSONATION_LEVEL {
+    SecurityAnonymous = 0,
+    SecurityIdentification = 1,
+    SecurityImpersonation = 2,
+    SecurityDelegation = 3,
+}
 pub use self::_SECURITY_IMPERSONATION_LEVEL as SECURITY_IMPERSONATION_LEVEL;
 pub type SECURITY_CONTEXT_TRACKING_MODE = BOOLEAN;
 #[repr(C)]
@@ -259,88 +262,93 @@ pub type IO_STATUS_BLOCK = _IO_STATUS_BLOCK;
 pub type PIO_STATUS_BLOCK = *mut _IO_STATUS_BLOCK;
 pub type PIO_APC_ROUTINE =
     ::core::option::Option<unsafe extern "C" fn(ApcContext: PVOID, IoStatusBlock: PIO_STATUS_BLOCK, Reserved: ULONG)>;
-pub const _FILE_INFORMATION_CLASS_FileDirectoryInformation: _FILE_INFORMATION_CLASS = 1;
-pub const _FILE_INFORMATION_CLASS_FileFullDirectoryInformation: _FILE_INFORMATION_CLASS = 2;
-pub const _FILE_INFORMATION_CLASS_FileBothDirectoryInformation: _FILE_INFORMATION_CLASS = 3;
-pub const _FILE_INFORMATION_CLASS_FileBasicInformation: _FILE_INFORMATION_CLASS = 4;
-pub const _FILE_INFORMATION_CLASS_FileStandardInformation: _FILE_INFORMATION_CLASS = 5;
-pub const _FILE_INFORMATION_CLASS_FileInternalInformation: _FILE_INFORMATION_CLASS = 6;
-pub const _FILE_INFORMATION_CLASS_FileEaInformation: _FILE_INFORMATION_CLASS = 7;
-pub const _FILE_INFORMATION_CLASS_FileAccessInformation: _FILE_INFORMATION_CLASS = 8;
-pub const _FILE_INFORMATION_CLASS_FileNameInformation: _FILE_INFORMATION_CLASS = 9;
-pub const _FILE_INFORMATION_CLASS_FileRenameInformation: _FILE_INFORMATION_CLASS = 10;
-pub const _FILE_INFORMATION_CLASS_FileLinkInformation: _FILE_INFORMATION_CLASS = 11;
-pub const _FILE_INFORMATION_CLASS_FileNamesInformation: _FILE_INFORMATION_CLASS = 12;
-pub const _FILE_INFORMATION_CLASS_FileDispositionInformation: _FILE_INFORMATION_CLASS = 13;
-pub const _FILE_INFORMATION_CLASS_FilePositionInformation: _FILE_INFORMATION_CLASS = 14;
-pub const _FILE_INFORMATION_CLASS_FileFullEaInformation: _FILE_INFORMATION_CLASS = 15;
-pub const _FILE_INFORMATION_CLASS_FileModeInformation: _FILE_INFORMATION_CLASS = 16;
-pub const _FILE_INFORMATION_CLASS_FileAlignmentInformation: _FILE_INFORMATION_CLASS = 17;
-pub const _FILE_INFORMATION_CLASS_FileAllInformation: _FILE_INFORMATION_CLASS = 18;
-pub const _FILE_INFORMATION_CLASS_FileAllocationInformation: _FILE_INFORMATION_CLASS = 19;
-pub const _FILE_INFORMATION_CLASS_FileEndOfFileInformation: _FILE_INFORMATION_CLASS = 20;
-pub const _FILE_INFORMATION_CLASS_FileAlternateNameInformation: _FILE_INFORMATION_CLASS = 21;
-pub const _FILE_INFORMATION_CLASS_FileStreamInformation: _FILE_INFORMATION_CLASS = 22;
-pub const _FILE_INFORMATION_CLASS_FilePipeInformation: _FILE_INFORMATION_CLASS = 23;
-pub const _FILE_INFORMATION_CLASS_FilePipeLocalInformation: _FILE_INFORMATION_CLASS = 24;
-pub const _FILE_INFORMATION_CLASS_FilePipeRemoteInformation: _FILE_INFORMATION_CLASS = 25;
-pub const _FILE_INFORMATION_CLASS_FileMailslotQueryInformation: _FILE_INFORMATION_CLASS = 26;
-pub const _FILE_INFORMATION_CLASS_FileMailslotSetInformation: _FILE_INFORMATION_CLASS = 27;
-pub const _FILE_INFORMATION_CLASS_FileCompressionInformation: _FILE_INFORMATION_CLASS = 28;
-pub const _FILE_INFORMATION_CLASS_FileObjectIdInformation: _FILE_INFORMATION_CLASS = 29;
-pub const _FILE_INFORMATION_CLASS_FileCompletionInformation: _FILE_INFORMATION_CLASS = 30;
-pub const _FILE_INFORMATION_CLASS_FileMoveClusterInformation: _FILE_INFORMATION_CLASS = 31;
-pub const _FILE_INFORMATION_CLASS_FileQuotaInformation: _FILE_INFORMATION_CLASS = 32;
-pub const _FILE_INFORMATION_CLASS_FileReparsePointInformation: _FILE_INFORMATION_CLASS = 33;
-pub const _FILE_INFORMATION_CLASS_FileNetworkOpenInformation: _FILE_INFORMATION_CLASS = 34;
-pub const _FILE_INFORMATION_CLASS_FileAttributeTagInformation: _FILE_INFORMATION_CLASS = 35;
-pub const _FILE_INFORMATION_CLASS_FileTrackingInformation: _FILE_INFORMATION_CLASS = 36;
-pub const _FILE_INFORMATION_CLASS_FileIdBothDirectoryInformation: _FILE_INFORMATION_CLASS = 37;
-pub const _FILE_INFORMATION_CLASS_FileIdFullDirectoryInformation: _FILE_INFORMATION_CLASS = 38;
-pub const _FILE_INFORMATION_CLASS_FileValidDataLengthInformation: _FILE_INFORMATION_CLASS = 39;
-pub const _FILE_INFORMATION_CLASS_FileShortNameInformation: _FILE_INFORMATION_CLASS = 40;
-pub const _FILE_INFORMATION_CLASS_FileIoCompletionNotificationInformation: _FILE_INFORMATION_CLASS = 41;
-pub const _FILE_INFORMATION_CLASS_FileIoStatusBlockRangeInformation: _FILE_INFORMATION_CLASS = 42;
-pub const _FILE_INFORMATION_CLASS_FileIoPriorityHintInformation: _FILE_INFORMATION_CLASS = 43;
-pub const _FILE_INFORMATION_CLASS_FileSfioReserveInformation: _FILE_INFORMATION_CLASS = 44;
-pub const _FILE_INFORMATION_CLASS_FileSfioVolumeInformation: _FILE_INFORMATION_CLASS = 45;
-pub const _FILE_INFORMATION_CLASS_FileHardLinkInformation: _FILE_INFORMATION_CLASS = 46;
-pub const _FILE_INFORMATION_CLASS_FileProcessIdsUsingFileInformation: _FILE_INFORMATION_CLASS = 47;
-pub const _FILE_INFORMATION_CLASS_FileNormalizedNameInformation: _FILE_INFORMATION_CLASS = 48;
-pub const _FILE_INFORMATION_CLASS_FileNetworkPhysicalNameInformation: _FILE_INFORMATION_CLASS = 49;
-pub const _FILE_INFORMATION_CLASS_FileIdGlobalTxDirectoryInformation: _FILE_INFORMATION_CLASS = 50;
-pub const _FILE_INFORMATION_CLASS_FileIsRemoteDeviceInformation: _FILE_INFORMATION_CLASS = 51;
-pub const _FILE_INFORMATION_CLASS_FileUnusedInformation: _FILE_INFORMATION_CLASS = 52;
-pub const _FILE_INFORMATION_CLASS_FileNumaNodeInformation: _FILE_INFORMATION_CLASS = 53;
-pub const _FILE_INFORMATION_CLASS_FileStandardLinkInformation: _FILE_INFORMATION_CLASS = 54;
-pub const _FILE_INFORMATION_CLASS_FileRemoteProtocolInformation: _FILE_INFORMATION_CLASS = 55;
-pub const _FILE_INFORMATION_CLASS_FileRenameInformationBypassAccessCheck: _FILE_INFORMATION_CLASS = 56;
-pub const _FILE_INFORMATION_CLASS_FileLinkInformationBypassAccessCheck: _FILE_INFORMATION_CLASS = 57;
-pub const _FILE_INFORMATION_CLASS_FileVolumeNameInformation: _FILE_INFORMATION_CLASS = 58;
-pub const _FILE_INFORMATION_CLASS_FileIdInformation: _FILE_INFORMATION_CLASS = 59;
-pub const _FILE_INFORMATION_CLASS_FileIdExtdDirectoryInformation: _FILE_INFORMATION_CLASS = 60;
-pub const _FILE_INFORMATION_CLASS_FileReplaceCompletionInformation: _FILE_INFORMATION_CLASS = 61;
-pub const _FILE_INFORMATION_CLASS_FileHardLinkFullIdInformation: _FILE_INFORMATION_CLASS = 62;
-pub const _FILE_INFORMATION_CLASS_FileIdExtdBothDirectoryInformation: _FILE_INFORMATION_CLASS = 63;
-pub const _FILE_INFORMATION_CLASS_FileDispositionInformationEx: _FILE_INFORMATION_CLASS = 64;
-pub const _FILE_INFORMATION_CLASS_FileRenameInformationEx: _FILE_INFORMATION_CLASS = 65;
-pub const _FILE_INFORMATION_CLASS_FileRenameInformationExBypassAccessCheck: _FILE_INFORMATION_CLASS = 66;
-pub const _FILE_INFORMATION_CLASS_FileDesiredStorageClassInformation: _FILE_INFORMATION_CLASS = 67;
-pub const _FILE_INFORMATION_CLASS_FileStatInformation: _FILE_INFORMATION_CLASS = 68;
-pub const _FILE_INFORMATION_CLASS_FileMemoryPartitionInformation: _FILE_INFORMATION_CLASS = 69;
-pub const _FILE_INFORMATION_CLASS_FileStatLxInformation: _FILE_INFORMATION_CLASS = 70;
-pub const _FILE_INFORMATION_CLASS_FileCaseSensitiveInformation: _FILE_INFORMATION_CLASS = 71;
-pub const _FILE_INFORMATION_CLASS_FileLinkInformationEx: _FILE_INFORMATION_CLASS = 72;
-pub const _FILE_INFORMATION_CLASS_FileLinkInformationExBypassAccessCheck: _FILE_INFORMATION_CLASS = 73;
-pub const _FILE_INFORMATION_CLASS_FileStorageReserveIdInformation: _FILE_INFORMATION_CLASS = 74;
-pub const _FILE_INFORMATION_CLASS_FileCaseSensitiveInformationForceAccessCheck: _FILE_INFORMATION_CLASS = 75;
-pub const _FILE_INFORMATION_CLASS_FileMaximumInformation: _FILE_INFORMATION_CLASS = 76;
-pub type _FILE_INFORMATION_CLASS = crate::include::raw::c_int;
+#[repr(i32)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum _FILE_INFORMATION_CLASS {
+    FileDirectoryInformation = 1,
+    FileFullDirectoryInformation = 2,
+    FileBothDirectoryInformation = 3,
+    FileBasicInformation = 4,
+    FileStandardInformation = 5,
+    FileInternalInformation = 6,
+    FileEaInformation = 7,
+    FileAccessInformation = 8,
+    FileNameInformation = 9,
+    FileRenameInformation = 10,
+    FileLinkInformation = 11,
+    FileNamesInformation = 12,
+    FileDispositionInformation = 13,
+    FilePositionInformation = 14,
+    FileFullEaInformation = 15,
+    FileModeInformation = 16,
+    FileAlignmentInformation = 17,
+    FileAllInformation = 18,
+    FileAllocationInformation = 19,
+    FileEndOfFileInformation = 20,
+    FileAlternateNameInformation = 21,
+    FileStreamInformation = 22,
+    FilePipeInformation = 23,
+    FilePipeLocalInformation = 24,
+    FilePipeRemoteInformation = 25,
+    FileMailslotQueryInformation = 26,
+    FileMailslotSetInformation = 27,
+    FileCompressionInformation = 28,
+    FileObjectIdInformation = 29,
+    FileCompletionInformation = 30,
+    FileMoveClusterInformation = 31,
+    FileQuotaInformation = 32,
+    FileReparsePointInformation = 33,
+    FileNetworkOpenInformation = 34,
+    FileAttributeTagInformation = 35,
+    FileTrackingInformation = 36,
+    FileIdBothDirectoryInformation = 37,
+    FileIdFullDirectoryInformation = 38,
+    FileValidDataLengthInformation = 39,
+    FileShortNameInformation = 40,
+    FileIoCompletionNotificationInformation = 41,
+    FileIoStatusBlockRangeInformation = 42,
+    FileIoPriorityHintInformation = 43,
+    FileSfioReserveInformation = 44,
+    FileSfioVolumeInformation = 45,
+    FileHardLinkInformation = 46,
+    FileProcessIdsUsingFileInformation = 47,
+    FileNormalizedNameInformation = 48,
+    FileNetworkPhysicalNameInformation = 49,
+    FileIdGlobalTxDirectoryInformation = 50,
+    FileIsRemoteDeviceInformation = 51,
+    FileUnusedInformation = 52,
+    FileNumaNodeInformation = 53,
+    FileStandardLinkInformation = 54,
+    FileRemoteProtocolInformation = 55,
+    FileRenameInformationBypassAccessCheck = 56,
+    FileLinkInformationBypassAccessCheck = 57,
+    FileVolumeNameInformation = 58,
+    FileIdInformation = 59,
+    FileIdExtdDirectoryInformation = 60,
+    FileReplaceCompletionInformation = 61,
+    FileHardLinkFullIdInformation = 62,
+    FileIdExtdBothDirectoryInformation = 63,
+    FileDispositionInformationEx = 64,
+    FileRenameInformationEx = 65,
+    FileRenameInformationExBypassAccessCheck = 66,
+    FileDesiredStorageClassInformation = 67,
+    FileStatInformation = 68,
+    FileMemoryPartitionInformation = 69,
+    FileStatLxInformation = 70,
+    FileCaseSensitiveInformation = 71,
+    FileLinkInformationEx = 72,
+    FileLinkInformationExBypassAccessCheck = 73,
+    FileStorageReserveIdInformation = 74,
+    FileCaseSensitiveInformationForceAccessCheck = 75,
+    FileMaximumInformation = 76,
+}
 pub use self::_FILE_INFORMATION_CLASS as FILE_INFORMATION_CLASS;
-pub const _DIRECTORY_NOTIFY_INFORMATION_CLASS_DirectoryNotifyInformation: _DIRECTORY_NOTIFY_INFORMATION_CLASS = 1;
-pub const _DIRECTORY_NOTIFY_INFORMATION_CLASS_DirectoryNotifyExtendedInformation: _DIRECTORY_NOTIFY_INFORMATION_CLASS =
-    2;
-pub type _DIRECTORY_NOTIFY_INFORMATION_CLASS = crate::include::raw::c_int;
+#[repr(i32)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum _DIRECTORY_NOTIFY_INFORMATION_CLASS {
+    DirectoryNotifyInformation = 1,
+    DirectoryNotifyExtendedInformation = 2,
+}
 pub use self::_DIRECTORY_NOTIFY_INFORMATION_CLASS as DIRECTORY_NOTIFY_INFORMATION_CLASS;
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -374,74 +382,89 @@ pub struct _FILE_NETWORK_OPEN_INFORMATION {
     pub FileAttributes: ULONG,
 }
 pub type PFILE_NETWORK_OPEN_INFORMATION = *mut _FILE_NETWORK_OPEN_INFORMATION;
-pub const _FSINFOCLASS_FileFsVolumeInformation: _FSINFOCLASS = 1;
-pub const _FSINFOCLASS_FileFsLabelInformation: _FSINFOCLASS = 2;
-pub const _FSINFOCLASS_FileFsSizeInformation: _FSINFOCLASS = 3;
-pub const _FSINFOCLASS_FileFsDeviceInformation: _FSINFOCLASS = 4;
-pub const _FSINFOCLASS_FileFsAttributeInformation: _FSINFOCLASS = 5;
-pub const _FSINFOCLASS_FileFsControlInformation: _FSINFOCLASS = 6;
-pub const _FSINFOCLASS_FileFsFullSizeInformation: _FSINFOCLASS = 7;
-pub const _FSINFOCLASS_FileFsObjectIdInformation: _FSINFOCLASS = 8;
-pub const _FSINFOCLASS_FileFsDriverPathInformation: _FSINFOCLASS = 9;
-pub const _FSINFOCLASS_FileFsVolumeFlagsInformation: _FSINFOCLASS = 10;
-pub const _FSINFOCLASS_FileFsSectorSizeInformation: _FSINFOCLASS = 11;
-pub const _FSINFOCLASS_FileFsDataCopyInformation: _FSINFOCLASS = 12;
-pub const _FSINFOCLASS_FileFsMetadataSizeInformation: _FSINFOCLASS = 13;
-pub const _FSINFOCLASS_FileFsFullSizeInformationEx: _FSINFOCLASS = 14;
-pub const _FSINFOCLASS_FileFsMaximumInformation: _FSINFOCLASS = 15;
-pub type _FSINFOCLASS = crate::include::raw::c_int;
+#[repr(i32)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum _FSINFOCLASS {
+    FileFsVolumeInformation = 1,
+    FileFsLabelInformation = 2,
+    FileFsSizeInformation = 3,
+    FileFsDeviceInformation = 4,
+    FileFsAttributeInformation = 5,
+    FileFsControlInformation = 6,
+    FileFsFullSizeInformation = 7,
+    FileFsObjectIdInformation = 8,
+    FileFsDriverPathInformation = 9,
+    FileFsVolumeFlagsInformation = 10,
+    FileFsSectorSizeInformation = 11,
+    FileFsDataCopyInformation = 12,
+    FileFsMetadataSizeInformation = 13,
+    FileFsFullSizeInformationEx = 14,
+    FileFsMaximumInformation = 15,
+}
 pub use self::_FSINFOCLASS as FS_INFORMATION_CLASS;
-pub const _INTERFACE_TYPE_InterfaceTypeUndefined: _INTERFACE_TYPE = -1;
-pub const _INTERFACE_TYPE_Internal: _INTERFACE_TYPE = 0;
-pub const _INTERFACE_TYPE_Isa: _INTERFACE_TYPE = 1;
-pub const _INTERFACE_TYPE_Eisa: _INTERFACE_TYPE = 2;
-pub const _INTERFACE_TYPE_MicroChannel: _INTERFACE_TYPE = 3;
-pub const _INTERFACE_TYPE_TurboChannel: _INTERFACE_TYPE = 4;
-pub const _INTERFACE_TYPE_PCIBus: _INTERFACE_TYPE = 5;
-pub const _INTERFACE_TYPE_VMEBus: _INTERFACE_TYPE = 6;
-pub const _INTERFACE_TYPE_NuBus: _INTERFACE_TYPE = 7;
-pub const _INTERFACE_TYPE_PCMCIABus: _INTERFACE_TYPE = 8;
-pub const _INTERFACE_TYPE_CBus: _INTERFACE_TYPE = 9;
-pub const _INTERFACE_TYPE_MPIBus: _INTERFACE_TYPE = 10;
-pub const _INTERFACE_TYPE_MPSABus: _INTERFACE_TYPE = 11;
-pub const _INTERFACE_TYPE_ProcessorInternal: _INTERFACE_TYPE = 12;
-pub const _INTERFACE_TYPE_InternalPowerBus: _INTERFACE_TYPE = 13;
-pub const _INTERFACE_TYPE_PNPISABus: _INTERFACE_TYPE = 14;
-pub const _INTERFACE_TYPE_PNPBus: _INTERFACE_TYPE = 15;
-pub const _INTERFACE_TYPE_Vmcs: _INTERFACE_TYPE = 16;
-pub const _INTERFACE_TYPE_ACPIBus: _INTERFACE_TYPE = 17;
-pub const _INTERFACE_TYPE_MaximumInterfaceType: _INTERFACE_TYPE = 18;
-pub type _INTERFACE_TYPE = crate::include::raw::c_int;
+#[repr(i32)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum _INTERFACE_TYPE {
+    InterfaceTypeUndefined = -1,
+    Internal = 0,
+    Isa = 1,
+    Eisa = 2,
+    MicroChannel = 3,
+    TurboChannel = 4,
+    PCIBus = 5,
+    VMEBus = 6,
+    NuBus = 7,
+    PCMCIABus = 8,
+    CBus = 9,
+    MPIBus = 10,
+    MPSABus = 11,
+    ProcessorInternal = 12,
+    InternalPowerBus = 13,
+    PNPISABus = 14,
+    PNPBus = 15,
+    Vmcs = 16,
+    ACPIBus = 17,
+    MaximumInterfaceType = 18,
+}
 pub use self::_INTERFACE_TYPE as INTERFACE_TYPE;
 pub type PINTERFACE_REFERENCE = ::core::option::Option<unsafe extern "C" fn(Context: PVOID)>;
 pub type PINTERFACE_DEREFERENCE = ::core::option::Option<unsafe extern "C" fn(Context: PVOID)>;
-pub const _SYSTEM_POWER_STATE_PowerSystemUnspecified: _SYSTEM_POWER_STATE = 0;
-pub const _SYSTEM_POWER_STATE_PowerSystemWorking: _SYSTEM_POWER_STATE = 1;
-pub const _SYSTEM_POWER_STATE_PowerSystemSleeping1: _SYSTEM_POWER_STATE = 2;
-pub const _SYSTEM_POWER_STATE_PowerSystemSleeping2: _SYSTEM_POWER_STATE = 3;
-pub const _SYSTEM_POWER_STATE_PowerSystemSleeping3: _SYSTEM_POWER_STATE = 4;
-pub const _SYSTEM_POWER_STATE_PowerSystemHibernate: _SYSTEM_POWER_STATE = 5;
-pub const _SYSTEM_POWER_STATE_PowerSystemShutdown: _SYSTEM_POWER_STATE = 6;
-pub const _SYSTEM_POWER_STATE_PowerSystemMaximum: _SYSTEM_POWER_STATE = 7;
-pub type _SYSTEM_POWER_STATE = crate::include::raw::c_int;
+#[repr(i32)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum _SYSTEM_POWER_STATE {
+    PowerSystemUnspecified = 0,
+    PowerSystemWorking = 1,
+    PowerSystemSleeping1 = 2,
+    PowerSystemSleeping2 = 3,
+    PowerSystemSleeping3 = 4,
+    PowerSystemHibernate = 5,
+    PowerSystemShutdown = 6,
+    PowerSystemMaximum = 7,
+}
 pub use self::_SYSTEM_POWER_STATE as SYSTEM_POWER_STATE;
-pub const POWER_ACTION_PowerActionNone: POWER_ACTION = 0;
-pub const POWER_ACTION_PowerActionReserved: POWER_ACTION = 1;
-pub const POWER_ACTION_PowerActionSleep: POWER_ACTION = 2;
-pub const POWER_ACTION_PowerActionHibernate: POWER_ACTION = 3;
-pub const POWER_ACTION_PowerActionShutdown: POWER_ACTION = 4;
-pub const POWER_ACTION_PowerActionShutdownReset: POWER_ACTION = 5;
-pub const POWER_ACTION_PowerActionShutdownOff: POWER_ACTION = 6;
-pub const POWER_ACTION_PowerActionWarmEject: POWER_ACTION = 7;
-pub const POWER_ACTION_PowerActionDisplayOff: POWER_ACTION = 8;
-pub type POWER_ACTION = crate::include::raw::c_int;
-pub const _DEVICE_POWER_STATE_PowerDeviceUnspecified: _DEVICE_POWER_STATE = 0;
-pub const _DEVICE_POWER_STATE_PowerDeviceD0: _DEVICE_POWER_STATE = 1;
-pub const _DEVICE_POWER_STATE_PowerDeviceD1: _DEVICE_POWER_STATE = 2;
-pub const _DEVICE_POWER_STATE_PowerDeviceD2: _DEVICE_POWER_STATE = 3;
-pub const _DEVICE_POWER_STATE_PowerDeviceD3: _DEVICE_POWER_STATE = 4;
-pub const _DEVICE_POWER_STATE_PowerDeviceMaximum: _DEVICE_POWER_STATE = 5;
-pub type _DEVICE_POWER_STATE = crate::include::raw::c_int;
+#[repr(i32)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum POWER_ACTION {
+    PowerActionNone = 0,
+    PowerActionReserved = 1,
+    PowerActionSleep = 2,
+    PowerActionHibernate = 3,
+    PowerActionShutdown = 4,
+    PowerActionShutdownReset = 5,
+    PowerActionShutdownOff = 6,
+    PowerActionWarmEject = 7,
+    PowerActionDisplayOff = 8,
+}
+#[repr(i32)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum _DEVICE_POWER_STATE {
+    PowerDeviceUnspecified = 0,
+    PowerDeviceD0 = 1,
+    PowerDeviceD1 = 2,
+    PowerDeviceD2 = 3,
+    PowerDeviceD3 = 4,
+    PowerDeviceMaximum = 5,
+}
 pub use self::_DEVICE_POWER_STATE as DEVICE_POWER_STATE;
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -451,9 +474,12 @@ pub union _POWER_STATE {
     _bindgen_union_align: u32,
 }
 pub type POWER_STATE = _POWER_STATE;
-pub const _POWER_STATE_TYPE_SystemPowerState: _POWER_STATE_TYPE = 0;
-pub const _POWER_STATE_TYPE_DevicePowerState: _POWER_STATE_TYPE = 1;
-pub type _POWER_STATE_TYPE = crate::include::raw::c_int;
+#[repr(i32)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum _POWER_STATE_TYPE {
+    SystemPowerState = 0,
+    DevicePowerState = 1,
+}
 pub use self::_POWER_STATE_TYPE as POWER_STATE_TYPE;
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -802,20 +828,26 @@ pub struct _CM_RESOURCE_LIST {
     pub List: [CM_FULL_RESOURCE_DESCRIPTOR; 1usize],
 }
 pub type PCM_RESOURCE_LIST = *mut _CM_RESOURCE_LIST;
-pub const _IRQ_DEVICE_POLICY_IrqPolicyMachineDefault: _IRQ_DEVICE_POLICY = 0;
-pub const _IRQ_DEVICE_POLICY_IrqPolicyAllCloseProcessors: _IRQ_DEVICE_POLICY = 1;
-pub const _IRQ_DEVICE_POLICY_IrqPolicyOneCloseProcessor: _IRQ_DEVICE_POLICY = 2;
-pub const _IRQ_DEVICE_POLICY_IrqPolicyAllProcessorsInMachine: _IRQ_DEVICE_POLICY = 3;
-pub const _IRQ_DEVICE_POLICY_IrqPolicySpecifiedProcessors: _IRQ_DEVICE_POLICY = 4;
-pub const _IRQ_DEVICE_POLICY_IrqPolicySpreadMessagesAcrossAllProcessors: _IRQ_DEVICE_POLICY = 5;
-pub const _IRQ_DEVICE_POLICY_IrqPolicyAllProcessorsInMachineWhenSteered: _IRQ_DEVICE_POLICY = 6;
-pub type _IRQ_DEVICE_POLICY = crate::include::raw::c_int;
+#[repr(i32)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum _IRQ_DEVICE_POLICY {
+    IrqPolicyMachineDefault = 0,
+    IrqPolicyAllCloseProcessors = 1,
+    IrqPolicyOneCloseProcessor = 2,
+    IrqPolicyAllProcessorsInMachine = 3,
+    IrqPolicySpecifiedProcessors = 4,
+    IrqPolicySpreadMessagesAcrossAllProcessors = 5,
+    IrqPolicyAllProcessorsInMachineWhenSteered = 6,
+}
 pub use self::_IRQ_DEVICE_POLICY as IRQ_DEVICE_POLICY;
-pub const _IRQ_PRIORITY_IrqPriorityUndefined: _IRQ_PRIORITY = 0;
-pub const _IRQ_PRIORITY_IrqPriorityLow: _IRQ_PRIORITY = 1;
-pub const _IRQ_PRIORITY_IrqPriorityNormal: _IRQ_PRIORITY = 2;
-pub const _IRQ_PRIORITY_IrqPriorityHigh: _IRQ_PRIORITY = 3;
-pub type _IRQ_PRIORITY = crate::include::raw::c_int;
+#[repr(i32)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum _IRQ_PRIORITY {
+    IrqPriorityUndefined = 0,
+    IrqPriorityLow = 1,
+    IrqPriorityNormal = 2,
+    IrqPriorityHigh = 3,
+}
 pub use self::_IRQ_PRIORITY as IRQ_PRIORITY;
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -1731,10 +1763,13 @@ pub struct _KEVENT {
 }
 pub type KEVENT = _KEVENT;
 pub type PKEVENT = *mut _KEVENT;
-pub const _LOCK_OPERATION_IoReadAccess: _LOCK_OPERATION = 0;
-pub const _LOCK_OPERATION_IoWriteAccess: _LOCK_OPERATION = 1;
-pub const _LOCK_OPERATION_IoModifyAccess: _LOCK_OPERATION = 2;
-pub type _LOCK_OPERATION = crate::include::raw::c_int;
+#[repr(i32)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum _LOCK_OPERATION {
+    IoReadAccess = 0,
+    IoWriteAccess = 1,
+    IoModifyAccess = 2,
+}
 pub use self::_LOCK_OPERATION as LOCK_OPERATION;
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -1804,40 +1839,56 @@ pub struct _KDEVICE_QUEUE_ENTRY {
     pub Inserted: BOOLEAN,
 }
 pub type KDEVICE_QUEUE_ENTRY = _KDEVICE_QUEUE_ENTRY;
-pub const _MEMORY_CACHING_TYPE_MmNonCached: _MEMORY_CACHING_TYPE = 0;
-pub const _MEMORY_CACHING_TYPE_MmCached: _MEMORY_CACHING_TYPE = 1;
-pub const _MEMORY_CACHING_TYPE_MmWriteCombined: _MEMORY_CACHING_TYPE = 2;
-pub const _MEMORY_CACHING_TYPE_MmHardwareCoherentCached: _MEMORY_CACHING_TYPE = 3;
-pub const _MEMORY_CACHING_TYPE_MmNonCachedUnordered: _MEMORY_CACHING_TYPE = 4;
-pub const _MEMORY_CACHING_TYPE_MmUSWCCached: _MEMORY_CACHING_TYPE = 5;
-pub const _MEMORY_CACHING_TYPE_MmMaximumCacheType: _MEMORY_CACHING_TYPE = 6;
-pub const _MEMORY_CACHING_TYPE_MmNotMapped: _MEMORY_CACHING_TYPE = -1;
-pub type _MEMORY_CACHING_TYPE = crate::include::raw::c_int;
+#[repr(i32)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum _MEMORY_CACHING_TYPE {
+    MmNonCached = 0,
+    MmCached = 1,
+    MmWriteCombined = 2,
+    MmHardwareCoherentCached = 3,
+    MmNonCachedUnordered = 4,
+    MmUSWCCached = 5,
+    MmMaximumCacheType = 6,
+    MmNotMapped = -1,
+}
 pub use self::_MEMORY_CACHING_TYPE as MEMORY_CACHING_TYPE;
-pub const _POOL_TYPE_NonPagedPool: _POOL_TYPE = 0;
-pub const _POOL_TYPE_NonPagedPoolExecute: _POOL_TYPE = 0;
-pub const _POOL_TYPE_PagedPool: _POOL_TYPE = 1;
-pub const _POOL_TYPE_NonPagedPoolMustSucceed: _POOL_TYPE = 2;
-pub const _POOL_TYPE_DontUseThisType: _POOL_TYPE = 3;
-pub const _POOL_TYPE_NonPagedPoolCacheAligned: _POOL_TYPE = 4;
-pub const _POOL_TYPE_PagedPoolCacheAligned: _POOL_TYPE = 5;
-pub const _POOL_TYPE_NonPagedPoolCacheAlignedMustS: _POOL_TYPE = 6;
-pub const _POOL_TYPE_MaxPoolType: _POOL_TYPE = 7;
-pub const _POOL_TYPE_NonPagedPoolBase: _POOL_TYPE = 0;
-pub const _POOL_TYPE_NonPagedPoolBaseMustSucceed: _POOL_TYPE = 2;
-pub const _POOL_TYPE_NonPagedPoolBaseCacheAligned: _POOL_TYPE = 4;
-pub const _POOL_TYPE_NonPagedPoolBaseCacheAlignedMustS: _POOL_TYPE = 6;
-pub const _POOL_TYPE_NonPagedPoolSession: _POOL_TYPE = 32;
-pub const _POOL_TYPE_PagedPoolSession: _POOL_TYPE = 33;
-pub const _POOL_TYPE_NonPagedPoolMustSucceedSession: _POOL_TYPE = 34;
-pub const _POOL_TYPE_DontUseThisTypeSession: _POOL_TYPE = 35;
-pub const _POOL_TYPE_NonPagedPoolCacheAlignedSession: _POOL_TYPE = 36;
-pub const _POOL_TYPE_PagedPoolCacheAlignedSession: _POOL_TYPE = 37;
-pub const _POOL_TYPE_NonPagedPoolCacheAlignedMustSSession: _POOL_TYPE = 38;
-pub const _POOL_TYPE_NonPagedPoolNx: _POOL_TYPE = 512;
-pub const _POOL_TYPE_NonPagedPoolNxCacheAligned: _POOL_TYPE = 516;
-pub const _POOL_TYPE_NonPagedPoolSessionNx: _POOL_TYPE = 544;
-pub type _POOL_TYPE = crate::include::raw::c_int;
+impl _POOL_TYPE {
+    pub const NonPagedPoolExecute: _POOL_TYPE = _POOL_TYPE::NonPagedPool;
+}
+impl _POOL_TYPE {
+    pub const NonPagedPoolBase: _POOL_TYPE = _POOL_TYPE::NonPagedPool;
+}
+impl _POOL_TYPE {
+    pub const NonPagedPoolBaseMustSucceed: _POOL_TYPE = _POOL_TYPE::NonPagedPoolMustSucceed;
+}
+impl _POOL_TYPE {
+    pub const NonPagedPoolBaseCacheAligned: _POOL_TYPE = _POOL_TYPE::NonPagedPoolCacheAligned;
+}
+impl _POOL_TYPE {
+    pub const NonPagedPoolBaseCacheAlignedMustS: _POOL_TYPE = _POOL_TYPE::NonPagedPoolCacheAlignedMustS;
+}
+#[repr(i32)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum _POOL_TYPE {
+    NonPagedPool = 0,
+    PagedPool = 1,
+    NonPagedPoolMustSucceed = 2,
+    DontUseThisType = 3,
+    NonPagedPoolCacheAligned = 4,
+    PagedPoolCacheAligned = 5,
+    NonPagedPoolCacheAlignedMustS = 6,
+    MaxPoolType = 7,
+    NonPagedPoolSession = 32,
+    PagedPoolSession = 33,
+    NonPagedPoolMustSucceedSession = 34,
+    DontUseThisTypeSession = 35,
+    NonPagedPoolCacheAlignedSession = 36,
+    PagedPoolCacheAlignedSession = 37,
+    NonPagedPoolCacheAlignedMustSSession = 38,
+    NonPagedPoolNx = 512,
+    NonPagedPoolNxCacheAligned = 516,
+    NonPagedPoolSessionNx = 544,
+}
 extern "C" {
     pub fn ExAllocatePoolWithTag(PoolType: POOL_TYPE, NumberOfBytes: SIZE_T, Tag: ULONG) -> PVOID;
 }
@@ -2374,10 +2425,13 @@ pub struct _FAST_IO_DISPATCH {
     pub ReleaseForCcFlush: PFAST_IO_RELEASE_FOR_CCFLUSH,
 }
 pub type PFAST_IO_DISPATCH = *mut _FAST_IO_DISPATCH;
-pub const _IO_ALLOCATION_ACTION_KeepObject: _IO_ALLOCATION_ACTION = 1;
-pub const _IO_ALLOCATION_ACTION_DeallocateObject: _IO_ALLOCATION_ACTION = 2;
-pub const _IO_ALLOCATION_ACTION_DeallocateObjectKeepRegisters: _IO_ALLOCATION_ACTION = 3;
-pub type _IO_ALLOCATION_ACTION = crate::include::raw::c_int;
+#[repr(i32)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum _IO_ALLOCATION_ACTION {
+    KeepObject = 1,
+    DeallocateObject = 2,
+    DeallocateObjectKeepRegisters = 3,
+}
 pub use self::_IO_ALLOCATION_ACTION as IO_ALLOCATION_ACTION;
 pub type DRIVER_CONTROL = ::core::option::Option<
     unsafe extern "C" fn(
@@ -2768,23 +2822,29 @@ pub type PIRP = *mut IRP;
 pub type IO_COMPLETION_ROUTINE =
     ::core::option::Option<unsafe extern "C" fn(DeviceObject: PDEVICE_OBJECT, Irp: PIRP, Context: PVOID) -> NTSTATUS>;
 pub type PIO_COMPLETION_ROUTINE = IO_COMPLETION_ROUTINE;
-pub const _DEVICE_RELATION_TYPE_BusRelations: _DEVICE_RELATION_TYPE = 0;
-pub const _DEVICE_RELATION_TYPE_EjectionRelations: _DEVICE_RELATION_TYPE = 1;
-pub const _DEVICE_RELATION_TYPE_PowerRelations: _DEVICE_RELATION_TYPE = 2;
-pub const _DEVICE_RELATION_TYPE_RemovalRelations: _DEVICE_RELATION_TYPE = 3;
-pub const _DEVICE_RELATION_TYPE_TargetDeviceRelation: _DEVICE_RELATION_TYPE = 4;
-pub const _DEVICE_RELATION_TYPE_SingleBusRelations: _DEVICE_RELATION_TYPE = 5;
-pub const _DEVICE_RELATION_TYPE_TransportRelations: _DEVICE_RELATION_TYPE = 6;
-pub type _DEVICE_RELATION_TYPE = crate::include::raw::c_int;
+#[repr(i32)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum _DEVICE_RELATION_TYPE {
+    BusRelations = 0,
+    EjectionRelations = 1,
+    PowerRelations = 2,
+    RemovalRelations = 3,
+    TargetDeviceRelation = 4,
+    SingleBusRelations = 5,
+    TransportRelations = 6,
+}
 pub use self::_DEVICE_RELATION_TYPE as DEVICE_RELATION_TYPE;
-pub const _DEVICE_USAGE_NOTIFICATION_TYPE_DeviceUsageTypeUndefined: _DEVICE_USAGE_NOTIFICATION_TYPE = 0;
-pub const _DEVICE_USAGE_NOTIFICATION_TYPE_DeviceUsageTypePaging: _DEVICE_USAGE_NOTIFICATION_TYPE = 1;
-pub const _DEVICE_USAGE_NOTIFICATION_TYPE_DeviceUsageTypeHibernation: _DEVICE_USAGE_NOTIFICATION_TYPE = 2;
-pub const _DEVICE_USAGE_NOTIFICATION_TYPE_DeviceUsageTypeDumpFile: _DEVICE_USAGE_NOTIFICATION_TYPE = 3;
-pub const _DEVICE_USAGE_NOTIFICATION_TYPE_DeviceUsageTypeBoot: _DEVICE_USAGE_NOTIFICATION_TYPE = 4;
-pub const _DEVICE_USAGE_NOTIFICATION_TYPE_DeviceUsageTypePostDisplay: _DEVICE_USAGE_NOTIFICATION_TYPE = 5;
-pub const _DEVICE_USAGE_NOTIFICATION_TYPE_DeviceUsageTypeGuestAssigned: _DEVICE_USAGE_NOTIFICATION_TYPE = 6;
-pub type _DEVICE_USAGE_NOTIFICATION_TYPE = crate::include::raw::c_int;
+#[repr(i32)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum _DEVICE_USAGE_NOTIFICATION_TYPE {
+    DeviceUsageTypeUndefined = 0,
+    DeviceUsageTypePaging = 1,
+    DeviceUsageTypeHibernation = 2,
+    DeviceUsageTypeDumpFile = 3,
+    DeviceUsageTypeBoot = 4,
+    DeviceUsageTypePostDisplay = 5,
+    DeviceUsageTypeGuestAssigned = 6,
+}
 pub use self::_DEVICE_USAGE_NOTIFICATION_TYPE as DEVICE_USAGE_NOTIFICATION_TYPE;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -3209,16 +3269,22 @@ pub struct _POWER_SEQUENCE {
     pub SequenceD3: ULONG,
 }
 pub type PPOWER_SEQUENCE = *mut _POWER_SEQUENCE;
-pub const BUS_QUERY_ID_TYPE_BusQueryDeviceID: BUS_QUERY_ID_TYPE = 0;
-pub const BUS_QUERY_ID_TYPE_BusQueryHardwareIDs: BUS_QUERY_ID_TYPE = 1;
-pub const BUS_QUERY_ID_TYPE_BusQueryCompatibleIDs: BUS_QUERY_ID_TYPE = 2;
-pub const BUS_QUERY_ID_TYPE_BusQueryInstanceID: BUS_QUERY_ID_TYPE = 3;
-pub const BUS_QUERY_ID_TYPE_BusQueryDeviceSerialNumber: BUS_QUERY_ID_TYPE = 4;
-pub const BUS_QUERY_ID_TYPE_BusQueryContainerID: BUS_QUERY_ID_TYPE = 5;
-pub type BUS_QUERY_ID_TYPE = crate::include::raw::c_int;
-pub const DEVICE_TEXT_TYPE_DeviceTextDescription: DEVICE_TEXT_TYPE = 0;
-pub const DEVICE_TEXT_TYPE_DeviceTextLocationInformation: DEVICE_TEXT_TYPE = 1;
-pub type DEVICE_TEXT_TYPE = crate::include::raw::c_int;
+#[repr(i32)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum BUS_QUERY_ID_TYPE {
+    BusQueryDeviceID = 0,
+    BusQueryHardwareIDs = 1,
+    BusQueryCompatibleIDs = 2,
+    BusQueryInstanceID = 3,
+    BusQueryDeviceSerialNumber = 4,
+    BusQueryContainerID = 5,
+}
+#[repr(i32)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum DEVICE_TEXT_TYPE {
+    DeviceTextDescription = 0,
+    DeviceTextLocationInformation = 1,
+}
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct _IO_STACK_LOCATION {
@@ -3757,6 +3823,28 @@ extern "C" {
 }
 pub type BYTE = crate::include::raw::c_uchar;
 #[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct HDC__ {
+    pub unused: crate::include::raw::c_int,
+}
+pub type HDC = *mut HDC__;
+#[repr(i32)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum _SYSTEM_INFORMATION_CLASS {
+    SystemBasicInformation = 0,
+    SystemProcessorInformation = 1,
+    SystemPerformanceInformation = 2,
+    SystemTimeOfDayInformation = 3,
+    SystemPathInformation = 4,
+    SystemProcessInformation = 5,
+    SystemCallCountInformation = 6,
+    SystemDeviceInformation = 7,
+    SystemProcessorPerformanceInformation = 8,
+    SystemFlagsInformation = 9,
+    SystemCallTimeInformation = 10,
+    SystemModuleInformation = 11,
+}
+#[repr(C)]
 #[derive(Copy, Clone)]
 pub struct _RTL_PROCESS_MODULE_INFORMATION {
     pub Section: HANDLE,
@@ -3894,6 +3982,21 @@ pub struct _LDR_DATA_TABLE_ENTRY {
     pub CheckSum: ULONG,
     pub TimeDateStamp: ULONG,
 }
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct _SYSTEM_PROCESS_INFO {
+    pub NextEntryOffset: ULONG,
+    pub NumberOfThreads: ULONG,
+    pub Reserved: [LARGE_INTEGER; 3usize],
+    pub CreateTime: LARGE_INTEGER,
+    pub UserTime: LARGE_INTEGER,
+    pub KernelTime: LARGE_INTEGER,
+    pub ImageName: UNICODE_STRING,
+    pub BasePriority: ULONG,
+    pub ProcessId: HANDLE,
+    pub InheritedFromProcessId: HANDLE,
+}
+pub type SYSTEM_PROCESS_INFO = _SYSTEM_PROCESS_INFO;
 extern "C" {
     pub fn RtlFindExportedRoutineByName(ImageBase: PVOID, RoutineName: PCCH) -> PVOID;
 }

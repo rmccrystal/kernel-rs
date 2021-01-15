@@ -18,7 +18,7 @@ script = [
 ignore_errors = true
 script = [
     "cd %TARGET_PATH%",
-    "rename driver.dll driver.sys",
+    "cp -f driver.dll driver.sys",
 ]
 
 [tasks.map]

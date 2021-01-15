@@ -9,17 +9,21 @@ extern crate alloc;
 
 use core::intrinsics::abort;
 
+use cstr_core::{CStr, CString};
 use log::*;
 
-use crate::kernel::{get_kernel_module_export, KernelError, get_kernel_modules, find_kernel_module};
-use crate::util::KernelAlloc;
+use crate::include::{PDRIVER_OBJECT, PUNICODE_STRING};
+use crate::kernel::{find_kernel_module, get_kernel_module_export, get_kernel_modules, get_process_list, KernelError, Process};
+use crate::util::{KernelAlloc};
 use crate::util::log::KernelLogger;
-use crate::include::{PUNICODE_STRING, PDRIVER_OBJECT};
+use alloc::string::ToString;
 
 pub mod include;
 pub mod kernel;
+#[macro_use]
 pub mod util;
 pub mod dispatch;
+pub mod hooks;
 
 /// When using the alloc crate it seems like it does some unwinding. Adding this
 /// export satisfies the compiler but may introduce undefined behaviour when a
@@ -54,12 +58,7 @@ unsafe fn main() -> Result<u32, KernelError> {
 
     kernel::hook_function(address, dispatch::hook);
 
-    debug!("Finding win32kfull.sys address");
-    let win32k = find_kernel_module(&modules, "win32kfull.sys").ok_or("could not find win32k.sys")?;
-    debug!("Found win32kfull.sys: {:p}", win32k);
-    let nt_gdi_bit_blt = get_kernel_module_export(win32k, "NtGdiBitBlt").ok_or("could not find NtGdiBitBlt")?;
-    info!("{:p}", nt_gdi_bit_blt);
-    // kernel::hook_function(nt_gdi_bit_blt, |_| info!("hook called"));
+    hooks::init_hooks()?;
 
     Ok(0)
 }
@@ -84,3 +83,4 @@ pub extern "system" fn driver_entry(driver_object: PDRIVER_OBJECT, _registry_pat
 pub unsafe extern "C" fn driver_unload(driver_object: PDRIVER_OBJECT) {
     info!("kernel-rs unloaded");
 }
+

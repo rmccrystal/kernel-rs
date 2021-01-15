@@ -4,6 +4,7 @@ use std::{
     path::{Path, PathBuf},
 };
 use winreg::{enums::*, RegKey};
+use bindgen::EnumVariation;
 
 /// Returns the path to the `Windows Kits` directory. It's by default at
 /// `C:\Program Files (x86)\Windows Kits\10`.
@@ -138,11 +139,17 @@ fn main() {
         .whitelist_function("IoGetCurrentProcess")
         .whitelist_type("_LDR_DATA_TABLE_ENTRY")
 
+        .whitelist_type("_SYSTEM_INFORMATION_CLASS")
+        .whitelist_type("SYSTEM_PROCESS_INFO")
+        .whitelist_type("HDC")
+
         .whitelist_function("NtGdiBitBlt")
 
         .whitelist_type("PDRIVER_OBJECT")
 
         .ctypes_prefix("crate::include::raw")
+        .derive_debug(true)
+        .default_enum_style(EnumVariation::Rust {non_exhaustive: false})
         .use_core()
         .layout_tests(false)
         .generate()
