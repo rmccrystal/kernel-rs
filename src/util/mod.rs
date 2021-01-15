@@ -4,6 +4,7 @@ pub use vsb::VariableSizedBox;
 
 pub use self::alloc::KernelAlloc;
 
+#[macro_use]
 pub mod log;
 mod string;
 mod alloc;
