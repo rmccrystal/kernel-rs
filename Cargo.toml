@@ -5,6 +5,11 @@ authors = ["not-matthias", "rmccrystal"]
 edition = "2018"
 build = "build.rs"
 
+[workspace]
+members = [
+    "kernel-client"
+]
+
 [lib]
 path = "src/lib.rs"
 crate-type = ["cdylib"]
