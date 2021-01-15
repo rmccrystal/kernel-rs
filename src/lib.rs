@@ -58,7 +58,7 @@ unsafe fn main() -> Result<u32, KernelError> {
 
     kernel::hook_function(address, dispatch::hook);
 
-    hooks::init_hooks()?;
+    // hooks::init_hooks()?;
 
     Ok(0)
 }
