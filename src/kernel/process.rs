@@ -9,7 +9,7 @@ use winapi::km::wdm::KPROCESSOR_MODE::KernelMode;
 
 use crate::include::{_KAPC_STATE, _LDR_DATA_TABLE_ENTRY, IoGetCurrentProcess, KeStackAttachProcess, KeUnstackDetachProcess, LDR_DATA_TABLE_ENTRY32, MmCopyVirtualMemory, MmIsAddressValid, ObfDereferenceObject, PEPROCESS, PPEB, PPEB32, PPEB_LDR_DATA32, PsGetProcessPeb, PsGetProcessWow64Process, PsLookupProcessByProcessId};
 use crate::kernel::KernelError;
-use crate::util::{ListEntryIterator, ListEntryIterator32};
+use crate::util::{ListEntryIterator, ListEntryIterator32, is_address_valid};
 
 use super::Result;
 use super::ToKernelResult;
@@ -105,11 +105,11 @@ impl Process {
     pub fn read_memory(&self, address: u64, size: u64) -> Result<Vec<u8>> {
         let _attach = self.attach();
 
-        if !unsafe { MmIsAddressValid(address as _) } {
+        if !is_address_valid(address as *const ()) {
             return Err(KernelError::text(&format!("{:X} is not a valid address", address)));
         }
 
-        if !unsafe { MmIsAddressValid((address + size - 1) as _) } {
+        if !is_address_valid((address + size - 1) as *const ()) {
             return Err(KernelError::text(
                 &format!("{:X} was valid, but {:X} + {:X} (size) - 1 = {:X} was not", address, address, size, (address + size - 1))));
         }
@@ -144,11 +144,11 @@ impl Process {
     pub fn write_memory(&self, address: u64, buf: &[u8]) -> Result<()> {
         let _attach = self.attach();
 
-        if !unsafe { MmIsAddressValid(address as _) } {
+        if !is_address_valid(address as *const ()) {
             return Err(KernelError::text(&format!("{:X} is not a valid address", address)));
         }
 
-        if !unsafe { MmIsAddressValid((address + buf.len() as u64 - 1) as _) } {
+        if !is_address_valid((address + buf.len() as u64 - 1) as *const ()) {
             return Err(KernelError::text(
                 &format!("{:X} was valid, but {:X} + {:X} (size) - 1 = {:X} was not", address, address, buf.len(), (address + buf.len() as u64 - 1))));
         }

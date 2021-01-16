@@ -1,5 +1,5 @@
 [package]
-name = "driver"
+name = "kernel-rs"
 version = "0.1.0"
 authors = ["not-matthias", "rmccrystal"]
 edition = "2018"

@@ -3,10 +3,11 @@ use alloc::vec::Vec;
 use log::*;
 
 use crate::include::{UNICODE_STRING, UNICODE_STRING32, MmIsAddressValid};
+use crate::util::is_address_valid;
 
 impl alloc::string::ToString for UNICODE_STRING {
     fn to_string(&self) -> String {
-        if unsafe { !MmIsAddressValid(self.Buffer as _) } {
+        if !is_address_valid(self.Buffer) {
             error!("Attempted to convert an invalid UNICODE_STRING (buffer: {:p})", self.Buffer);
             return "".to_string()
         }
@@ -22,7 +23,7 @@ impl alloc::string::ToString for UNICODE_STRING {
 
 impl alloc::string::ToString for UNICODE_STRING32 {
     fn to_string(&self) -> String {
-        if unsafe { !MmIsAddressValid(self.Buffer as _) } {
+        if !is_address_valid(self.Buffer as *const u8) {
             panic!("Attempted to convert an invalid UNICODE_STRING")
         }
         let mut buf = Vec::new();

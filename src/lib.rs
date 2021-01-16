@@ -12,9 +12,9 @@ use core::intrinsics::abort;
 use cstr_core::{CStr, CString};
 use log::*;
 
-use crate::include::{PDRIVER_OBJECT, PUNICODE_STRING};
+use crate::include::{PDRIVER_OBJECT, PUNICODE_STRING, MmIsAddressValid};
 use crate::kernel::{find_kernel_module, get_kernel_module_export, get_kernel_modules, get_process_list, KernelError, Process};
-use crate::util::{KernelAlloc};
+use crate::util::{KernelAlloc, is_address_valid};
 use crate::util::log::KernelLogger;
 use alloc::string::ToString;
 
@@ -69,7 +69,10 @@ pub extern "system" fn driver_entry(driver_object: PDRIVER_OBJECT, _registry_pat
         error!("Error setting logger: {:?}", e);
     }
 
-    unsafe { (*driver_object).DriverUnload = Some(driver_unload) };
+    // Only set driver unload if we're not manual mapping
+    if is_address_valid(driver_object) {
+        unsafe { (*driver_object).DriverUnload = Some(driver_unload) };
+    }
 
     match unsafe { main() } {
         Ok(code) => code,

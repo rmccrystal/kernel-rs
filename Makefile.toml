@@ -1,5 +1,7 @@
 [env]
 DRIVER_NAME = "kernel-rs"
+CARGO_NAME = "kernel_rs"
+CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER = "kernel-rs"
 
 [env.development]
 TARGET_PATH = "target/x86_64-pc-windows-msvc/debug"
@@ -18,13 +20,13 @@ script = [
 ignore_errors = true
 script = [
     "cd %TARGET_PATH%",
-    "cp -f driver.dll driver.sys",
+    "cp -f %CARGO_NAME%.dll %CARGO_NAME%.sys",
 ]
 
 [tasks.map]
 dependencies = ["rename"]
 script = [
-    "kdmapper.exe %TARGET_PATH%/driver.sys"
+    "kdmapper.exe %TARGET_PATH%/%CARGO_NAME%.sys"
 ]
 
 [tasks.load]
@@ -32,6 +34,6 @@ dependencies = ["rename"]
 script = [
     "sc stop %DRIVER_NAME%",
     "sc delete %DRIVER_NAME%",
-    "sc create %DRIVER_NAME% binPath= %CARGO_MAKE_WORKING_DIRECTORY%/%TARGET_PATH%/driver.sys type= kernel",
+    "sc create %DRIVER_NAME% binPath= %CARGO_MAKE_WORKING_DIRECTORY%/%TARGET_PATH%/%CARGO_NAME% type= kernel",
     "sc start %DRIVER_NAME%"
 ]
