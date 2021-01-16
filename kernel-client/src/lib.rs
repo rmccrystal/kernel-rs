@@ -67,7 +67,7 @@ macro_rules! request_no_resp {
 }
 
 impl KernelHandle {
-    fn ping(&self) -> Result<()> {
+    pub fn ping(&self) -> Result<()> {
         request_no_resp!(
             self,
             Request::Ping,
@@ -75,7 +75,7 @@ impl KernelHandle {
         )
     }
 
-    fn module_info(&self, pid: u64) -> Result<Vec<ModuleInfo>> {
+    pub fn module_info(&self, pid: u64) -> Result<Vec<ModuleInfo>> {
         request!(
             self,
             Request::ModuleInfo(pid),
@@ -83,7 +83,7 @@ impl KernelHandle {
         )
     }
 
-    fn get_peb_address(&self, pid: u64) -> Result<u64> {
+    pub fn get_peb_address(&self, pid: u64) -> Result<u64> {
         request!(
             self,
             Request::GetPebAddress(pid),
@@ -91,18 +91,18 @@ impl KernelHandle {
         )
     }
 
-    fn read_memory(&self, pid: u64, address: u64, size: u64) -> Result<Vec<u8>> {
-        request!(
+    pub fn read_memory(&self, pid: u64, address: u64, buf: &mut [u8]) -> Result<()> {
+        request_no_resp!(
             self,
-            Request::ReadMemory{pid, address, size},
+            Request::ReadMemory{pid, address, buf},
             Response::ReadMemory
         )
     }
 
-    fn write_memory(&self, pid: u64, address: u64, bytes: &[u8]) -> Result<()> {
+    pub fn write_memory(&self, pid: u64, address: u64, buf: &[u8]) -> Result<()> {
         request_no_resp!(
             self,
-            Request::WriteMemory {pid, address, buf: bytes.to_vec()},
+            Request::WriteMemory {pid, address, buf},
             Response::WriteMemory
         )
     }

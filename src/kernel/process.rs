@@ -102,19 +102,17 @@ impl Process {
         }
     }
 
-    pub fn read_memory(&self, address: u64, size: u64) -> Result<Vec<u8>> {
+    pub fn read_memory(&self, address: u64, buf: &mut [u8]) -> Result<()> {
         let _attach = self.attach();
 
         if !is_address_valid(address as *const ()) {
             return Err(KernelError::text(&format!("{:X} is not a valid address", address)));
         }
 
-        if !is_address_valid((address + size - 1) as *const ()) {
+        if !is_address_valid((address + buf.len() as u64 - 1) as *const ()) {
             return Err(KernelError::text(
-                &format!("{:X} was valid, but {:X} + {:X} (size) - 1 = {:X} was not", address, address, size, (address + size - 1))));
+                &format!("{:X} was valid, but {:X} + {:X} (size) - 1 = {:X} was not", address, address, buf.len(), (address + buf.len() as u64 - 1))));
         }
-
-        let mut buf = vec![0u8; size as _];
 
         let mut bytes_copied: u64 = 0;
 
@@ -124,7 +122,7 @@ impl Process {
                 address as _,
                 IoGetCurrentProcess(),
                 buf.as_mut_ptr() as _,
-                size as _,
+                buf.len() as _,
                 KernelMode as _,
                 &mut bytes_copied as _,
             ).to_kernel_result()?;
@@ -134,11 +132,11 @@ impl Process {
             return Err(KernelError::text("no bytes were copied"));
         }
 
-        if bytes_copied < size {
-            warn!("Reading {} bytes from {:?} only returned {} bytes", size, address, bytes_copied);
+        if bytes_copied < buf.len() as _ {
+            warn!("Reading {} bytes from {:?} only returned {} bytes", buf.len(), address, bytes_copied);
         }
 
-        Ok(buf)
+        Ok(())
     }
 
     pub fn write_memory(&self, address: u64, buf: &[u8]) -> Result<()> {

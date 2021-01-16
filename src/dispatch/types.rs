@@ -6,13 +6,13 @@ use crate::kernel::{KernelError, ModuleInfo};
 
 pub type Pid = u64;
 
-#[derive(Clone, Debug)]
-pub enum Data {
+#[derive(Debug)]
+pub enum Data<'a> {
     // RunRequest runs the request and returns the length
     // so the caller can create a buffer for the variable
     // length data and collect it with WriteBuffer
     RunRequest {
-        req: Request,
+        req: Request<'a>,
         // number of bytes that will be returned when WriteBuffer is called
         response: *mut RunRequestResponse,
     },
@@ -30,20 +30,23 @@ pub enum RunRequestResponse {
     Response(Result<Response, KernelError>),
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub enum Request {
+#[derive(Debug, Serialize, Deserialize)]
+pub enum Request<'a> {
     Ping,
     ModuleInfo(Pid),
     GetPebAddress(Pid),
     ReadMemory {
         pid: Pid,
         address: u64,
-        size: u64,
+        #[serde(skip_serializing, skip_deserializing)]
+        buf: &'a mut [u8],
     },
     WriteMemory {
         pid: Pid,
         address: u64,
-        buf: Vec<u8>
+        // A pointer to a slice
+        #[serde(skip_serializing, skip_deserializing)]
+        buf: &'a [u8]
     },
 }
 
@@ -52,6 +55,6 @@ pub enum Response {
     Pong,
     ModuleInfo(Vec<ModuleInfo>),
     PebAddress(u64),
-    ReadMemory(Vec<u8>),
+    ReadMemory,
     WriteMemory,
 }

@@ -8,6 +8,7 @@ use crate::include::MmIsAddressValid;
 use crate::kernel::{KernelError};
 
 use super::types::*;
+use crate::util::is_address_valid;
 
 /// Holds the response after RunRequest is called
 // TODO: Maybe add some kind of ID so we can verify integrity
@@ -15,11 +16,11 @@ static mut RESPONSE_HOLD: Option<Vec<u8>> = None;
 
 /// The raw hook that is called
 pub unsafe fn hook(buf: *mut c_void) {
-    if !MmIsAddressValid(buf as _) {
+    if !is_address_valid(buf) {
         return;
     }
     let data_size = core::mem::size_of::<Data>();
-    if !MmIsAddressValid((buf as *mut u8).add(data_size - 1) as _) {
+    if !is_address_valid((buf as *mut u8).add(data_size - 1)) {
         error!("The buffer start address was valid but the buffer end address was not valid (Data struct size = {})", data_size);
         return;
     }
