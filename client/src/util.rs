@@ -25,7 +25,7 @@ pub(crate) fn error_code_to_message(code: u32) -> Option<String> {
         return None;
     }
 
-    let mut error_string = c_char_array_to_string(message_buf.to_vec());
+    let mut error_string = c_char_array_to_string(&message_buf);
 
     // Remove \n from end of string
     error_string.pop();
@@ -36,9 +36,9 @@ pub(crate) fn error_code_to_message(code: u32) -> Option<String> {
 }
 
 // Converts an i8 vec found in WINAPI structs to a string
-fn c_char_array_to_string(buff: Vec<i8>) -> String {
+fn c_char_array_to_string(buf: &[i8]) -> String {
     let mut new_string: Vec<u8> = Vec::new();
-    for c in buff {
+    for &c in buf {
         if c == 0i8 {
             break;
         }

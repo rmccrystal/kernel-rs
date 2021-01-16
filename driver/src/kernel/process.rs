@@ -37,10 +37,8 @@ impl Process {
         let modules_64 = self.get_modules_64();
         let modules_32 = self.get_modules_32();
 
-        if let Err(err) = &modules_64 {
-            if modules_32.is_err() {
-                return Err(err.clone());
-            }
+        if modules_64.is_err() && modules_32.is_err() {
+            return Err(KernelError::text(&format!("modules 64: {:?}, modules 32: {:?}", modules_64, modules_32)));
         }
 
         let mut modules = Vec::new();

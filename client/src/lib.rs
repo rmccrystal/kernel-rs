@@ -11,6 +11,9 @@ mod driver;
 mod types;
 mod util;
 
+#[cfg(test)]
+mod tests;
+
 pub struct KernelHandle {
     hook: extern "stdcall" fn(*mut c_void),
 }

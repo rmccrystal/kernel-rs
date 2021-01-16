@@ -8,10 +8,13 @@ pub struct __BindgenBitfieldUnit<Storage, Align> {
 }
 impl<Storage, Align> __BindgenBitfieldUnit<Storage, Align> {
     #[inline]
-    pub const fn new(storage: Storage) -> Self { Self { storage, align: [] } }
+    pub const fn new(storage: Storage) -> Self {
+        Self { storage, align: [] }
+    }
 }
 impl<Storage, Align> __BindgenBitfieldUnit<Storage, Align>
-where Storage: AsRef<[u8]> + AsMut<[u8]>
+where
+    Storage: AsRef<[u8]> + AsMut<[u8]>,
 {
     #[inline]
     pub fn get_bit(&self, index: usize) -> bool {
@@ -26,7 +29,6 @@ where Storage: AsRef<[u8]> + AsMut<[u8]>
         let mask = 1 << bit_index;
         byte & mask == mask
     }
-
     #[inline]
     pub fn set_bit(&mut self, index: usize, val: bool) {
         debug_assert!(index / 8 < self.storage.as_ref().len());
@@ -44,7 +46,6 @@ where Storage: AsRef<[u8]> + AsMut<[u8]>
             *byte &= !mask;
         }
     }
-
     #[inline]
     pub fn get(&self, bit_offset: usize, bit_width: u8) -> u64 {
         debug_assert!(bit_width <= 64);
@@ -63,7 +64,6 @@ where Storage: AsRef<[u8]> + AsMut<[u8]>
         }
         val
     }
-
     #[inline]
     pub fn set(&mut self, bit_offset: usize, bit_width: u8, val: u64) {
         debug_assert!(bit_width <= 64);
@@ -260,8 +260,9 @@ pub union _IO_STATUS_BLOCK__bindgen_ty_1 {
 }
 pub type IO_STATUS_BLOCK = _IO_STATUS_BLOCK;
 pub type PIO_STATUS_BLOCK = *mut _IO_STATUS_BLOCK;
-pub type PIO_APC_ROUTINE =
-    ::core::option::Option<unsafe extern "C" fn(ApcContext: PVOID, IoStatusBlock: PIO_STATUS_BLOCK, Reserved: ULONG)>;
+pub type PIO_APC_ROUTINE = ::core::option::Option<
+    unsafe extern "C" fn(ApcContext: PVOID, IoStatusBlock: PIO_STATUS_BLOCK, Reserved: ULONG),
+>;
 #[repr(i32)]
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
 pub enum _FILE_INFORMATION_CLASS {
@@ -501,8 +502,9 @@ pub struct _SYSTEM_POWER_STATE_CONTEXT__bindgen_ty_1__bindgen_ty_1 {
 }
 impl _SYSTEM_POWER_STATE_CONTEXT__bindgen_ty_1__bindgen_ty_1 {
     #[inline]
-    pub fn Reserved1(&self) -> ULONG { unsafe { ::core::mem::transmute(self._bitfield_1.get(0usize, 8u8) as u32) } }
-
+    pub fn Reserved1(&self) -> ULONG {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(0usize, 8u8) as u32) }
+    }
     #[inline]
     pub fn set_Reserved1(&mut self, val: ULONG) {
         unsafe {
@@ -510,12 +512,10 @@ impl _SYSTEM_POWER_STATE_CONTEXT__bindgen_ty_1__bindgen_ty_1 {
             self._bitfield_1.set(0usize, 8u8, val as u64)
         }
     }
-
     #[inline]
     pub fn TargetSystemState(&self) -> ULONG {
         unsafe { ::core::mem::transmute(self._bitfield_1.get(8usize, 4u8) as u32) }
     }
-
     #[inline]
     pub fn set_TargetSystemState(&mut self, val: ULONG) {
         unsafe {
@@ -523,12 +523,10 @@ impl _SYSTEM_POWER_STATE_CONTEXT__bindgen_ty_1__bindgen_ty_1 {
             self._bitfield_1.set(8usize, 4u8, val as u64)
         }
     }
-
     #[inline]
     pub fn EffectiveSystemState(&self) -> ULONG {
         unsafe { ::core::mem::transmute(self._bitfield_1.get(12usize, 4u8) as u32) }
     }
-
     #[inline]
     pub fn set_EffectiveSystemState(&mut self, val: ULONG) {
         unsafe {
@@ -536,12 +534,10 @@ impl _SYSTEM_POWER_STATE_CONTEXT__bindgen_ty_1__bindgen_ty_1 {
             self._bitfield_1.set(12usize, 4u8, val as u64)
         }
     }
-
     #[inline]
     pub fn CurrentSystemState(&self) -> ULONG {
         unsafe { ::core::mem::transmute(self._bitfield_1.get(16usize, 4u8) as u32) }
     }
-
     #[inline]
     pub fn set_CurrentSystemState(&mut self, val: ULONG) {
         unsafe {
@@ -549,12 +545,10 @@ impl _SYSTEM_POWER_STATE_CONTEXT__bindgen_ty_1__bindgen_ty_1 {
             self._bitfield_1.set(16usize, 4u8, val as u64)
         }
     }
-
     #[inline]
     pub fn IgnoreHibernationPath(&self) -> ULONG {
         unsafe { ::core::mem::transmute(self._bitfield_1.get(20usize, 1u8) as u32) }
     }
-
     #[inline]
     pub fn set_IgnoreHibernationPath(&mut self, val: ULONG) {
         unsafe {
@@ -562,12 +556,10 @@ impl _SYSTEM_POWER_STATE_CONTEXT__bindgen_ty_1__bindgen_ty_1 {
             self._bitfield_1.set(20usize, 1u8, val as u64)
         }
     }
-
     #[inline]
     pub fn PseudoTransition(&self) -> ULONG {
         unsafe { ::core::mem::transmute(self._bitfield_1.get(21usize, 1u8) as u32) }
     }
-
     #[inline]
     pub fn set_PseudoTransition(&mut self, val: ULONG) {
         unsafe {
@@ -575,12 +567,10 @@ impl _SYSTEM_POWER_STATE_CONTEXT__bindgen_ty_1__bindgen_ty_1 {
             self._bitfield_1.set(21usize, 1u8, val as u64)
         }
     }
-
     #[inline]
     pub fn KernelSoftReboot(&self) -> ULONG {
         unsafe { ::core::mem::transmute(self._bitfield_1.get(22usize, 1u8) as u32) }
     }
-
     #[inline]
     pub fn set_KernelSoftReboot(&mut self, val: ULONG) {
         unsafe {
@@ -588,12 +578,10 @@ impl _SYSTEM_POWER_STATE_CONTEXT__bindgen_ty_1__bindgen_ty_1 {
             self._bitfield_1.set(22usize, 1u8, val as u64)
         }
     }
-
     #[inline]
     pub fn DirectedDripsTransition(&self) -> ULONG {
         unsafe { ::core::mem::transmute(self._bitfield_1.get(23usize, 1u8) as u32) }
     }
-
     #[inline]
     pub fn set_DirectedDripsTransition(&mut self, val: ULONG) {
         unsafe {
@@ -601,10 +589,10 @@ impl _SYSTEM_POWER_STATE_CONTEXT__bindgen_ty_1__bindgen_ty_1 {
             self._bitfield_1.set(23usize, 1u8, val as u64)
         }
     }
-
     #[inline]
-    pub fn Reserved2(&self) -> ULONG { unsafe { ::core::mem::transmute(self._bitfield_1.get(24usize, 8u8) as u32) } }
-
+    pub fn Reserved2(&self) -> ULONG {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(24usize, 8u8) as u32) }
+    }
     #[inline]
     pub fn set_Reserved2(&mut self, val: ULONG) {
         unsafe {
@@ -612,14 +600,20 @@ impl _SYSTEM_POWER_STATE_CONTEXT__bindgen_ty_1__bindgen_ty_1 {
             self._bitfield_1.set(24usize, 8u8, val as u64)
         }
     }
-
     #[inline]
     pub fn new_bitfield_1(
-        Reserved1: ULONG, TargetSystemState: ULONG, EffectiveSystemState: ULONG, CurrentSystemState: ULONG,
-        IgnoreHibernationPath: ULONG, PseudoTransition: ULONG, KernelSoftReboot: ULONG, DirectedDripsTransition: ULONG,
+        Reserved1: ULONG,
+        TargetSystemState: ULONG,
+        EffectiveSystemState: ULONG,
+        CurrentSystemState: ULONG,
+        IgnoreHibernationPath: ULONG,
+        PseudoTransition: ULONG,
+        KernelSoftReboot: ULONG,
+        DirectedDripsTransition: ULONG,
         Reserved2: ULONG,
     ) -> __BindgenBitfieldUnit<[u8; 4usize], u8> {
-        let mut __bindgen_bitfield_unit: __BindgenBitfieldUnit<[u8; 4usize], u8> = Default::default();
+        let mut __bindgen_bitfield_unit: __BindgenBitfieldUnit<[u8; 4usize], u8> =
+            Default::default();
         __bindgen_bitfield_unit.set(0usize, 8u8, {
             let Reserved1: u32 = unsafe { ::core::mem::transmute(Reserved1) };
             Reserved1 as u64
@@ -637,7 +631,8 @@ impl _SYSTEM_POWER_STATE_CONTEXT__bindgen_ty_1__bindgen_ty_1 {
             CurrentSystemState as u64
         });
         __bindgen_bitfield_unit.set(20usize, 1u8, {
-            let IgnoreHibernationPath: u32 = unsafe { ::core::mem::transmute(IgnoreHibernationPath) };
+            let IgnoreHibernationPath: u32 =
+                unsafe { ::core::mem::transmute(IgnoreHibernationPath) };
             IgnoreHibernationPath as u64
         });
         __bindgen_bitfield_unit.set(21usize, 1u8, {
@@ -649,7 +644,8 @@ impl _SYSTEM_POWER_STATE_CONTEXT__bindgen_ty_1__bindgen_ty_1 {
             KernelSoftReboot as u64
         });
         __bindgen_bitfield_unit.set(23usize, 1u8, {
-            let DirectedDripsTransition: u32 = unsafe { ::core::mem::transmute(DirectedDripsTransition) };
+            let DirectedDripsTransition: u32 =
+                unsafe { ::core::mem::transmute(DirectedDripsTransition) };
             DirectedDripsTransition as u64
         });
         __bindgen_bitfield_unit.set(24usize, 8u8, {
@@ -714,8 +710,10 @@ pub struct _CM_PARTIAL_RESOURCE_DESCRIPTOR__bindgen_ty_1__bindgen_ty_4 {
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub union _CM_PARTIAL_RESOURCE_DESCRIPTOR__bindgen_ty_1__bindgen_ty_4__bindgen_ty_1 {
-    pub Raw: _CM_PARTIAL_RESOURCE_DESCRIPTOR__bindgen_ty_1__bindgen_ty_4__bindgen_ty_1__bindgen_ty_1,
-    pub Translated: _CM_PARTIAL_RESOURCE_DESCRIPTOR__bindgen_ty_1__bindgen_ty_4__bindgen_ty_1__bindgen_ty_2,
+    pub Raw:
+        _CM_PARTIAL_RESOURCE_DESCRIPTOR__bindgen_ty_1__bindgen_ty_4__bindgen_ty_1__bindgen_ty_1,
+    pub Translated:
+        _CM_PARTIAL_RESOURCE_DESCRIPTOR__bindgen_ty_1__bindgen_ty_4__bindgen_ty_1__bindgen_ty_2,
     _bindgen_union_align: [u32; 4usize],
 }
 #[repr(C, packed(4))]
@@ -1023,7 +1021,12 @@ pub struct _KAPC {
 }
 pub type KAPC = _KAPC;
 pub type KDEFERRED_ROUTINE = ::core::option::Option<
-    unsafe extern "C" fn(Dpc: *mut _KDPC, DeferredContext: PVOID, SystemArgument1: PVOID, SystemArgument2: PVOID),
+    unsafe extern "C" fn(
+        Dpc: *mut _KDPC,
+        DeferredContext: PVOID,
+        SystemArgument1: PVOID,
+        SystemArgument2: PVOID,
+    ),
 >;
 pub type PKDEFERRED_ROUTINE = KDEFERRED_ROUTINE;
 #[repr(C)]
@@ -1113,7 +1116,8 @@ pub struct _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_3 {
 #[derive(Copy, Clone)]
 pub union _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_3__bindgen_ty_1 {
     pub TimerControlFlags: UCHAR,
-    pub __bindgen_anon_1: _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_3__bindgen_ty_1__bindgen_ty_1,
+    pub __bindgen_anon_1:
+        _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_3__bindgen_ty_1__bindgen_ty_1,
     _bindgen_union_align: u8,
 }
 #[repr(C, packed)]
@@ -1123,8 +1127,9 @@ pub struct _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_3__bindgen_ty_1__bindgen
 }
 impl _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_3__bindgen_ty_1__bindgen_ty_1 {
     #[inline]
-    pub fn Absolute(&self) -> UCHAR { unsafe { ::core::mem::transmute(self._bitfield_1.get(0usize, 1u8) as u8) } }
-
+    pub fn Absolute(&self) -> UCHAR {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(0usize, 1u8) as u8) }
+    }
     #[inline]
     pub fn set_Absolute(&mut self, val: UCHAR) {
         unsafe {
@@ -1132,10 +1137,10 @@ impl _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_3__bindgen_ty_1__bindgen_ty_1 
             self._bitfield_1.set(0usize, 1u8, val as u64)
         }
     }
-
     #[inline]
-    pub fn Wake(&self) -> UCHAR { unsafe { ::core::mem::transmute(self._bitfield_1.get(1usize, 1u8) as u8) } }
-
+    pub fn Wake(&self) -> UCHAR {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(1usize, 1u8) as u8) }
+    }
     #[inline]
     pub fn set_Wake(&mut self, val: UCHAR) {
         unsafe {
@@ -1143,12 +1148,10 @@ impl _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_3__bindgen_ty_1__bindgen_ty_1 
             self._bitfield_1.set(1usize, 1u8, val as u64)
         }
     }
-
     #[inline]
     pub fn EncodedTolerableDelay(&self) -> UCHAR {
         unsafe { ::core::mem::transmute(self._bitfield_1.get(2usize, 6u8) as u8) }
     }
-
     #[inline]
     pub fn set_EncodedTolerableDelay(&mut self, val: UCHAR) {
         unsafe {
@@ -1156,12 +1159,14 @@ impl _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_3__bindgen_ty_1__bindgen_ty_1 
             self._bitfield_1.set(2usize, 6u8, val as u64)
         }
     }
-
     #[inline]
     pub fn new_bitfield_1(
-        Absolute: UCHAR, Wake: UCHAR, EncodedTolerableDelay: UCHAR,
+        Absolute: UCHAR,
+        Wake: UCHAR,
+        EncodedTolerableDelay: UCHAR,
     ) -> __BindgenBitfieldUnit<[u8; 1usize], u8> {
-        let mut __bindgen_bitfield_unit: __BindgenBitfieldUnit<[u8; 1usize], u8> = Default::default();
+        let mut __bindgen_bitfield_unit: __BindgenBitfieldUnit<[u8; 1usize], u8> =
+            Default::default();
         __bindgen_bitfield_unit.set(0usize, 1u8, {
             let Absolute: u8 = unsafe { ::core::mem::transmute(Absolute) };
             Absolute as u64
@@ -1171,7 +1176,8 @@ impl _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_3__bindgen_ty_1__bindgen_ty_1 
             Wake as u64
         });
         __bindgen_bitfield_unit.set(2usize, 6u8, {
-            let EncodedTolerableDelay: u8 = unsafe { ::core::mem::transmute(EncodedTolerableDelay) };
+            let EncodedTolerableDelay: u8 =
+                unsafe { ::core::mem::transmute(EncodedTolerableDelay) };
             EncodedTolerableDelay as u64
         });
         __bindgen_bitfield_unit
@@ -1181,7 +1187,8 @@ impl _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_3__bindgen_ty_1__bindgen_ty_1 
 #[derive(Copy, Clone)]
 pub union _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_3__bindgen_ty_2 {
     pub TimerMiscFlags: UCHAR,
-    pub __bindgen_anon_1: _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_3__bindgen_ty_2__bindgen_ty_1,
+    pub __bindgen_anon_1:
+        _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_3__bindgen_ty_2__bindgen_ty_1,
     _bindgen_union_align: u8,
 }
 #[repr(C, packed)]
@@ -1191,8 +1198,9 @@ pub struct _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_3__bindgen_ty_2__bindgen
 }
 impl _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_3__bindgen_ty_2__bindgen_ty_1 {
     #[inline]
-    pub fn Index(&self) -> UCHAR { unsafe { ::core::mem::transmute(self._bitfield_1.get(0usize, 6u8) as u8) } }
-
+    pub fn Index(&self) -> UCHAR {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(0usize, 6u8) as u8) }
+    }
     #[inline]
     pub fn set_Index(&mut self, val: UCHAR) {
         unsafe {
@@ -1200,10 +1208,10 @@ impl _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_3__bindgen_ty_2__bindgen_ty_1 
             self._bitfield_1.set(0usize, 6u8, val as u64)
         }
     }
-
     #[inline]
-    pub fn Inserted(&self) -> UCHAR { unsafe { ::core::mem::transmute(self._bitfield_1.get(6usize, 1u8) as u8) } }
-
+    pub fn Inserted(&self) -> UCHAR {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(6usize, 1u8) as u8) }
+    }
     #[inline]
     pub fn set_Inserted(&mut self, val: UCHAR) {
         unsafe {
@@ -1211,10 +1219,10 @@ impl _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_3__bindgen_ty_2__bindgen_ty_1 
             self._bitfield_1.set(6usize, 1u8, val as u64)
         }
     }
-
     #[inline]
-    pub fn Expired(&self) -> UCHAR { unsafe { ::core::mem::transmute(self._bitfield_1.get(7usize, 1u8) as u8) } }
-
+    pub fn Expired(&self) -> UCHAR {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(7usize, 1u8) as u8) }
+    }
     #[inline]
     pub fn set_Expired(&mut self, val: UCHAR) {
         unsafe {
@@ -1222,10 +1230,14 @@ impl _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_3__bindgen_ty_2__bindgen_ty_1 
             self._bitfield_1.set(7usize, 1u8, val as u64)
         }
     }
-
     #[inline]
-    pub fn new_bitfield_1(Index: UCHAR, Inserted: UCHAR, Expired: UCHAR) -> __BindgenBitfieldUnit<[u8; 1usize], u8> {
-        let mut __bindgen_bitfield_unit: __BindgenBitfieldUnit<[u8; 1usize], u8> = Default::default();
+    pub fn new_bitfield_1(
+        Index: UCHAR,
+        Inserted: UCHAR,
+        Expired: UCHAR,
+    ) -> __BindgenBitfieldUnit<[u8; 1usize], u8> {
+        let mut __bindgen_bitfield_unit: __BindgenBitfieldUnit<[u8; 1usize], u8> =
+            Default::default();
         __bindgen_bitfield_unit.set(0usize, 6u8, {
             let Index: u8 = unsafe { ::core::mem::transmute(Index) };
             Index as u64
@@ -1253,7 +1265,8 @@ pub struct _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_4 {
 #[derive(Copy, Clone)]
 pub union _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_4__bindgen_ty_1 {
     pub Timer2Flags: UCHAR,
-    pub __bindgen_anon_1: _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_4__bindgen_ty_1__bindgen_ty_1,
+    pub __bindgen_anon_1:
+        _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_4__bindgen_ty_1__bindgen_ty_1,
     _bindgen_union_align: u8,
 }
 #[repr(C, packed)]
@@ -1263,8 +1276,9 @@ pub struct _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_4__bindgen_ty_1__bindgen
 }
 impl _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_4__bindgen_ty_1__bindgen_ty_1 {
     #[inline]
-    pub fn Timer2Inserted(&self) -> UCHAR { unsafe { ::core::mem::transmute(self._bitfield_1.get(0usize, 1u8) as u8) } }
-
+    pub fn Timer2Inserted(&self) -> UCHAR {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(0usize, 1u8) as u8) }
+    }
     #[inline]
     pub fn set_Timer2Inserted(&mut self, val: UCHAR) {
         unsafe {
@@ -1272,10 +1286,10 @@ impl _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_4__bindgen_ty_1__bindgen_ty_1 
             self._bitfield_1.set(0usize, 1u8, val as u64)
         }
     }
-
     #[inline]
-    pub fn Timer2Expiring(&self) -> UCHAR { unsafe { ::core::mem::transmute(self._bitfield_1.get(1usize, 1u8) as u8) } }
-
+    pub fn Timer2Expiring(&self) -> UCHAR {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(1usize, 1u8) as u8) }
+    }
     #[inline]
     pub fn set_Timer2Expiring(&mut self, val: UCHAR) {
         unsafe {
@@ -1283,12 +1297,10 @@ impl _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_4__bindgen_ty_1__bindgen_ty_1 
             self._bitfield_1.set(1usize, 1u8, val as u64)
         }
     }
-
     #[inline]
     pub fn Timer2CancelPending(&self) -> UCHAR {
         unsafe { ::core::mem::transmute(self._bitfield_1.get(2usize, 1u8) as u8) }
     }
-
     #[inline]
     pub fn set_Timer2CancelPending(&mut self, val: UCHAR) {
         unsafe {
@@ -1296,12 +1308,10 @@ impl _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_4__bindgen_ty_1__bindgen_ty_1 
             self._bitfield_1.set(2usize, 1u8, val as u64)
         }
     }
-
     #[inline]
     pub fn Timer2SetPending(&self) -> UCHAR {
         unsafe { ::core::mem::transmute(self._bitfield_1.get(3usize, 1u8) as u8) }
     }
-
     #[inline]
     pub fn set_Timer2SetPending(&mut self, val: UCHAR) {
         unsafe {
@@ -1309,10 +1319,10 @@ impl _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_4__bindgen_ty_1__bindgen_ty_1 
             self._bitfield_1.set(3usize, 1u8, val as u64)
         }
     }
-
     #[inline]
-    pub fn Timer2Running(&self) -> UCHAR { unsafe { ::core::mem::transmute(self._bitfield_1.get(4usize, 1u8) as u8) } }
-
+    pub fn Timer2Running(&self) -> UCHAR {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(4usize, 1u8) as u8) }
+    }
     #[inline]
     pub fn set_Timer2Running(&mut self, val: UCHAR) {
         unsafe {
@@ -1320,10 +1330,10 @@ impl _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_4__bindgen_ty_1__bindgen_ty_1 
             self._bitfield_1.set(4usize, 1u8, val as u64)
         }
     }
-
     #[inline]
-    pub fn Timer2Disabled(&self) -> UCHAR { unsafe { ::core::mem::transmute(self._bitfield_1.get(5usize, 1u8) as u8) } }
-
+    pub fn Timer2Disabled(&self) -> UCHAR {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(5usize, 1u8) as u8) }
+    }
     #[inline]
     pub fn set_Timer2Disabled(&mut self, val: UCHAR) {
         unsafe {
@@ -1331,12 +1341,10 @@ impl _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_4__bindgen_ty_1__bindgen_ty_1 
             self._bitfield_1.set(5usize, 1u8, val as u64)
         }
     }
-
     #[inline]
     pub fn Timer2ReservedFlags(&self) -> UCHAR {
         unsafe { ::core::mem::transmute(self._bitfield_1.get(6usize, 2u8) as u8) }
     }
-
     #[inline]
     pub fn set_Timer2ReservedFlags(&mut self, val: UCHAR) {
         unsafe {
@@ -1344,13 +1352,18 @@ impl _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_4__bindgen_ty_1__bindgen_ty_1 
             self._bitfield_1.set(6usize, 2u8, val as u64)
         }
     }
-
     #[inline]
     pub fn new_bitfield_1(
-        Timer2Inserted: UCHAR, Timer2Expiring: UCHAR, Timer2CancelPending: UCHAR, Timer2SetPending: UCHAR,
-        Timer2Running: UCHAR, Timer2Disabled: UCHAR, Timer2ReservedFlags: UCHAR,
+        Timer2Inserted: UCHAR,
+        Timer2Expiring: UCHAR,
+        Timer2CancelPending: UCHAR,
+        Timer2SetPending: UCHAR,
+        Timer2Running: UCHAR,
+        Timer2Disabled: UCHAR,
+        Timer2ReservedFlags: UCHAR,
     ) -> __BindgenBitfieldUnit<[u8; 1usize], u8> {
-        let mut __bindgen_bitfield_unit: __BindgenBitfieldUnit<[u8; 1usize], u8> = Default::default();
+        let mut __bindgen_bitfield_unit: __BindgenBitfieldUnit<[u8; 1usize], u8> =
+            Default::default();
         __bindgen_bitfield_unit.set(0usize, 1u8, {
             let Timer2Inserted: u8 = unsafe { ::core::mem::transmute(Timer2Inserted) };
             Timer2Inserted as u64
@@ -1394,7 +1407,8 @@ pub struct _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_5 {
 #[derive(Copy, Clone)]
 pub union _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_5__bindgen_ty_1 {
     pub QueueControlFlags: UCHAR,
-    pub __bindgen_anon_1: _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_5__bindgen_ty_1__bindgen_ty_1,
+    pub __bindgen_anon_1:
+        _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_5__bindgen_ty_1__bindgen_ty_1,
     _bindgen_union_align: u8,
 }
 #[repr(C, packed)]
@@ -1404,8 +1418,9 @@ pub struct _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_5__bindgen_ty_1__bindgen
 }
 impl _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_5__bindgen_ty_1__bindgen_ty_1 {
     #[inline]
-    pub fn Abandoned(&self) -> UCHAR { unsafe { ::core::mem::transmute(self._bitfield_1.get(0usize, 1u8) as u8) } }
-
+    pub fn Abandoned(&self) -> UCHAR {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(0usize, 1u8) as u8) }
+    }
     #[inline]
     pub fn set_Abandoned(&mut self, val: UCHAR) {
         unsafe {
@@ -1413,12 +1428,10 @@ impl _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_5__bindgen_ty_1__bindgen_ty_1 
             self._bitfield_1.set(0usize, 1u8, val as u64)
         }
     }
-
     #[inline]
     pub fn DisableIncrement(&self) -> UCHAR {
         unsafe { ::core::mem::transmute(self._bitfield_1.get(1usize, 1u8) as u8) }
     }
-
     #[inline]
     pub fn set_DisableIncrement(&mut self, val: UCHAR) {
         unsafe {
@@ -1426,12 +1439,10 @@ impl _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_5__bindgen_ty_1__bindgen_ty_1 
             self._bitfield_1.set(1usize, 1u8, val as u64)
         }
     }
-
     #[inline]
     pub fn QueueReservedControlFlags(&self) -> UCHAR {
         unsafe { ::core::mem::transmute(self._bitfield_1.get(2usize, 6u8) as u8) }
     }
-
     #[inline]
     pub fn set_QueueReservedControlFlags(&mut self, val: UCHAR) {
         unsafe {
@@ -1439,12 +1450,14 @@ impl _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_5__bindgen_ty_1__bindgen_ty_1 
             self._bitfield_1.set(2usize, 6u8, val as u64)
         }
     }
-
     #[inline]
     pub fn new_bitfield_1(
-        Abandoned: UCHAR, DisableIncrement: UCHAR, QueueReservedControlFlags: UCHAR,
+        Abandoned: UCHAR,
+        DisableIncrement: UCHAR,
+        QueueReservedControlFlags: UCHAR,
     ) -> __BindgenBitfieldUnit<[u8; 1usize], u8> {
-        let mut __bindgen_bitfield_unit: __BindgenBitfieldUnit<[u8; 1usize], u8> = Default::default();
+        let mut __bindgen_bitfield_unit: __BindgenBitfieldUnit<[u8; 1usize], u8> =
+            Default::default();
         __bindgen_bitfield_unit.set(0usize, 1u8, {
             let Abandoned: u8 = unsafe { ::core::mem::transmute(Abandoned) };
             Abandoned as u64
@@ -1454,7 +1467,8 @@ impl _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_5__bindgen_ty_1__bindgen_ty_1 
             DisableIncrement as u64
         });
         __bindgen_bitfield_unit.set(2usize, 6u8, {
-            let QueueReservedControlFlags: u8 = unsafe { ::core::mem::transmute(QueueReservedControlFlags) };
+            let QueueReservedControlFlags: u8 =
+                unsafe { ::core::mem::transmute(QueueReservedControlFlags) };
             QueueReservedControlFlags as u64
         });
         __bindgen_bitfield_unit
@@ -1472,7 +1486,8 @@ pub struct _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_6 {
 #[derive(Copy, Clone)]
 pub union _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_6__bindgen_ty_1 {
     pub ThreadControlFlags: UCHAR,
-    pub __bindgen_anon_1: _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_6__bindgen_ty_1__bindgen_ty_1,
+    pub __bindgen_anon_1:
+        _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_6__bindgen_ty_1__bindgen_ty_1,
     _bindgen_union_align: u8,
 }
 #[repr(C, packed)]
@@ -1482,8 +1497,9 @@ pub struct _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_6__bindgen_ty_1__bindgen
 }
 impl _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_6__bindgen_ty_1__bindgen_ty_1 {
     #[inline]
-    pub fn CycleProfiling(&self) -> UCHAR { unsafe { ::core::mem::transmute(self._bitfield_1.get(0usize, 1u8) as u8) } }
-
+    pub fn CycleProfiling(&self) -> UCHAR {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(0usize, 1u8) as u8) }
+    }
     #[inline]
     pub fn set_CycleProfiling(&mut self, val: UCHAR) {
         unsafe {
@@ -1491,12 +1507,10 @@ impl _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_6__bindgen_ty_1__bindgen_ty_1 
             self._bitfield_1.set(0usize, 1u8, val as u64)
         }
     }
-
     #[inline]
     pub fn CounterProfiling(&self) -> UCHAR {
         unsafe { ::core::mem::transmute(self._bitfield_1.get(1usize, 1u8) as u8) }
     }
-
     #[inline]
     pub fn set_CounterProfiling(&mut self, val: UCHAR) {
         unsafe {
@@ -1504,12 +1518,10 @@ impl _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_6__bindgen_ty_1__bindgen_ty_1 
             self._bitfield_1.set(1usize, 1u8, val as u64)
         }
     }
-
     #[inline]
     pub fn GroupScheduling(&self) -> UCHAR {
         unsafe { ::core::mem::transmute(self._bitfield_1.get(2usize, 1u8) as u8) }
     }
-
     #[inline]
     pub fn set_GroupScheduling(&mut self, val: UCHAR) {
         unsafe {
@@ -1517,10 +1529,10 @@ impl _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_6__bindgen_ty_1__bindgen_ty_1 
             self._bitfield_1.set(2usize, 1u8, val as u64)
         }
     }
-
     #[inline]
-    pub fn AffinitySet(&self) -> UCHAR { unsafe { ::core::mem::transmute(self._bitfield_1.get(3usize, 1u8) as u8) } }
-
+    pub fn AffinitySet(&self) -> UCHAR {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(3usize, 1u8) as u8) }
+    }
     #[inline]
     pub fn set_AffinitySet(&mut self, val: UCHAR) {
         unsafe {
@@ -1528,10 +1540,10 @@ impl _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_6__bindgen_ty_1__bindgen_ty_1 
             self._bitfield_1.set(3usize, 1u8, val as u64)
         }
     }
-
     #[inline]
-    pub fn Tagged(&self) -> UCHAR { unsafe { ::core::mem::transmute(self._bitfield_1.get(4usize, 1u8) as u8) } }
-
+    pub fn Tagged(&self) -> UCHAR {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(4usize, 1u8) as u8) }
+    }
     #[inline]
     pub fn set_Tagged(&mut self, val: UCHAR) {
         unsafe {
@@ -1539,12 +1551,10 @@ impl _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_6__bindgen_ty_1__bindgen_ty_1 
             self._bitfield_1.set(4usize, 1u8, val as u64)
         }
     }
-
     #[inline]
     pub fn EnergyProfiling(&self) -> UCHAR {
         unsafe { ::core::mem::transmute(self._bitfield_1.get(5usize, 1u8) as u8) }
     }
-
     #[inline]
     pub fn set_EnergyProfiling(&mut self, val: UCHAR) {
         unsafe {
@@ -1552,12 +1562,10 @@ impl _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_6__bindgen_ty_1__bindgen_ty_1 
             self._bitfield_1.set(5usize, 1u8, val as u64)
         }
     }
-
     #[inline]
     pub fn SchedulerAssist(&self) -> UCHAR {
         unsafe { ::core::mem::transmute(self._bitfield_1.get(6usize, 1u8) as u8) }
     }
-
     #[inline]
     pub fn set_SchedulerAssist(&mut self, val: UCHAR) {
         unsafe {
@@ -1565,12 +1573,10 @@ impl _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_6__bindgen_ty_1__bindgen_ty_1 
             self._bitfield_1.set(6usize, 1u8, val as u64)
         }
     }
-
     #[inline]
     pub fn ThreadReservedControlFlags(&self) -> UCHAR {
         unsafe { ::core::mem::transmute(self._bitfield_1.get(7usize, 1u8) as u8) }
     }
-
     #[inline]
     pub fn set_ThreadReservedControlFlags(&mut self, val: UCHAR) {
         unsafe {
@@ -1578,13 +1584,19 @@ impl _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_6__bindgen_ty_1__bindgen_ty_1 
             self._bitfield_1.set(7usize, 1u8, val as u64)
         }
     }
-
     #[inline]
     pub fn new_bitfield_1(
-        CycleProfiling: UCHAR, CounterProfiling: UCHAR, GroupScheduling: UCHAR, AffinitySet: UCHAR, Tagged: UCHAR,
-        EnergyProfiling: UCHAR, SchedulerAssist: UCHAR, ThreadReservedControlFlags: UCHAR,
+        CycleProfiling: UCHAR,
+        CounterProfiling: UCHAR,
+        GroupScheduling: UCHAR,
+        AffinitySet: UCHAR,
+        Tagged: UCHAR,
+        EnergyProfiling: UCHAR,
+        SchedulerAssist: UCHAR,
+        ThreadReservedControlFlags: UCHAR,
     ) -> __BindgenBitfieldUnit<[u8; 1usize], u8> {
-        let mut __bindgen_bitfield_unit: __BindgenBitfieldUnit<[u8; 1usize], u8> = Default::default();
+        let mut __bindgen_bitfield_unit: __BindgenBitfieldUnit<[u8; 1usize], u8> =
+            Default::default();
         __bindgen_bitfield_unit.set(0usize, 1u8, {
             let CycleProfiling: u8 = unsafe { ::core::mem::transmute(CycleProfiling) };
             CycleProfiling as u64
@@ -1614,7 +1626,8 @@ impl _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_6__bindgen_ty_1__bindgen_ty_1 
             SchedulerAssist as u64
         });
         __bindgen_bitfield_unit.set(7usize, 1u8, {
-            let ThreadReservedControlFlags: u8 = unsafe { ::core::mem::transmute(ThreadReservedControlFlags) };
+            let ThreadReservedControlFlags: u8 =
+                unsafe { ::core::mem::transmute(ThreadReservedControlFlags) };
             ThreadReservedControlFlags as u64
         });
         __bindgen_bitfield_unit
@@ -1624,7 +1637,8 @@ impl _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_6__bindgen_ty_1__bindgen_ty_1 
 #[derive(Copy, Clone)]
 pub union _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_6__bindgen_ty_2 {
     pub DebugActive: UCHAR,
-    pub __bindgen_anon_1: _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_6__bindgen_ty_2__bindgen_ty_1,
+    pub __bindgen_anon_1:
+        _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_6__bindgen_ty_2__bindgen_ty_1,
     _bindgen_union_align: u8,
 }
 #[repr(C, packed)]
@@ -1634,8 +1648,9 @@ pub struct _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_6__bindgen_ty_2__bindgen
 }
 impl _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_6__bindgen_ty_2__bindgen_ty_1 {
     #[inline]
-    pub fn ActiveDR7(&self) -> BOOLEAN { unsafe { ::core::mem::transmute(self._bitfield_1.get(0usize, 1u8) as u8) } }
-
+    pub fn ActiveDR7(&self) -> BOOLEAN {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(0usize, 1u8) as u8) }
+    }
     #[inline]
     pub fn set_ActiveDR7(&mut self, val: BOOLEAN) {
         unsafe {
@@ -1643,10 +1658,10 @@ impl _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_6__bindgen_ty_2__bindgen_ty_1 
             self._bitfield_1.set(0usize, 1u8, val as u64)
         }
     }
-
     #[inline]
-    pub fn Instrumented(&self) -> BOOLEAN { unsafe { ::core::mem::transmute(self._bitfield_1.get(1usize, 1u8) as u8) } }
-
+    pub fn Instrumented(&self) -> BOOLEAN {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(1usize, 1u8) as u8) }
+    }
     #[inline]
     pub fn set_Instrumented(&mut self, val: BOOLEAN) {
         unsafe {
@@ -1654,10 +1669,10 @@ impl _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_6__bindgen_ty_2__bindgen_ty_1 
             self._bitfield_1.set(1usize, 1u8, val as u64)
         }
     }
-
     #[inline]
-    pub fn Minimal(&self) -> BOOLEAN { unsafe { ::core::mem::transmute(self._bitfield_1.get(2usize, 1u8) as u8) } }
-
+    pub fn Minimal(&self) -> BOOLEAN {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(2usize, 1u8) as u8) }
+    }
     #[inline]
     pub fn set_Minimal(&mut self, val: BOOLEAN) {
         unsafe {
@@ -1665,10 +1680,10 @@ impl _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_6__bindgen_ty_2__bindgen_ty_1 
             self._bitfield_1.set(2usize, 1u8, val as u64)
         }
     }
-
     #[inline]
-    pub fn Reserved4(&self) -> BOOLEAN { unsafe { ::core::mem::transmute(self._bitfield_1.get(3usize, 2u8) as u8) } }
-
+    pub fn Reserved4(&self) -> BOOLEAN {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(3usize, 2u8) as u8) }
+    }
     #[inline]
     pub fn set_Reserved4(&mut self, val: BOOLEAN) {
         unsafe {
@@ -1676,10 +1691,10 @@ impl _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_6__bindgen_ty_2__bindgen_ty_1 
             self._bitfield_1.set(3usize, 2u8, val as u64)
         }
     }
-
     #[inline]
-    pub fn AltSyscall(&self) -> BOOLEAN { unsafe { ::core::mem::transmute(self._bitfield_1.get(5usize, 1u8) as u8) } }
-
+    pub fn AltSyscall(&self) -> BOOLEAN {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(5usize, 1u8) as u8) }
+    }
     #[inline]
     pub fn set_AltSyscall(&mut self, val: BOOLEAN) {
         unsafe {
@@ -1687,10 +1702,10 @@ impl _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_6__bindgen_ty_2__bindgen_ty_1 
             self._bitfield_1.set(5usize, 1u8, val as u64)
         }
     }
-
     #[inline]
-    pub fn UmsScheduled(&self) -> BOOLEAN { unsafe { ::core::mem::transmute(self._bitfield_1.get(6usize, 1u8) as u8) } }
-
+    pub fn UmsScheduled(&self) -> BOOLEAN {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(6usize, 1u8) as u8) }
+    }
     #[inline]
     pub fn set_UmsScheduled(&mut self, val: BOOLEAN) {
         unsafe {
@@ -1698,10 +1713,10 @@ impl _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_6__bindgen_ty_2__bindgen_ty_1 
             self._bitfield_1.set(6usize, 1u8, val as u64)
         }
     }
-
     #[inline]
-    pub fn UmsPrimary(&self) -> BOOLEAN { unsafe { ::core::mem::transmute(self._bitfield_1.get(7usize, 1u8) as u8) } }
-
+    pub fn UmsPrimary(&self) -> BOOLEAN {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(7usize, 1u8) as u8) }
+    }
     #[inline]
     pub fn set_UmsPrimary(&mut self, val: BOOLEAN) {
         unsafe {
@@ -1709,13 +1724,18 @@ impl _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_6__bindgen_ty_2__bindgen_ty_1 
             self._bitfield_1.set(7usize, 1u8, val as u64)
         }
     }
-
     #[inline]
     pub fn new_bitfield_1(
-        ActiveDR7: BOOLEAN, Instrumented: BOOLEAN, Minimal: BOOLEAN, Reserved4: BOOLEAN, AltSyscall: BOOLEAN,
-        UmsScheduled: BOOLEAN, UmsPrimary: BOOLEAN,
+        ActiveDR7: BOOLEAN,
+        Instrumented: BOOLEAN,
+        Minimal: BOOLEAN,
+        Reserved4: BOOLEAN,
+        AltSyscall: BOOLEAN,
+        UmsScheduled: BOOLEAN,
+        UmsPrimary: BOOLEAN,
     ) -> __BindgenBitfieldUnit<[u8; 1usize], u8> {
-        let mut __bindgen_bitfield_unit: __BindgenBitfieldUnit<[u8; 1usize], u8> = Default::default();
+        let mut __bindgen_bitfield_unit: __BindgenBitfieldUnit<[u8; 1usize], u8> =
+            Default::default();
         __bindgen_bitfield_unit.set(0usize, 1u8, {
             let ActiveDR7: u8 = unsafe { ::core::mem::transmute(ActiveDR7) };
             ActiveDR7 as u64
@@ -1795,8 +1815,9 @@ pub struct _KDEVICE_QUEUE__bindgen_ty_1__bindgen_ty_1 {
 }
 impl _KDEVICE_QUEUE__bindgen_ty_1__bindgen_ty_1 {
     #[inline]
-    pub fn Reserved(&self) -> LONG64 { unsafe { ::core::mem::transmute(self._bitfield_1.get(0usize, 8u8) as u64) } }
-
+    pub fn Reserved(&self) -> LONG64 {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(0usize, 8u8) as u64) }
+    }
     #[inline]
     pub fn set_Reserved(&mut self, val: LONG64) {
         unsafe {
@@ -1804,10 +1825,10 @@ impl _KDEVICE_QUEUE__bindgen_ty_1__bindgen_ty_1 {
             self._bitfield_1.set(0usize, 8u8, val as u64)
         }
     }
-
     #[inline]
-    pub fn Hint(&self) -> LONG64 { unsafe { ::core::mem::transmute(self._bitfield_1.get(8usize, 56u8) as u64) } }
-
+    pub fn Hint(&self) -> LONG64 {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(8usize, 56u8) as u64) }
+    }
     #[inline]
     pub fn set_Hint(&mut self, val: LONG64) {
         unsafe {
@@ -1815,10 +1836,13 @@ impl _KDEVICE_QUEUE__bindgen_ty_1__bindgen_ty_1 {
             self._bitfield_1.set(8usize, 56u8, val as u64)
         }
     }
-
     #[inline]
-    pub fn new_bitfield_1(Reserved: LONG64, Hint: LONG64) -> __BindgenBitfieldUnit<[u8; 8usize], u64> {
-        let mut __bindgen_bitfield_unit: __BindgenBitfieldUnit<[u8; 8usize], u64> = Default::default();
+    pub fn new_bitfield_1(
+        Reserved: LONG64,
+        Hint: LONG64,
+    ) -> __BindgenBitfieldUnit<[u8; 8usize], u64> {
+        let mut __bindgen_bitfield_unit: __BindgenBitfieldUnit<[u8; 8usize], u64> =
+            Default::default();
         __bindgen_bitfield_unit.set(0usize, 8u8, {
             let Reserved: u64 = unsafe { ::core::mem::transmute(Reserved) };
             Reserved as u64
@@ -1865,7 +1889,8 @@ impl _POOL_TYPE {
     pub const NonPagedPoolBaseCacheAligned: _POOL_TYPE = _POOL_TYPE::NonPagedPoolCacheAligned;
 }
 impl _POOL_TYPE {
-    pub const NonPagedPoolBaseCacheAlignedMustS: _POOL_TYPE = _POOL_TYPE::NonPagedPoolCacheAlignedMustS;
+    pub const NonPagedPoolBaseCacheAlignedMustS: _POOL_TYPE =
+        _POOL_TYPE::NonPagedPoolCacheAlignedMustS;
 }
 #[repr(i32)]
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
@@ -1920,7 +1945,6 @@ impl _OWNER_ENTRY__bindgen_ty_1__bindgen_ty_1 {
     pub fn IoPriorityBoosted(&self) -> ULONG {
         unsafe { ::core::mem::transmute(self._bitfield_1.get(0usize, 1u8) as u32) }
     }
-
     #[inline]
     pub fn set_IoPriorityBoosted(&mut self, val: ULONG) {
         unsafe {
@@ -1928,12 +1952,10 @@ impl _OWNER_ENTRY__bindgen_ty_1__bindgen_ty_1 {
             self._bitfield_1.set(0usize, 1u8, val as u64)
         }
     }
-
     #[inline]
     pub fn OwnerReferenced(&self) -> ULONG {
         unsafe { ::core::mem::transmute(self._bitfield_1.get(1usize, 1u8) as u32) }
     }
-
     #[inline]
     pub fn set_OwnerReferenced(&mut self, val: ULONG) {
         unsafe {
@@ -1941,12 +1963,10 @@ impl _OWNER_ENTRY__bindgen_ty_1__bindgen_ty_1 {
             self._bitfield_1.set(1usize, 1u8, val as u64)
         }
     }
-
     #[inline]
     pub fn IoQoSPriorityBoosted(&self) -> ULONG {
         unsafe { ::core::mem::transmute(self._bitfield_1.get(2usize, 1u8) as u32) }
     }
-
     #[inline]
     pub fn set_IoQoSPriorityBoosted(&mut self, val: ULONG) {
         unsafe {
@@ -1954,10 +1974,10 @@ impl _OWNER_ENTRY__bindgen_ty_1__bindgen_ty_1 {
             self._bitfield_1.set(2usize, 1u8, val as u64)
         }
     }
-
     #[inline]
-    pub fn OwnerCount(&self) -> ULONG { unsafe { ::core::mem::transmute(self._bitfield_1.get(3usize, 29u8) as u32) } }
-
+    pub fn OwnerCount(&self) -> ULONG {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(3usize, 29u8) as u32) }
+    }
     #[inline]
     pub fn set_OwnerCount(&mut self, val: ULONG) {
         unsafe {
@@ -1965,12 +1985,15 @@ impl _OWNER_ENTRY__bindgen_ty_1__bindgen_ty_1 {
             self._bitfield_1.set(3usize, 29u8, val as u64)
         }
     }
-
     #[inline]
     pub fn new_bitfield_1(
-        IoPriorityBoosted: ULONG, OwnerReferenced: ULONG, IoQoSPriorityBoosted: ULONG, OwnerCount: ULONG,
+        IoPriorityBoosted: ULONG,
+        OwnerReferenced: ULONG,
+        IoQoSPriorityBoosted: ULONG,
+        OwnerCount: ULONG,
     ) -> __BindgenBitfieldUnit<[u8; 4usize], u32> {
-        let mut __bindgen_bitfield_unit: __BindgenBitfieldUnit<[u8; 4usize], u32> = Default::default();
+        let mut __bindgen_bitfield_unit: __BindgenBitfieldUnit<[u8; 4usize], u32> =
+            Default::default();
         __bindgen_bitfield_unit.set(0usize, 1u8, {
             let IoPriorityBoosted: u32 = unsafe { ::core::mem::transmute(IoPriorityBoosted) };
             IoPriorityBoosted as u64
@@ -2031,7 +2054,11 @@ pub union _ERESOURCE__bindgen_ty_2 {
     _bindgen_union_align: u64,
 }
 extern "C" {
-    pub fn MmProbeAndLockPages(MemoryDescriptorList: PMDL, AccessMode: KPROCESSOR_MODE, Operation: LOCK_OPERATION);
+    pub fn MmProbeAndLockPages(
+        MemoryDescriptorList: PMDL,
+        AccessMode: KPROCESSOR_MODE,
+        Operation: LOCK_OPERATION,
+    );
 }
 extern "C" {
     pub fn MmUnlockPages(MemoryDescriptorList: PMDL);
@@ -2041,8 +2068,12 @@ extern "C" {
 }
 extern "C" {
     pub fn MmMapLockedPagesSpecifyCache(
-        MemoryDescriptorList: PMDL, AccessMode: KPROCESSOR_MODE, CacheType: MEMORY_CACHING_TYPE,
-        RequestedAddress: PVOID, BugCheckOnFailure: ULONG, Priority: ULONG,
+        MemoryDescriptorList: PMDL,
+        AccessMode: KPROCESSOR_MODE,
+        CacheType: MEMORY_CACHING_TYPE,
+        RequestedAddress: PVOID,
+        BugCheckOnFailure: ULONG,
+        Priority: ULONG,
     ) -> PVOID;
 }
 extern "C" {
@@ -2120,23 +2151,31 @@ pub struct _SCSI_REQUEST_BLOCK {
     _unused: [u8; 0],
 }
 pub type DRIVER_INITIALIZE = ::core::option::Option<
-    unsafe extern "C" fn(DriverObject: *mut _DRIVER_OBJECT, RegistryPath: PUNICODE_STRING) -> NTSTATUS,
+    unsafe extern "C" fn(
+        DriverObject: *mut _DRIVER_OBJECT,
+        RegistryPath: PUNICODE_STRING,
+    ) -> NTSTATUS,
 >;
-///
+#[doc = ""]
 pub type PDRIVER_INITIALIZE = DRIVER_INITIALIZE;
 pub type DRIVER_CANCEL =
     ::core::option::Option<unsafe extern "C" fn(DeviceObject: *mut _DEVICE_OBJECT, Irp: *mut _IRP)>;
 pub type PDRIVER_CANCEL = DRIVER_CANCEL;
-pub type DRIVER_DISPATCH =
-    ::core::option::Option<unsafe extern "C" fn(DeviceObject: *mut _DEVICE_OBJECT, Irp: *mut _IRP) -> NTSTATUS>;
+pub type DRIVER_DISPATCH = ::core::option::Option<
+    unsafe extern "C" fn(DeviceObject: *mut _DEVICE_OBJECT, Irp: *mut _IRP) -> NTSTATUS,
+>;
 pub type PDRIVER_DISPATCH = DRIVER_DISPATCH;
 pub type DRIVER_STARTIO =
     ::core::option::Option<unsafe extern "C" fn(DeviceObject: *mut _DEVICE_OBJECT, Irp: *mut _IRP)>;
 pub type PDRIVER_STARTIO = DRIVER_STARTIO;
-pub type DRIVER_UNLOAD = ::core::option::Option<unsafe extern "C" fn(DriverObject: *mut _DRIVER_OBJECT)>;
+pub type DRIVER_UNLOAD =
+    ::core::option::Option<unsafe extern "C" fn(DriverObject: *mut _DRIVER_OBJECT)>;
 pub type PDRIVER_UNLOAD = DRIVER_UNLOAD;
 pub type DRIVER_ADD_DEVICE = ::core::option::Option<
-    unsafe extern "C" fn(DriverObject: *mut _DRIVER_OBJECT, PhysicalDeviceObject: *mut _DEVICE_OBJECT) -> NTSTATUS,
+    unsafe extern "C" fn(
+        DriverObject: *mut _DRIVER_OBJECT,
+        PhysicalDeviceObject: *mut _DEVICE_OBJECT,
+    ) -> NTSTATUS,
 >;
 pub type PDRIVER_ADD_DEVICE = DRIVER_ADD_DEVICE;
 pub type FAST_IO_CHECK_IF_POSSIBLE = ::core::option::Option<
@@ -2257,12 +2296,15 @@ pub type FAST_IO_DEVICE_CONTROL = ::core::option::Option<
     ) -> BOOLEAN,
 >;
 pub type PFAST_IO_DEVICE_CONTROL = FAST_IO_DEVICE_CONTROL;
-pub type FAST_IO_ACQUIRE_FILE = ::core::option::Option<unsafe extern "C" fn(FileObject: *mut _FILE_OBJECT)>;
+pub type FAST_IO_ACQUIRE_FILE =
+    ::core::option::Option<unsafe extern "C" fn(FileObject: *mut _FILE_OBJECT)>;
 pub type PFAST_IO_ACQUIRE_FILE = FAST_IO_ACQUIRE_FILE;
-pub type FAST_IO_RELEASE_FILE = ::core::option::Option<unsafe extern "C" fn(FileObject: *mut _FILE_OBJECT)>;
+pub type FAST_IO_RELEASE_FILE =
+    ::core::option::Option<unsafe extern "C" fn(FileObject: *mut _FILE_OBJECT)>;
 pub type PFAST_IO_RELEASE_FILE = FAST_IO_RELEASE_FILE;
-pub type FAST_IO_DETACH_DEVICE =
-    ::core::option::Option<unsafe extern "C" fn(SourceDevice: *mut _DEVICE_OBJECT, TargetDevice: *mut _DEVICE_OBJECT)>;
+pub type FAST_IO_DETACH_DEVICE = ::core::option::Option<
+    unsafe extern "C" fn(SourceDevice: *mut _DEVICE_OBJECT, TargetDevice: *mut _DEVICE_OBJECT),
+>;
 pub type PFAST_IO_DETACH_DEVICE = FAST_IO_DETACH_DEVICE;
 pub type FAST_IO_QUERY_NETWORK_OPEN_INFO = ::core::option::Option<
     unsafe extern "C" fn(
@@ -2287,7 +2329,11 @@ pub type FAST_IO_MDL_READ = ::core::option::Option<
 >;
 pub type PFAST_IO_MDL_READ = FAST_IO_MDL_READ;
 pub type FAST_IO_MDL_READ_COMPLETE = ::core::option::Option<
-    unsafe extern "C" fn(FileObject: *mut _FILE_OBJECT, MdlChain: PMDL, DeviceObject: *mut _DEVICE_OBJECT) -> BOOLEAN,
+    unsafe extern "C" fn(
+        FileObject: *mut _FILE_OBJECT,
+        MdlChain: PMDL,
+        DeviceObject: *mut _DEVICE_OBJECT,
+    ) -> BOOLEAN,
 >;
 pub type PFAST_IO_MDL_READ_COMPLETE = FAST_IO_MDL_READ_COMPLETE;
 pub type FAST_IO_PREPARE_MDL_WRITE = ::core::option::Option<
@@ -2329,11 +2375,17 @@ pub type FAST_IO_RELEASE_FOR_MOD_WRITE = ::core::option::Option<
 >;
 pub type PFAST_IO_RELEASE_FOR_MOD_WRITE = FAST_IO_RELEASE_FOR_MOD_WRITE;
 pub type FAST_IO_ACQUIRE_FOR_CCFLUSH = ::core::option::Option<
-    unsafe extern "C" fn(FileObject: *mut _FILE_OBJECT, DeviceObject: *mut _DEVICE_OBJECT) -> NTSTATUS,
+    unsafe extern "C" fn(
+        FileObject: *mut _FILE_OBJECT,
+        DeviceObject: *mut _DEVICE_OBJECT,
+    ) -> NTSTATUS,
 >;
 pub type PFAST_IO_ACQUIRE_FOR_CCFLUSH = FAST_IO_ACQUIRE_FOR_CCFLUSH;
 pub type FAST_IO_RELEASE_FOR_CCFLUSH = ::core::option::Option<
-    unsafe extern "C" fn(FileObject: *mut _FILE_OBJECT, DeviceObject: *mut _DEVICE_OBJECT) -> NTSTATUS,
+    unsafe extern "C" fn(
+        FileObject: *mut _FILE_OBJECT,
+        DeviceObject: *mut _DEVICE_OBJECT,
+    ) -> NTSTATUS,
 >;
 pub type PFAST_IO_RELEASE_FOR_CCFLUSH = FAST_IO_RELEASE_FOR_CCFLUSH;
 #[repr(C)]
@@ -2372,7 +2424,11 @@ pub type FAST_IO_WRITE_COMPRESSED = ::core::option::Option<
 >;
 pub type PFAST_IO_WRITE_COMPRESSED = FAST_IO_WRITE_COMPRESSED;
 pub type FAST_IO_MDL_READ_COMPLETE_COMPRESSED = ::core::option::Option<
-    unsafe extern "C" fn(FileObject: *mut _FILE_OBJECT, MdlChain: PMDL, DeviceObject: *mut _DEVICE_OBJECT) -> BOOLEAN,
+    unsafe extern "C" fn(
+        FileObject: *mut _FILE_OBJECT,
+        MdlChain: PMDL,
+        DeviceObject: *mut _DEVICE_OBJECT,
+    ) -> BOOLEAN,
 >;
 pub type PFAST_IO_MDL_READ_COMPLETE_COMPRESSED = FAST_IO_MDL_READ_COMPLETE_COMPRESSED;
 pub type FAST_IO_MDL_WRITE_COMPLETE_COMPRESSED = ::core::option::Option<
@@ -2491,8 +2547,9 @@ pub struct _WAIT_CONTEXT_BLOCK__bindgen_ty_1__bindgen_ty_1 {
 }
 impl _WAIT_CONTEXT_BLOCK__bindgen_ty_1__bindgen_ty_1 {
     #[inline]
-    pub fn SyncCallback(&self) -> ULONG { unsafe { ::core::mem::transmute(self._bitfield_1.get(0usize, 1u8) as u32) } }
-
+    pub fn SyncCallback(&self) -> ULONG {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(0usize, 1u8) as u32) }
+    }
     #[inline]
     pub fn set_SyncCallback(&mut self, val: ULONG) {
         unsafe {
@@ -2500,10 +2557,10 @@ impl _WAIT_CONTEXT_BLOCK__bindgen_ty_1__bindgen_ty_1 {
             self._bitfield_1.set(0usize, 1u8, val as u64)
         }
     }
-
     #[inline]
-    pub fn DmaContext(&self) -> ULONG { unsafe { ::core::mem::transmute(self._bitfield_1.get(1usize, 1u8) as u32) } }
-
+    pub fn DmaContext(&self) -> ULONG {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(1usize, 1u8) as u32) }
+    }
     #[inline]
     pub fn set_DmaContext(&mut self, val: ULONG) {
         unsafe {
@@ -2511,12 +2568,10 @@ impl _WAIT_CONTEXT_BLOCK__bindgen_ty_1__bindgen_ty_1 {
             self._bitfield_1.set(1usize, 1u8, val as u64)
         }
     }
-
     #[inline]
     pub fn ZeroMapRegisters(&self) -> ULONG {
         unsafe { ::core::mem::transmute(self._bitfield_1.get(2usize, 1u8) as u32) }
     }
-
     #[inline]
     pub fn set_ZeroMapRegisters(&mut self, val: ULONG) {
         unsafe {
@@ -2524,10 +2579,10 @@ impl _WAIT_CONTEXT_BLOCK__bindgen_ty_1__bindgen_ty_1 {
             self._bitfield_1.set(2usize, 1u8, val as u64)
         }
     }
-
     #[inline]
-    pub fn Reserved(&self) -> ULONG { unsafe { ::core::mem::transmute(self._bitfield_1.get(3usize, 9u8) as u32) } }
-
+    pub fn Reserved(&self) -> ULONG {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(3usize, 9u8) as u32) }
+    }
     #[inline]
     pub fn set_Reserved(&mut self, val: ULONG) {
         unsafe {
@@ -2535,12 +2590,10 @@ impl _WAIT_CONTEXT_BLOCK__bindgen_ty_1__bindgen_ty_1 {
             self._bitfield_1.set(3usize, 9u8, val as u64)
         }
     }
-
     #[inline]
     pub fn NumberOfRemapPages(&self) -> ULONG {
         unsafe { ::core::mem::transmute(self._bitfield_1.get(12usize, 20u8) as u32) }
     }
-
     #[inline]
     pub fn set_NumberOfRemapPages(&mut self, val: ULONG) {
         unsafe {
@@ -2548,12 +2601,16 @@ impl _WAIT_CONTEXT_BLOCK__bindgen_ty_1__bindgen_ty_1 {
             self._bitfield_1.set(12usize, 20u8, val as u64)
         }
     }
-
     #[inline]
     pub fn new_bitfield_1(
-        SyncCallback: ULONG, DmaContext: ULONG, ZeroMapRegisters: ULONG, Reserved: ULONG, NumberOfRemapPages: ULONG,
+        SyncCallback: ULONG,
+        DmaContext: ULONG,
+        ZeroMapRegisters: ULONG,
+        Reserved: ULONG,
+        NumberOfRemapPages: ULONG,
     ) -> __BindgenBitfieldUnit<[u8; 4usize], u32> {
-        let mut __bindgen_bitfield_unit: __BindgenBitfieldUnit<[u8; 4usize], u32> = Default::default();
+        let mut __bindgen_bitfield_unit: __BindgenBitfieldUnit<[u8; 4usize], u32> =
+            Default::default();
         __bindgen_bitfield_unit.set(0usize, 1u8, {
             let SyncCallback: u32 = unsafe { ::core::mem::transmute(SyncCallback) };
             SyncCallback as u64
@@ -2819,8 +2876,9 @@ pub union _IRP__bindgen_ty_3__bindgen_ty_1__bindgen_ty_2__bindgen_ty_1 {
 }
 pub type IRP = _IRP;
 pub type PIRP = *mut IRP;
-pub type IO_COMPLETION_ROUTINE =
-    ::core::option::Option<unsafe extern "C" fn(DeviceObject: PDEVICE_OBJECT, Irp: PIRP, Context: PVOID) -> NTSTATUS>;
+pub type IO_COMPLETION_ROUTINE = ::core::option::Option<
+    unsafe extern "C" fn(DeviceObject: PDEVICE_OBJECT, Irp: PIRP, Context: PVOID) -> NTSTATUS,
+>;
 pub type PIO_COMPLETION_ROUTINE = IO_COMPLETION_ROUTINE;
 #[repr(i32)]
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
@@ -2873,8 +2931,9 @@ pub struct _DEVICE_CAPABILITIES {
 }
 impl _DEVICE_CAPABILITIES {
     #[inline]
-    pub fn DeviceD1(&self) -> ULONG { unsafe { ::core::mem::transmute(self._bitfield_1.get(0usize, 1u8) as u32) } }
-
+    pub fn DeviceD1(&self) -> ULONG {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(0usize, 1u8) as u32) }
+    }
     #[inline]
     pub fn set_DeviceD1(&mut self, val: ULONG) {
         unsafe {
@@ -2882,10 +2941,10 @@ impl _DEVICE_CAPABILITIES {
             self._bitfield_1.set(0usize, 1u8, val as u64)
         }
     }
-
     #[inline]
-    pub fn DeviceD2(&self) -> ULONG { unsafe { ::core::mem::transmute(self._bitfield_1.get(1usize, 1u8) as u32) } }
-
+    pub fn DeviceD2(&self) -> ULONG {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(1usize, 1u8) as u32) }
+    }
     #[inline]
     pub fn set_DeviceD2(&mut self, val: ULONG) {
         unsafe {
@@ -2893,10 +2952,10 @@ impl _DEVICE_CAPABILITIES {
             self._bitfield_1.set(1usize, 1u8, val as u64)
         }
     }
-
     #[inline]
-    pub fn LockSupported(&self) -> ULONG { unsafe { ::core::mem::transmute(self._bitfield_1.get(2usize, 1u8) as u32) } }
-
+    pub fn LockSupported(&self) -> ULONG {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(2usize, 1u8) as u32) }
+    }
     #[inline]
     pub fn set_LockSupported(&mut self, val: ULONG) {
         unsafe {
@@ -2904,12 +2963,10 @@ impl _DEVICE_CAPABILITIES {
             self._bitfield_1.set(2usize, 1u8, val as u64)
         }
     }
-
     #[inline]
     pub fn EjectSupported(&self) -> ULONG {
         unsafe { ::core::mem::transmute(self._bitfield_1.get(3usize, 1u8) as u32) }
     }
-
     #[inline]
     pub fn set_EjectSupported(&mut self, val: ULONG) {
         unsafe {
@@ -2917,10 +2974,10 @@ impl _DEVICE_CAPABILITIES {
             self._bitfield_1.set(3usize, 1u8, val as u64)
         }
     }
-
     #[inline]
-    pub fn Removable(&self) -> ULONG { unsafe { ::core::mem::transmute(self._bitfield_1.get(4usize, 1u8) as u32) } }
-
+    pub fn Removable(&self) -> ULONG {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(4usize, 1u8) as u32) }
+    }
     #[inline]
     pub fn set_Removable(&mut self, val: ULONG) {
         unsafe {
@@ -2928,10 +2985,10 @@ impl _DEVICE_CAPABILITIES {
             self._bitfield_1.set(4usize, 1u8, val as u64)
         }
     }
-
     #[inline]
-    pub fn DockDevice(&self) -> ULONG { unsafe { ::core::mem::transmute(self._bitfield_1.get(5usize, 1u8) as u32) } }
-
+    pub fn DockDevice(&self) -> ULONG {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(5usize, 1u8) as u32) }
+    }
     #[inline]
     pub fn set_DockDevice(&mut self, val: ULONG) {
         unsafe {
@@ -2939,10 +2996,10 @@ impl _DEVICE_CAPABILITIES {
             self._bitfield_1.set(5usize, 1u8, val as u64)
         }
     }
-
     #[inline]
-    pub fn UniqueID(&self) -> ULONG { unsafe { ::core::mem::transmute(self._bitfield_1.get(6usize, 1u8) as u32) } }
-
+    pub fn UniqueID(&self) -> ULONG {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(6usize, 1u8) as u32) }
+    }
     #[inline]
     pub fn set_UniqueID(&mut self, val: ULONG) {
         unsafe {
@@ -2950,10 +3007,10 @@ impl _DEVICE_CAPABILITIES {
             self._bitfield_1.set(6usize, 1u8, val as u64)
         }
     }
-
     #[inline]
-    pub fn SilentInstall(&self) -> ULONG { unsafe { ::core::mem::transmute(self._bitfield_1.get(7usize, 1u8) as u32) } }
-
+    pub fn SilentInstall(&self) -> ULONG {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(7usize, 1u8) as u32) }
+    }
     #[inline]
     pub fn set_SilentInstall(&mut self, val: ULONG) {
         unsafe {
@@ -2961,10 +3018,10 @@ impl _DEVICE_CAPABILITIES {
             self._bitfield_1.set(7usize, 1u8, val as u64)
         }
     }
-
     #[inline]
-    pub fn RawDeviceOK(&self) -> ULONG { unsafe { ::core::mem::transmute(self._bitfield_1.get(8usize, 1u8) as u32) } }
-
+    pub fn RawDeviceOK(&self) -> ULONG {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(8usize, 1u8) as u32) }
+    }
     #[inline]
     pub fn set_RawDeviceOK(&mut self, val: ULONG) {
         unsafe {
@@ -2972,12 +3029,10 @@ impl _DEVICE_CAPABILITIES {
             self._bitfield_1.set(8usize, 1u8, val as u64)
         }
     }
-
     #[inline]
     pub fn SurpriseRemovalOK(&self) -> ULONG {
         unsafe { ::core::mem::transmute(self._bitfield_1.get(9usize, 1u8) as u32) }
     }
-
     #[inline]
     pub fn set_SurpriseRemovalOK(&mut self, val: ULONG) {
         unsafe {
@@ -2985,10 +3040,10 @@ impl _DEVICE_CAPABILITIES {
             self._bitfield_1.set(9usize, 1u8, val as u64)
         }
     }
-
     #[inline]
-    pub fn WakeFromD0(&self) -> ULONG { unsafe { ::core::mem::transmute(self._bitfield_1.get(10usize, 1u8) as u32) } }
-
+    pub fn WakeFromD0(&self) -> ULONG {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(10usize, 1u8) as u32) }
+    }
     #[inline]
     pub fn set_WakeFromD0(&mut self, val: ULONG) {
         unsafe {
@@ -2996,10 +3051,10 @@ impl _DEVICE_CAPABILITIES {
             self._bitfield_1.set(10usize, 1u8, val as u64)
         }
     }
-
     #[inline]
-    pub fn WakeFromD1(&self) -> ULONG { unsafe { ::core::mem::transmute(self._bitfield_1.get(11usize, 1u8) as u32) } }
-
+    pub fn WakeFromD1(&self) -> ULONG {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(11usize, 1u8) as u32) }
+    }
     #[inline]
     pub fn set_WakeFromD1(&mut self, val: ULONG) {
         unsafe {
@@ -3007,10 +3062,10 @@ impl _DEVICE_CAPABILITIES {
             self._bitfield_1.set(11usize, 1u8, val as u64)
         }
     }
-
     #[inline]
-    pub fn WakeFromD2(&self) -> ULONG { unsafe { ::core::mem::transmute(self._bitfield_1.get(12usize, 1u8) as u32) } }
-
+    pub fn WakeFromD2(&self) -> ULONG {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(12usize, 1u8) as u32) }
+    }
     #[inline]
     pub fn set_WakeFromD2(&mut self, val: ULONG) {
         unsafe {
@@ -3018,10 +3073,10 @@ impl _DEVICE_CAPABILITIES {
             self._bitfield_1.set(12usize, 1u8, val as u64)
         }
     }
-
     #[inline]
-    pub fn WakeFromD3(&self) -> ULONG { unsafe { ::core::mem::transmute(self._bitfield_1.get(13usize, 1u8) as u32) } }
-
+    pub fn WakeFromD3(&self) -> ULONG {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(13usize, 1u8) as u32) }
+    }
     #[inline]
     pub fn set_WakeFromD3(&mut self, val: ULONG) {
         unsafe {
@@ -3029,12 +3084,10 @@ impl _DEVICE_CAPABILITIES {
             self._bitfield_1.set(13usize, 1u8, val as u64)
         }
     }
-
     #[inline]
     pub fn HardwareDisabled(&self) -> ULONG {
         unsafe { ::core::mem::transmute(self._bitfield_1.get(14usize, 1u8) as u32) }
     }
-
     #[inline]
     pub fn set_HardwareDisabled(&mut self, val: ULONG) {
         unsafe {
@@ -3042,10 +3095,10 @@ impl _DEVICE_CAPABILITIES {
             self._bitfield_1.set(14usize, 1u8, val as u64)
         }
     }
-
     #[inline]
-    pub fn NonDynamic(&self) -> ULONG { unsafe { ::core::mem::transmute(self._bitfield_1.get(15usize, 1u8) as u32) } }
-
+    pub fn NonDynamic(&self) -> ULONG {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(15usize, 1u8) as u32) }
+    }
     #[inline]
     pub fn set_NonDynamic(&mut self, val: ULONG) {
         unsafe {
@@ -3053,12 +3106,10 @@ impl _DEVICE_CAPABILITIES {
             self._bitfield_1.set(15usize, 1u8, val as u64)
         }
     }
-
     #[inline]
     pub fn WarmEjectSupported(&self) -> ULONG {
         unsafe { ::core::mem::transmute(self._bitfield_1.get(16usize, 1u8) as u32) }
     }
-
     #[inline]
     pub fn set_WarmEjectSupported(&mut self, val: ULONG) {
         unsafe {
@@ -3066,12 +3117,10 @@ impl _DEVICE_CAPABILITIES {
             self._bitfield_1.set(16usize, 1u8, val as u64)
         }
     }
-
     #[inline]
     pub fn NoDisplayInUI(&self) -> ULONG {
         unsafe { ::core::mem::transmute(self._bitfield_1.get(17usize, 1u8) as u32) }
     }
-
     #[inline]
     pub fn set_NoDisplayInUI(&mut self, val: ULONG) {
         unsafe {
@@ -3079,10 +3128,10 @@ impl _DEVICE_CAPABILITIES {
             self._bitfield_1.set(17usize, 1u8, val as u64)
         }
     }
-
     #[inline]
-    pub fn Reserved1(&self) -> ULONG { unsafe { ::core::mem::transmute(self._bitfield_1.get(18usize, 1u8) as u32) } }
-
+    pub fn Reserved1(&self) -> ULONG {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(18usize, 1u8) as u32) }
+    }
     #[inline]
     pub fn set_Reserved1(&mut self, val: ULONG) {
         unsafe {
@@ -3090,12 +3139,10 @@ impl _DEVICE_CAPABILITIES {
             self._bitfield_1.set(18usize, 1u8, val as u64)
         }
     }
-
     #[inline]
     pub fn WakeFromInterrupt(&self) -> ULONG {
         unsafe { ::core::mem::transmute(self._bitfield_1.get(19usize, 1u8) as u32) }
     }
-
     #[inline]
     pub fn set_WakeFromInterrupt(&mut self, val: ULONG) {
         unsafe {
@@ -3103,10 +3150,10 @@ impl _DEVICE_CAPABILITIES {
             self._bitfield_1.set(19usize, 1u8, val as u64)
         }
     }
-
     #[inline]
-    pub fn SecureDevice(&self) -> ULONG { unsafe { ::core::mem::transmute(self._bitfield_1.get(20usize, 1u8) as u32) } }
-
+    pub fn SecureDevice(&self) -> ULONG {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(20usize, 1u8) as u32) }
+    }
     #[inline]
     pub fn set_SecureDevice(&mut self, val: ULONG) {
         unsafe {
@@ -3114,12 +3161,10 @@ impl _DEVICE_CAPABILITIES {
             self._bitfield_1.set(20usize, 1u8, val as u64)
         }
     }
-
     #[inline]
     pub fn ChildOfVgaEnabledBridge(&self) -> ULONG {
         unsafe { ::core::mem::transmute(self._bitfield_1.get(21usize, 1u8) as u32) }
     }
-
     #[inline]
     pub fn set_ChildOfVgaEnabledBridge(&mut self, val: ULONG) {
         unsafe {
@@ -3127,12 +3172,10 @@ impl _DEVICE_CAPABILITIES {
             self._bitfield_1.set(21usize, 1u8, val as u64)
         }
     }
-
     #[inline]
     pub fn DecodeIoOnBoot(&self) -> ULONG {
         unsafe { ::core::mem::transmute(self._bitfield_1.get(22usize, 1u8) as u32) }
     }
-
     #[inline]
     pub fn set_DecodeIoOnBoot(&mut self, val: ULONG) {
         unsafe {
@@ -3140,10 +3183,10 @@ impl _DEVICE_CAPABILITIES {
             self._bitfield_1.set(22usize, 1u8, val as u64)
         }
     }
-
     #[inline]
-    pub fn Reserved(&self) -> ULONG { unsafe { ::core::mem::transmute(self._bitfield_1.get(23usize, 9u8) as u32) } }
-
+    pub fn Reserved(&self) -> ULONG {
+        unsafe { ::core::mem::transmute(self._bitfield_1.get(23usize, 9u8) as u32) }
+    }
     #[inline]
     pub fn set_Reserved(&mut self, val: ULONG) {
         unsafe {
@@ -3151,16 +3194,35 @@ impl _DEVICE_CAPABILITIES {
             self._bitfield_1.set(23usize, 9u8, val as u64)
         }
     }
-
     #[inline]
     pub fn new_bitfield_1(
-        DeviceD1: ULONG, DeviceD2: ULONG, LockSupported: ULONG, EjectSupported: ULONG, Removable: ULONG,
-        DockDevice: ULONG, UniqueID: ULONG, SilentInstall: ULONG, RawDeviceOK: ULONG, SurpriseRemovalOK: ULONG,
-        WakeFromD0: ULONG, WakeFromD1: ULONG, WakeFromD2: ULONG, WakeFromD3: ULONG, HardwareDisabled: ULONG,
-        NonDynamic: ULONG, WarmEjectSupported: ULONG, NoDisplayInUI: ULONG, Reserved1: ULONG, WakeFromInterrupt: ULONG,
-        SecureDevice: ULONG, ChildOfVgaEnabledBridge: ULONG, DecodeIoOnBoot: ULONG, Reserved: ULONG,
+        DeviceD1: ULONG,
+        DeviceD2: ULONG,
+        LockSupported: ULONG,
+        EjectSupported: ULONG,
+        Removable: ULONG,
+        DockDevice: ULONG,
+        UniqueID: ULONG,
+        SilentInstall: ULONG,
+        RawDeviceOK: ULONG,
+        SurpriseRemovalOK: ULONG,
+        WakeFromD0: ULONG,
+        WakeFromD1: ULONG,
+        WakeFromD2: ULONG,
+        WakeFromD3: ULONG,
+        HardwareDisabled: ULONG,
+        NonDynamic: ULONG,
+        WarmEjectSupported: ULONG,
+        NoDisplayInUI: ULONG,
+        Reserved1: ULONG,
+        WakeFromInterrupt: ULONG,
+        SecureDevice: ULONG,
+        ChildOfVgaEnabledBridge: ULONG,
+        DecodeIoOnBoot: ULONG,
+        Reserved: ULONG,
     ) -> __BindgenBitfieldUnit<[u8; 4usize], u16> {
-        let mut __bindgen_bitfield_unit: __BindgenBitfieldUnit<[u8; 4usize], u16> = Default::default();
+        let mut __bindgen_bitfield_unit: __BindgenBitfieldUnit<[u8; 4usize], u16> =
+            Default::default();
         __bindgen_bitfield_unit.set(0usize, 1u8, {
             let DeviceD1: u32 = unsafe { ::core::mem::transmute(DeviceD1) };
             DeviceD1 as u64
@@ -3246,7 +3308,8 @@ impl _DEVICE_CAPABILITIES {
             SecureDevice as u64
         });
         __bindgen_bitfield_unit.set(21usize, 1u8, {
-            let ChildOfVgaEnabledBridge: u32 = unsafe { ::core::mem::transmute(ChildOfVgaEnabledBridge) };
+            let ChildOfVgaEnabledBridge: u32 =
+                unsafe { ::core::mem::transmute(ChildOfVgaEnabledBridge) };
             ChildOfVgaEnabledBridge as u64
         });
         __bindgen_bitfield_unit.set(22usize, 1u8, {
@@ -3438,7 +3501,8 @@ pub struct _IO_STACK_LOCATION__bindgen_ty_1__bindgen_ty_10 {
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub union _IO_STACK_LOCATION__bindgen_ty_1__bindgen_ty_10__bindgen_ty_1 {
-    pub __bindgen_anon_1: _IO_STACK_LOCATION__bindgen_ty_1__bindgen_ty_10__bindgen_ty_1__bindgen_ty_1,
+    pub __bindgen_anon_1:
+        _IO_STACK_LOCATION__bindgen_ty_1__bindgen_ty_10__bindgen_ty_1__bindgen_ty_1,
     pub ClusterCount: ULONG,
     pub DeleteHandle: HANDLE,
     _bindgen_union_align: u64,
@@ -3663,7 +3727,11 @@ pub struct _IO_STACK_LOCATION__bindgen_ty_1__bindgen_ty_39 {
 }
 extern "C" {
     pub fn IoAllocateMdl(
-        VirtualAddress: PVOID, Length: ULONG, SecondaryBuffer: BOOLEAN, ChargeQuota: BOOLEAN, Irp: PIRP,
+        VirtualAddress: PVOID,
+        Length: ULONG,
+        SecondaryBuffer: BOOLEAN,
+        ChargeQuota: BOOLEAN,
+        Irp: PIRP,
     ) -> PMDL;
 }
 extern "C" {
@@ -3721,7 +3789,6 @@ impl _KAPC_STATE__bindgen_ty_1__bindgen_ty_1 {
     pub fn KernelApcInProgress(&self) -> BOOLEAN {
         unsafe { ::core::mem::transmute(self._bitfield_1.get(0usize, 1u8) as u8) }
     }
-
     #[inline]
     pub fn set_KernelApcInProgress(&mut self, val: BOOLEAN) {
         unsafe {
@@ -3729,12 +3796,10 @@ impl _KAPC_STATE__bindgen_ty_1__bindgen_ty_1 {
             self._bitfield_1.set(0usize, 1u8, val as u64)
         }
     }
-
     #[inline]
     pub fn SpecialApcInProgress(&self) -> BOOLEAN {
         unsafe { ::core::mem::transmute(self._bitfield_1.get(1usize, 1u8) as u8) }
     }
-
     #[inline]
     pub fn set_SpecialApcInProgress(&mut self, val: BOOLEAN) {
         unsafe {
@@ -3742,12 +3807,13 @@ impl _KAPC_STATE__bindgen_ty_1__bindgen_ty_1 {
             self._bitfield_1.set(1usize, 1u8, val as u64)
         }
     }
-
     #[inline]
     pub fn new_bitfield_1(
-        KernelApcInProgress: BOOLEAN, SpecialApcInProgress: BOOLEAN,
+        KernelApcInProgress: BOOLEAN,
+        SpecialApcInProgress: BOOLEAN,
     ) -> __BindgenBitfieldUnit<[u8; 1usize], u8> {
-        let mut __bindgen_bitfield_unit: __BindgenBitfieldUnit<[u8; 1usize], u8> = Default::default();
+        let mut __bindgen_bitfield_unit: __BindgenBitfieldUnit<[u8; 1usize], u8> =
+            Default::default();
         __bindgen_bitfield_unit.set(0usize, 1u8, {
             let KernelApcInProgress: u8 = unsafe { ::core::mem::transmute(KernelApcInProgress) };
             KernelApcInProgress as u64
@@ -3776,7 +3842,6 @@ impl _KAPC_STATE__bindgen_ty_2__bindgen_ty_1 {
     pub fn SpecialUserApcPending(&self) -> BOOLEAN {
         unsafe { ::core::mem::transmute(self._bitfield_1.get(0usize, 1u8) as u8) }
     }
-
     #[inline]
     pub fn set_SpecialUserApcPending(&mut self, val: BOOLEAN) {
         unsafe {
@@ -3784,12 +3849,10 @@ impl _KAPC_STATE__bindgen_ty_2__bindgen_ty_1 {
             self._bitfield_1.set(0usize, 1u8, val as u64)
         }
     }
-
     #[inline]
     pub fn UserApcPending(&self) -> BOOLEAN {
         unsafe { ::core::mem::transmute(self._bitfield_1.get(1usize, 1u8) as u8) }
     }
-
     #[inline]
     pub fn set_UserApcPending(&mut self, val: BOOLEAN) {
         unsafe {
@@ -3797,14 +3860,16 @@ impl _KAPC_STATE__bindgen_ty_2__bindgen_ty_1 {
             self._bitfield_1.set(1usize, 1u8, val as u64)
         }
     }
-
     #[inline]
     pub fn new_bitfield_1(
-        SpecialUserApcPending: BOOLEAN, UserApcPending: BOOLEAN,
+        SpecialUserApcPending: BOOLEAN,
+        UserApcPending: BOOLEAN,
     ) -> __BindgenBitfieldUnit<[u8; 1usize], u8> {
-        let mut __bindgen_bitfield_unit: __BindgenBitfieldUnit<[u8; 1usize], u8> = Default::default();
+        let mut __bindgen_bitfield_unit: __BindgenBitfieldUnit<[u8; 1usize], u8> =
+            Default::default();
         __bindgen_bitfield_unit.set(0usize, 1u8, {
-            let SpecialUserApcPending: u8 = unsafe { ::core::mem::transmute(SpecialUserApcPending) };
+            let SpecialUserApcPending: u8 =
+                unsafe { ::core::mem::transmute(SpecialUserApcPending) };
             SpecialUserApcPending as u64
         });
         __bindgen_bitfield_unit.set(1usize, 1u8, {
@@ -4008,12 +4073,22 @@ extern "C" {
 }
 extern "C" {
     pub fn MmCopyVirtualMemory(
-        SourceProcess: PEPROCESS, SourceAddress: PVOID, TargetProcess: PEPROCESS, TargetAddress: PVOID,
-        BufferSize: SIZE_T, PreviousMode: KPROCESSOR_MODE, ReturnSize: PSIZE_T,
+        SourceProcess: PEPROCESS,
+        SourceAddress: PVOID,
+        TargetProcess: PEPROCESS,
+        TargetAddress: PVOID,
+        BufferSize: SIZE_T,
+        PreviousMode: KPROCESSOR_MODE,
+        ReturnSize: PSIZE_T,
     ) -> NTSTATUS;
 }
 extern "C" {
-    pub fn ZwQuerySystemInformation(InfoClass: ULONG, Buffer: PVOID, Length: ULONG, ReturnLength: PULONG) -> NTSTATUS;
+    pub fn ZwQuerySystemInformation(
+        InfoClass: ULONG,
+        Buffer: PVOID,
+        Length: ULONG,
+        ReturnLength: PULONG,
+    ) -> NTSTATUS;
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]

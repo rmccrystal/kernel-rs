@@ -1,37 +1,5 @@
-[package]
-name = "kernel-rs"
-version = "0.1.0"
-authors = ["not-matthias", "rmccrystal"]
-edition = "2018"
-build = "build.rs"
-
 [workspace]
 members = [
-    "kernel-client"
+    "client",
+    "driver"
 ]
-
-[lib]
-path = "src/lib.rs"
-crate-type = ["cdylib"]
-
-[dependencies]
-obfstr = "0.1.1"
-log = "0.4.11"
-cstr_core = "0.2.2"
-serde = { version = "1.0.118", default-features = false, features = ["alloc"] }
-postcard = { version = "0.5.1", features = ["alloc"] }
-
-[dependencies.winapi]
-git = "https://github.com/Trantect/winapi-rs.git"
-branch = "feature/km"
-features = [
-    "wdm",
-    "ntstatus",
-    "ntdef",
-    "winbase"
-]
-
-[build-dependencies]
-winreg = "0.7.0"
-failure = "0.1.8"
-bindgen = "0.56.0"
