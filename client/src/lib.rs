@@ -10,6 +10,7 @@ use crate::driver::HOOKED_FN_NAME;
 mod driver;
 mod types;
 mod util;
+mod kdmapper;
 
 #[cfg(test)]
 mod tests;
@@ -28,9 +29,15 @@ impl KernelHandle {
             HOOKED_FN_NAME, hook as *const () as usize
         );
 
-        Ok(Self {
+        let handle = Self {
             hook,
-        })
+        };
+
+        if let Err(_) = handle.ping() {
+            info!("Could not ping driver. Mapping driver");
+            crate::kdmapper::map_driver().context("Could not map driver")?;
+        }
+        Ok(handle)
     }
 }
 
@@ -70,7 +77,7 @@ macro_rules! request_no_resp {
 }
 
 impl KernelHandle {
-    pub fn ping(&self) -> Result<()> {
+    pub(crate) fn ping(&self) -> Result<()> {
         request_no_resp!(
             self,
             Request::Ping,

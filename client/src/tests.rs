@@ -21,7 +21,6 @@ impl TestProcess {
     pub fn spawn() -> Self {
         let mut proc = Command::new("notepad.exe").spawn().unwrap();
         thread::sleep(Duration::from_millis(50));
-        proc.wait().unwrap();
         Self(proc)
     }
 
@@ -48,12 +47,11 @@ fn test_create_handle() {
 }
 
 #[test]
-#[should_panic]
 fn test_invalid_pid() {
     init();
 
     let handle = KernelHandle::new().unwrap();
-    handle.write_memory(99999999, 0, &[0]).unwrap();
+    assert!(handle.write_memory(99999999, 0, &[0]).is_err());
 }
 
 #[test]
