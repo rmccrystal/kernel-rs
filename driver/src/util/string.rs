@@ -2,7 +2,7 @@ use alloc::string::{String};
 use alloc::vec::Vec;
 use log::*;
 
-use crate::include::{UNICODE_STRING, UNICODE_STRING32, MmIsAddressValid};
+use crate::include::{UNICODE_STRING, UNICODE_STRING32};
 use crate::util::is_address_valid;
 
 impl alloc::string::ToString for UNICODE_STRING {

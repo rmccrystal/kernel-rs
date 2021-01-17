@@ -1,13 +1,13 @@
 use alloc::format;
 use alloc::string::{String, ToString};
-use alloc::vec;
+
 use alloc::vec::Vec;
 
 use log::*;
 use serde::{Deserialize, Serialize};
 use winapi::km::wdm::KPROCESSOR_MODE::KernelMode;
 
-use crate::include::{_KAPC_STATE, _LDR_DATA_TABLE_ENTRY, IoGetCurrentProcess, KeStackAttachProcess, KeUnstackDetachProcess, LDR_DATA_TABLE_ENTRY32, MmCopyVirtualMemory, MmIsAddressValid, ObfDereferenceObject, PEPROCESS, PPEB, PPEB32, PPEB_LDR_DATA32, PsGetProcessPeb, PsGetProcessWow64Process, PsLookupProcessByProcessId};
+use crate::include::{_KAPC_STATE, _LDR_DATA_TABLE_ENTRY, IoGetCurrentProcess, KeStackAttachProcess, KeUnstackDetachProcess, LDR_DATA_TABLE_ENTRY32, MmCopyVirtualMemory, ObfDereferenceObject, PEPROCESS, PPEB, PPEB32, PPEB_LDR_DATA32, PsGetProcessPeb, PsGetProcessWow64Process, PsLookupProcessByProcessId};
 use crate::kernel::KernelError;
 use crate::util::{ListEntryIterator, ListEntryIterator32, is_address_valid};
 

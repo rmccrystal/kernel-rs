@@ -4,7 +4,7 @@ use core::ffi::c_void;
 use log::*;
 use winapi::_core::intrinsics::copy;
 
-use crate::include::MmIsAddressValid;
+
 use crate::kernel::{KernelError};
 
 use super::types::*;

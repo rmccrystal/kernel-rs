@@ -1,3 +1,6 @@
+#![allow(non_snake_case)]
+#![allow(non_camel_case_types)]
+
 use crate::kernel::{get_process_list, Process, find_kernel_module, get_kernel_module_export, Result, hook_function, get_kernel_modules};
 use log::*;
 use crate::include::{BOOLEAN, HDC};

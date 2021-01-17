@@ -9,14 +9,14 @@ extern crate alloc;
 
 use core::intrinsics::abort;
 
-use cstr_core::{CStr, CString};
+
 use log::*;
 
-use crate::include::{PDRIVER_OBJECT, PUNICODE_STRING, MmIsAddressValid};
-use crate::kernel::{find_kernel_module, get_kernel_module_export, get_kernel_modules, get_process_list, KernelError, Process};
+use crate::include::{PDRIVER_OBJECT, PUNICODE_STRING};
+use crate::kernel::{find_kernel_module, get_kernel_module_export, get_kernel_modules, KernelError};
 use crate::util::{KernelAlloc, is_address_valid};
 use crate::util::log::KernelLogger;
-use alloc::string::ToString;
+
 
 pub mod include;
 pub mod kernel;
@@ -84,7 +84,7 @@ pub extern "system" fn driver_entry(driver_object: PDRIVER_OBJECT, _registry_pat
     }
 }
 
-pub unsafe extern "C" fn driver_unload(driver_object: PDRIVER_OBJECT) {
+pub unsafe extern "C" fn driver_unload(_driver_object: PDRIVER_OBJECT) {
     info!("kernel-rs unloaded");
 }
 
