@@ -24,6 +24,7 @@ pub mod kernel;
 pub mod util;
 pub mod dispatch;
 pub mod hooks;
+pub mod interop;
 
 /// When using the alloc crate it seems like it does some unwinding. Adding this
 /// export satisfies the compiler but may introduce undefined behaviour when a

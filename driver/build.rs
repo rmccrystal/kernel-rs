@@ -165,4 +165,27 @@ fn main() {
     } else {
         internal_link_search()
     }
+
+    cc::Build::new()
+        .file("src/interop/util.cpp")
+        .compile("interop");
+    println!("cargo:rerun-if-changed=src/interop/util.cpp");
+    println!("cargo:rerun-if-changed=src/interop/util.h");
+
+    bindgen::Builder::default()
+        .header("src/interop/util.h")
+
+        .clang_arg("-x")
+        .clang_arg("c++")
+
+        .ctypes_prefix("crate::include::raw")
+        .derive_debug(true)
+        .default_enum_style(EnumVariation::Rust {non_exhaustive: false})
+        .use_core()
+        .layout_tests(false)
+        .generate()
+        .expect("Unable to generate interop bindings")
+
+        .write_to_file("src/interop/bindings.rs")
+        .expect("Could not write interop bindings");
 }
