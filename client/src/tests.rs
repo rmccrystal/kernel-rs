@@ -40,6 +40,11 @@ impl Drop for TestProcess {
 }
 
 #[test]
+fn test_map_driver() {
+    crate::kdmapper::map_driver().unwrap();
+}
+
+#[test]
 fn test_create_handle() {
     init();
 

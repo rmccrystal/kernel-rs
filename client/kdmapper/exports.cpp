@@ -12,9 +12,11 @@ extern "C" auto map_driver_from_memory(uint8_t *data, uint64_t len) -> uint32_t 
 
     if (!kdmapper::MapDriver(iqvw64e_device_handle, driver))
     {
-        return 2; // Failed to map;
         intel_driver::Unload(iqvw64e_device_handle);
+        return 2; // Failed to map;
     }
 
     intel_driver::Unload(iqvw64e_device_handle);
+
+    return 0;  // success
 }
