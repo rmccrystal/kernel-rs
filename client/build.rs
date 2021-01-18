@@ -58,6 +58,11 @@ fn main() {
 
     let windows_kits_path = get_windows_kits_dir().unwrap();
     let um_dir = get_um_dir(&windows_kits_path).unwrap().join("x64");
+    let deps_dir = PathBuf::new()
+        .join(var("CARGO_MANIFEST_DIR").unwrap())
+        .join("deps");
+
+    println!("cargo:rustc-link-search=native={}", deps_dir.to_str().unwrap());
 
     cc::Build::new()
     // cxx_build::bridge("src/kdmapper.rs")
@@ -71,7 +76,6 @@ fn main() {
 
         .include("C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.28.29333\\atlmfc\\include")
 
-        .object("deps/*.lib")
         .object(um_dir.join("Version.lib"))
 
         .debug(false)
