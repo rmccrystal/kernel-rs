@@ -4,10 +4,10 @@ CARGO_NAME = "driver"
 CARGO_MAKE_CRATE_CURRENT_WORKSPACE_MEMBER = "driver"
 
 [env.development]
-TARGET_PATH = "../target/x86_64-pc-windows-msvc/debug"
+TARGET_PATH = "target/x86_64-pc-windows-msvc/debug"
 
 [env.production]
-TARGET_PATH = "../target/x86_64-pc-windows-msvc/release"
+TARGET_PATH = "target/x86_64-pc-windows-msvc/release"
 BUILD_FLAGS = "--release"
 
 [tasks.build-driver]

@@ -9,10 +9,12 @@ use winapi::km::wdm::KPROCESSOR_MODE::KernelMode;
 
 use crate::include::{_KAPC_STATE, _LDR_DATA_TABLE_ENTRY, IoGetCurrentProcess, KeStackAttachProcess, KeUnstackDetachProcess, LDR_DATA_TABLE_ENTRY32, MmCopyVirtualMemory, ObfDereferenceObject, PEPROCESS, PPEB, PPEB32, PPEB_LDR_DATA32, PsGetProcessPeb, PsGetProcessWow64Process, PsLookupProcessByProcessId};
 use crate::kernel::KernelError;
-use crate::util::{ListEntryIterator, ListEntryIterator32, is_address_valid};
+use crate::util::{ListEntryIterator, ListEntryIterator32, is_address_valid, is_process_address_valid};
 
 use super::Result;
 use super::ToKernelResult;
+
+use crate::{dbg, println};
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct ModuleInfo {
@@ -101,20 +103,18 @@ impl Process {
     }
 
     pub fn read_memory(&self, address: u64, buf: &mut [u8]) -> Result<()> {
-        let _attach = self.attach();
-
-        if !is_address_valid(address as *const ()) {
+        if !is_process_address_valid(self.process, address) {
             return Err(KernelError::text(&format!("{:X} is not a valid address", address)));
         }
 
-        if !is_address_valid((address + buf.len() as u64 - 1) as *const ()) {
+        if !is_process_address_valid(self.process, (address + buf.len() as u64 - 1)) {
             return Err(KernelError::text(
                 &format!("{:X} was valid, but {:X} + {:X} (size) - 1 = {:X} was not", address, address, buf.len(), (address + buf.len() as u64 - 1))));
         }
 
         let mut bytes_copied: u64 = 0;
 
-        unsafe {
+        let result = unsafe {
             MmCopyVirtualMemory(
                 self.process,
                 address as _,
@@ -123,8 +123,8 @@ impl Process {
                 buf.len() as _,
                 KernelMode as _,
                 &mut bytes_copied as _,
-            ).to_kernel_result()?;
-        }
+            ).to_kernel_result()?
+        };
 
         if bytes_copied == 0 {
             return Err(KernelError::text("no bytes were copied"));
@@ -138,13 +138,11 @@ impl Process {
     }
 
     pub fn write_memory(&self, address: u64, buf: &[u8]) -> Result<()> {
-        let _attach = self.attach();
-
-        if !is_address_valid(address as *const ()) {
+        if !is_process_address_valid(self.process, address) {
             return Err(KernelError::text(&format!("{:X} is not a valid address", address)));
         }
 
-        if !is_address_valid((address + buf.len() as u64 - 1) as *const ()) {
+        if !is_process_address_valid(self.process, (address + buf.len() as u64 - 1)) {
             return Err(KernelError::text(
                 &format!("{:X} was valid, but {:X} + {:X} (size) - 1 = {:X} was not", address, address, buf.len(), (address + buf.len() as u64 - 1))));
         }

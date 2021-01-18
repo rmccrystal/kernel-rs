@@ -15,6 +15,8 @@ mod kdmapper;
 #[cfg(test)]
 mod tests;
 
+type KernelResult<T> = Result<T, KernelError>;
+
 pub struct KernelHandle {
     hook: extern "stdcall" fn(*mut c_void),
 }
@@ -45,12 +47,12 @@ macro_rules! request {
     ($self:ident, $req:expr, $resp_type:path) => {{
         let resp = $self.send_request($req);
         match resp {
-            Err(err) => Err(anyhow!("{:?}", err)),
+            Err(err) => Err(err),
             Ok(resp) => {
-                let result: anyhow::Result<_> = if let $resp_type(result) = resp {
+                let result: KernelResult<_> = if let $resp_type(result) = resp {
                     Ok(result)
                 } else {
-                    bail!("received invalid response type")
+                    Err(KernelError::text(&format!("received invalid response type. received {:?}, expected {:?}", resp, stringify!($resp_type))))
                 };
                 result
             }
@@ -63,12 +65,12 @@ macro_rules! request_no_resp {
     ($self:ident, $req:expr, $resp_type:path) => {{
         let resp = $self.send_request($req);
         match resp {
-            Err(err) => Err(anyhow!("{:?}", err)),
+            Err(err) => Err(err),
             Ok(resp) => {
-                let result: anyhow::Result<_> = if let $resp_type = resp {
+                let result: KernelResult<_> = if let $resp_type = resp {
                     Ok(())
                 } else {
-                    bail!("received invalid response type")
+                    Err(KernelError::text(&format!("received invalid response type. received {:?}, expected {:?}", resp, stringify!($resp_type))))
                 };
                 result
             }
@@ -77,7 +79,7 @@ macro_rules! request_no_resp {
 }
 
 impl KernelHandle {
-    pub(crate) fn ping(&self) -> Result<()> {
+    pub(crate) fn ping(&self) -> KernelResult<()> {
         request_no_resp!(
             self,
             Request::Ping,
@@ -85,7 +87,7 @@ impl KernelHandle {
         )
     }
 
-    pub fn module_info(&self, pid: u64) -> Result<Vec<ModuleInfo>> {
+    pub fn module_info(&self, pid: u64) -> KernelResult<Vec<ModuleInfo>> {
         request!(
             self,
             Request::ModuleInfo(pid),
@@ -93,7 +95,7 @@ impl KernelHandle {
         )
     }
 
-    pub fn get_peb_address(&self, pid: u64) -> Result<u64> {
+    pub fn get_peb_address(&self, pid: u64) -> KernelResult<u64> {
         request!(
             self,
             Request::GetPebAddress(pid),
@@ -101,7 +103,8 @@ impl KernelHandle {
         )
     }
 
-    pub fn read_memory(&self, pid: u64, address: u64, buf: &mut [u8]) -> Result<()> {
+    pub fn read_memory(&self, pid: u64, address: u64, buf: &mut [u8]) -> KernelResult<()> {
+        let resp = self.send_request(Request::ReadMemory {pid, address, buf});
         request_no_resp!(
             self,
             Request::ReadMemory{pid, address, buf},
@@ -109,7 +112,7 @@ impl KernelHandle {
         )
     }
 
-    pub fn write_memory(&self, pid: u64, address: u64, buf: &[u8]) -> Result<()> {
+    pub fn write_memory(&self, pid: u64, address: u64, buf: &[u8]) -> KernelResult<()> {
         request_no_resp!(
             self,
             Request::WriteMemory {pid, address, buf},

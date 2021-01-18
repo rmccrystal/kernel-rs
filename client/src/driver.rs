@@ -34,7 +34,7 @@ impl KernelHandle {
         hook(data as *mut _ as _)
     }
 
-    pub(crate) fn send_request(&self, req: Request) -> std::result::Result<Response, KernelError> {
+    pub(crate) fn send_request(&self, req: Request) -> KernelResult<Response> {
         // make the request
         let mut response = RunRequestResponse::Null;
         let mut data = Data::RunRequest {

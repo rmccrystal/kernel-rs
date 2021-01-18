@@ -9,7 +9,7 @@ impl Request<'_> {
             Request::GetPebAddress(pid) => Response::PebAddress(Process::by_id(*pid)?.get_peb() as _),
             Request::ReadMemory { address, buf, pid } => {
                 Process::by_id(*pid)?.read_memory(*address, buf)?;
-                Response::WriteMemory
+                Response::ReadMemory
             },
             Request::WriteMemory { address, buf, pid } => {
                 Process::by_id(*pid)?.write_memory(*address, buf)?;

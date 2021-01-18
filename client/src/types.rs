@@ -2,6 +2,7 @@ use serde::{Deserialize, Serialize};
 use std::fmt::Formatter;
 use winapi::shared::ntdef::NTSTATUS;
 use crate::util::error_code_to_message;
+use std::error::Error;
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct ModuleInfo {
@@ -28,6 +29,15 @@ impl std::fmt::Debug for KernelError {
         Ok(())
     }
 }
+
+impl std::fmt::Display for KernelError {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{:?}", self);
+        Ok(())
+    }
+}
+
+impl std::error::Error for KernelError {}
 
 impl KernelError {
     pub fn text(text: &str) -> Self {
@@ -89,3 +99,5 @@ pub enum Response {
     ReadMemory,
     WriteMemory,
 }
+
+
