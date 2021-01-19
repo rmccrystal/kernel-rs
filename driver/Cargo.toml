@@ -11,7 +11,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 obfstr = "0.1.1"
-log = "0.4.11"
+log = { version = "0.4.11", features = ["release_max_level_off"] }
 cstr_core = "0.2.2"
 serde = { version = "1.0.118", default-features = false, features = ["alloc"] }
 postcard = { version = "0.5.1", features = ["alloc"] }

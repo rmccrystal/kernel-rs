@@ -103,6 +103,7 @@ impl Process {
     }
 
     pub fn read_memory(&self, address: u64, buf: &mut [u8]) -> Result<()> {
+        /*
         if !is_process_address_valid(self.process, address) {
             return Err(KernelError::text(&format!("{:X} is not a valid address", address)));
         }
@@ -111,6 +112,7 @@ impl Process {
             return Err(KernelError::text(
                 &format!("{:X} was valid, but {:X} + {:X} (size) - 1 = {:X} was not", address, address, buf.len(), (address + buf.len() as u64 - 1))));
         }
+        */
 
         let mut bytes_copied: u64 = 0;
 
@@ -138,6 +140,7 @@ impl Process {
     }
 
     pub fn write_memory(&self, address: u64, buf: &[u8]) -> Result<()> {
+        /*
         if !is_process_address_valid(self.process, address) {
             return Err(KernelError::text(&format!("{:X} is not a valid address", address)));
         }
@@ -146,6 +149,7 @@ impl Process {
             return Err(KernelError::text(
                 &format!("{:X} was valid, but {:X} + {:X} (size) - 1 = {:X} was not", address, address, buf.len(), (address + buf.len() as u64 - 1))));
         }
+        */
 
         let mut bytes_copied: u64 = 0;
 

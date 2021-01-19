@@ -21,11 +21,21 @@ impl TestProcess {
     pub fn spawn() -> Self {
         let mut proc = Command::new("notepad.exe").spawn().unwrap();
         thread::sleep(Duration::from_millis(50));
+
         Self(proc)
     }
 
     fn name(&self) -> &'static str {
         "notepad.exe"
+    }
+
+    pub fn base(&self, handle: &KernelHandle) -> u64 {
+        handle.module_info(self.pid())
+            .unwrap()
+            .iter()
+            .find(|m| m.module_name.to_lowercase() == self.name())
+            .expect("Could not find module base")
+            .base_address
     }
 
     pub fn pid(&self) -> u64 {
@@ -84,15 +94,27 @@ fn test_read_memory() {
     let handle = get_handle();
     let process = TestProcess::spawn();
 
-    let base = handle.module_info(process.pid())
-        .unwrap()
-        .iter()
-        .find(|m| m.module_name.to_lowercase() == process.name())
-        .expect("Could not find module base")
-        .base_address;
+    let base = process.base(&handle);
 
     // Read the first 64 bytes from base
     let mut buf = vec![0u8; 64];
     handle.read_memory(process.pid(), base, &mut buf).unwrap();
     dbg!(buf);
+}
+
+#[test]
+fn test_write_memory() {
+    let handle = get_handle();
+    let process = TestProcess::spawn();
+
+    let base = process.base(&handle);
+
+    let test_data = [1u8, 2, 3, 4, 5, 6];
+
+    handle.write_memory(process.pid(), base, &test_data).unwrap();
+
+    let mut actual_data = vec![0u8; test_data.len()];
+    handle.read_memory(process.pid(), base, &mut actual_data).unwrap();
+
+    assert_eq!(&test_data[..], &actual_data);
 }

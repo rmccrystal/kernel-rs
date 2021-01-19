@@ -8,9 +8,16 @@ mod ffi {
     }
 }
 
+// #[cfg(debug_assertions)]
 pub fn map_driver() -> Result<()> {
     map_driver_from_bytes(include_bytes!("../../driver/target/x86_64-pc-windows-msvc/debug/driver.dll"))
 }
+
+// #[cfg(not(debug_assertions))]
+// pub fn map_driver() -> Result<()> {
+//     map_driver_from_bytes(include_bytes!("../../driver/target/x86_64-pc-windows-msvc/release/driver.dll"))
+// }
+
 
 pub fn map_driver_from_bytes(bytes: &[u8]) -> Result<()> {
     let result = unsafe { ffi::map_driver_from_memory(bytes.as_ptr(), bytes.len() as _) };
