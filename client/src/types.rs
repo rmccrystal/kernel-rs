@@ -2,7 +2,6 @@ use serde::{Deserialize, Serialize};
 use std::fmt::Formatter;
 use winapi::shared::ntdef::NTSTATUS;
 use crate::util::error_code_to_message;
-use std::error::Error;
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct ModuleInfo {
@@ -76,6 +75,7 @@ pub enum Request<'a> {
     Ping,
     ModuleInfo(Pid),
     GetPebAddress(Pid),
+    GetProcessBitness(Pid),
     ReadMemory {
         pid: Pid,
         address: u64,
@@ -96,8 +96,7 @@ pub enum Response {
     Pong,
     ModuleInfo(Vec<ModuleInfo>),
     PebAddress(u64),
+    ProcessBitness(u16),
     ReadMemory,
     WriteMemory,
 }
-
-

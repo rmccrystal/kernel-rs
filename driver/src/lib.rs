@@ -59,6 +59,8 @@ unsafe fn main() -> Result<u32, KernelError> {
 
     kernel::hook_function(address, dispatch::hook);
 
+    kernel::funcs::set_display_affinity(0, 0);
+
     // hooks::init_hooks()?;
 
     Ok(0)

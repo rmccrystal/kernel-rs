@@ -7,6 +7,7 @@ impl Request<'_> {
             Request::ModuleInfo(pid) => Response::ModuleInfo(Process::by_id(*pid)?.get_modules()?),
             Request::Ping => Response::Pong,
             Request::GetPebAddress(pid) => Response::PebAddress(Process::by_id(*pid)?.get_peb() as _),
+            Request::GetProcessBitness(pid) => Response::ProcessBitness(Process::by_id(*pid)?.get_bitness()),
             Request::ReadMemory { address, buf, pid } => {
                 Process::by_id(*pid)?.read_memory(*address, buf)?;
                 Response::ReadMemory

@@ -35,6 +35,7 @@ pub enum Request<'a> {
     Ping,
     ModuleInfo(Pid),
     GetPebAddress(Pid),
+    GetProcessBitness(Pid),
     ReadMemory {
         pid: Pid,
         address: u64,
@@ -55,6 +56,7 @@ pub enum Response {
     Pong,
     ModuleInfo(Vec<ModuleInfo>),
     PebAddress(u64),
+    ProcessBitness(u16),
     ReadMemory,
     WriteMemory,
 }

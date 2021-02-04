@@ -7,7 +7,7 @@ use winapi::km::wdm::KPROCESSOR_MODE::KernelMode;
 use winapi::shared::ntdef::FALSE;
 
 use crate::include::*;
-use crate::util::VariableSizedBox;
+use crate::util::{VariableSizedBox, is_address_valid};
 use super::Result;
 
 use super::KernelError;
@@ -129,19 +129,19 @@ pub unsafe fn get_process_list() -> Result<Vec<ProcessInfo>> {
     Ok(information_structs)
 }
 
-pub unsafe fn find_kernel_module(modules: &[KernelModule], module_name: &str) -> Option<*mut c_void> {
+pub fn find_kernel_module(modules: &[KernelModule], module_name: &str) -> Option<*mut c_void> {
     Some(modules
         .iter()
         .find(|&module| module.name.contains(&module_name))?
         .address)
 }
 
-pub unsafe fn get_kernel_module_export(module_base: *mut c_void, func_name: &str) -> Option<*mut c_void> {
-    if !MmIsAddressValid(module_base) {
+pub fn get_kernel_module_export(module_base: *mut c_void, func_name: &str) -> Option<*mut c_void> {
+    if !is_address_valid(module_base) {
         error!("Tried to get the export {} from module base {:p} but the module base was not valid", func_name, module_base);
         return None;
     }
-    let addr = RtlFindExportedRoutineByName(module_base, CString::new(func_name).unwrap().as_ptr());
+    let addr = unsafe { RtlFindExportedRoutineByName(module_base, CString::new(func_name).unwrap().as_ptr()) };
 
     if addr.is_null() {
         None

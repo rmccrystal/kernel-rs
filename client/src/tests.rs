@@ -15,18 +15,25 @@ fn get_handle() -> KernelHandle {
     KernelHandle::new().unwrap()
 }
 
-struct TestProcess(process::Child);
+struct Process{
+    proc: process::Child,
+    name: String
+}
 
-impl TestProcess {
-    pub fn spawn() -> Self {
-        let mut proc = Command::new("notepad.exe").spawn().unwrap();
+impl Process {
+    pub fn new(process_name: &str) -> Self {
+        let mut proc = Command::new(&process_name).spawn().unwrap();
         thread::sleep(Duration::from_millis(50));
 
-        Self(proc)
+        Self{proc, name: process_name.to_owned()}
     }
 
-    fn name(&self) -> &'static str {
-        "notepad.exe"
+    pub fn notepad() -> Self {
+        Self::new("notepad.exe")
+    }
+
+    fn name(&self) -> &str {
+        &self.name
     }
 
     pub fn base(&self, handle: &KernelHandle) -> u64 {
@@ -39,13 +46,13 @@ impl TestProcess {
     }
 
     pub fn pid(&self) -> u64 {
-        self.0.id() as _
+        self.proc.id() as _
     }
 }
 
-impl Drop for TestProcess {
+impl Drop for Process {
     fn drop(&mut self) {
-        self.0.kill().unwrap();
+        self.proc.kill().unwrap();
     }
 }
 
@@ -72,7 +79,7 @@ fn test_invalid_pid() {
 #[test]
 fn test_modules() {
     let handle = get_handle();
-    let process = TestProcess::spawn();
+    let process = Process::notepad();
 
     let modules = handle.module_info(process.pid()).unwrap();
     debug!("Found {} modules", modules.len());
@@ -82,7 +89,7 @@ fn test_modules() {
 #[test]
 fn test_peb_base() {
     let handle = get_handle();
-    let process = TestProcess::spawn();
+    let process = Process::notepad();
 
     let peb = handle.get_peb_address(process.pid()).unwrap();
     dbg!(peb);
@@ -90,9 +97,23 @@ fn test_peb_base() {
 }
 
 #[test]
+fn test_process_bitness() {
+    let handle = get_handle();
+    let process = Process::notepad();
+
+    let bitness = handle.get_process_bitness(process.pid()).unwrap();
+    dbg!(bitness);
+    assert_eq!(bitness, 64);
+
+    let bitness = handle.get_process_bitness(14120).unwrap();
+    dbg!(bitness);
+    assert_eq!(bitness, 32);
+}
+
+#[test]
 fn test_read_memory() {
     let handle = get_handle();
-    let process = TestProcess::spawn();
+    let process = Process::notepad();
 
     let base = process.base(&handle);
 
@@ -105,7 +126,7 @@ fn test_read_memory() {
 #[test]
 fn test_write_memory() {
     let handle = get_handle();
-    let process = TestProcess::spawn();
+    let process = Process::notepad();
 
     let base = process.base(&handle);
 

@@ -103,6 +103,15 @@ impl KernelHandle {
         )
     }
 
+    /// Returns 64 if 64 bit or 32 if 32 bit
+    pub fn get_process_bitness(&self, pid: u64) -> KernelResult<u16> {
+        request!(
+            self,
+            Request::GetProcessBitness(pid),
+            Response::ProcessBitness
+        )
+    }
+
     pub fn read_memory(&self, pid: u64, address: u64, buf: &mut [u8]) -> KernelResult<()> {
         let resp = self.send_request(Request::ReadMemory {pid, address, buf});
         request_no_resp!(

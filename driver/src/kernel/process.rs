@@ -5,7 +5,7 @@ use alloc::vec::Vec;
 
 use log::*;
 use serde::{Deserialize, Serialize};
-use winapi::km::wdm::KPROCESSOR_MODE::KernelMode;
+use winapi::km::wdm::KPROCESSOR_MODE::{KernelMode, UserMode};
 
 use crate::include::{_KAPC_STATE, _LDR_DATA_TABLE_ENTRY, IoGetCurrentProcess, KeStackAttachProcess, KeUnstackDetachProcess, LDR_DATA_TABLE_ENTRY32, MmCopyVirtualMemory, ObfDereferenceObject, PEPROCESS, PPEB, PPEB32, PPEB_LDR_DATA32, PsGetProcessPeb, PsGetProcessWow64Process, PsLookupProcessByProcessId};
 use crate::kernel::KernelError;
@@ -35,6 +35,10 @@ impl Process {
         Ok(Self { process: process as _ })
     }
 
+    pub fn get_bitness(&self) -> u16 {
+        unsafe { if PsGetProcessWow64Process(self.process).is_null() { 64 } else { 32 }}
+    }
+
     pub fn get_modules(&self) -> Result<Vec<ModuleInfo>> {
         let modules_64 = self.get_modules_64();
         let modules_32 = self.get_modules_32();
@@ -56,7 +60,7 @@ impl Process {
 
     fn get_modules_64(&self) -> Result<Vec<ModuleInfo>> {
         let _attach = self.attach();
-        let peb = unsafe { _attach.get_peb() };
+        let peb = unsafe { _attach.get_peb_64() };
 
         if peb.is_null() {
             return Err(KernelError::text("peb was null"));
@@ -123,7 +127,7 @@ impl Process {
                 IoGetCurrentProcess(),
                 buf.as_mut_ptr() as _,
                 buf.len() as _,
-                KernelMode as _,
+                UserMode as _,
                 &mut bytes_copied as _,
             ).to_kernel_result()?
         };
@@ -160,7 +164,7 @@ impl Process {
                 self.process,
                 address as _,
                 buf.len() as _,
-                KernelMode as _,
+                UserMode as _,
                 &mut bytes_copied as _,
             ).to_kernel_result()?;
         }
@@ -177,7 +181,7 @@ impl Process {
     }
 
     pub fn get_peb(&self) -> PPEB {
-        unsafe { ProcessAttachment::attach(self.process).get_peb() }
+        unsafe { ProcessAttachment::attach(self.process).get_peb_64() }
     }
 
     pub fn attach(&self) -> ProcessAttachment {
@@ -206,7 +210,7 @@ impl ProcessAttachment {
         Self { process, state }
     }
 
-    pub unsafe fn get_peb(&self) -> PPEB {
+    pub unsafe fn get_peb_64(&self) -> PPEB {
         PsGetProcessPeb(self.process)
     }
 }
