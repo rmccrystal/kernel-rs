@@ -62,6 +62,11 @@ fn test_map_driver() {
 }
 
 #[test]
+fn test_clean_events() {
+    crate::cleaner::clean_event_logs().unwrap();
+}
+
+#[test]
 fn test_create_handle() {
     init();
 

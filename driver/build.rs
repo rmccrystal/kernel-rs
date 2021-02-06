@@ -167,13 +167,17 @@ fn main() {
     }
 
     cc::Build::new()
-        .file("src/interop/util.cpp")
+        .cpp(true)
+        .file("src/interop/clear.cpp")
+        // .include(km_include_dir)
+        .include("C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.19041.0\\km")
         .compile("interop");
-    println!("cargo:rerun-if-changed=src/interop/util.cpp");
-    println!("cargo:rerun-if-changed=src/interop/util.h");
+
+    println!("cargo:rerun-if-changed=src/interop/clear.cpp");
+    println!("cargo:rerun-if-changed=src/interop/clear.h");
 
     bindgen::Builder::default()
-        .header("src/interop/util.h")
+        .header("src/interop/include.h")
 
         .clang_arg("-x")
         .clang_arg("c++")

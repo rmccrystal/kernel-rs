@@ -11,6 +11,7 @@ mod driver;
 mod types;
 mod util;
 mod kdmapper;
+pub mod cleaner;
 
 #[cfg(test)]
 mod tests;

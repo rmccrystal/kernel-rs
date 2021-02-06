@@ -1,5 +1,8 @@
 use anyhow::*;
-use std::pin::Pin;
+use log::*;
+use crate::cleaner::clean_event_logs;
+use std::time::Duration;
+use std::thread;
 
 mod ffi {
     #[link(name = "kdmapper", kind = "static")]
@@ -10,7 +13,14 @@ mod ffi {
 
 // #[cfg(debug_assertions)]
 pub fn map_driver() -> Result<()> {
-    map_driver_from_bytes(include_bytes!("../../driver/target/x86_64-pc-windows-msvc/debug/driver.dll"))
+    debug!("Mapping driver");
+    map_driver_from_bytes(include_bytes!("../../driver/target/x86_64-pc-windows-msvc/debug/driver.dll"))?;
+    debug!("Finished mapping driver");
+
+    thread::sleep(Duration::from_millis(1500));
+    clean_event_logs().context("Could not clean event logs")?;
+
+    Ok(())
 }
 
 // #[cfg(not(debug_assertions))]

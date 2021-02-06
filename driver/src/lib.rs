@@ -51,6 +51,9 @@ static LOG_LEVEL: LevelFilter = LevelFilter::Trace;
 unsafe fn main() -> Result<u32, KernelError> {
     info!("kernel-rs loaded");
 
+    // info!("Cleaning piddb cache");
+    // interop::bindings::clean_piddb_cache();
+
     let modules = get_kernel_modules()?;
 
     let dxgkrnl = find_kernel_module(&modules, "dxgkrnl.sys").ok_or("could not find dxgkrnl")?;
@@ -58,8 +61,6 @@ unsafe fn main() -> Result<u32, KernelError> {
         .ok_or("could not find NtQueryCompositionSurfaceStatistics")?;
 
     kernel::hook_function(address, dispatch::hook);
-
-    kernel::funcs::set_display_affinity(0, 0);
 
     // hooks::init_hooks()?;
 

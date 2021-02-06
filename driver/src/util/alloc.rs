@@ -12,6 +12,7 @@ unsafe impl GlobalAlloc for KernelAlloc {
     unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
         let pool = ExAllocatePoolWithTag(_POOL_TYPE::NonPagedPool, layout.size() as _, ALLOC_TAG);
 
+
         if pool.is_null() {
             panic!("[kernel-alloc] failed to allocate pool.");
         }
