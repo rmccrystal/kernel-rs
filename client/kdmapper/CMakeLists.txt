@@ -5,22 +5,16 @@ project(client)
 
 set(CMAKE_CXX_STANDARD 14)
 
-include_directories(kdmapper)
-
-add_executable(
-        kdmapper/exports.cpp
-        kdmapper/exports.h
-        kdmapper/intel_driver.cpp
-        kdmapper/intel_driver.hpp
-        kdmapper/intel_driver_resource.hpp
-        kdmapper/kdmapper.cpp
-        kdmapper/kdmapper.hpp
-        kdmapper/main.cpp
-        kdmapper/nt.hpp
-        kdmapper/portable_executable.cpp
-        kdmapper/portable_executable.hpp
-        kdmapper/service.cpp
-        kdmapper/service.hpp
-        kdmapper/utils.cpp
-        kdmapper/utils.hpp
+add_executable(kdmapper
+        intel_driver.cpp
+        kdmapper.cpp
+        main.cpp
+        portable_executable.cpp
+        service.cpp
+        utils.cpp
+        exports.cpp
         )
+
+
+target_include_directories(kdmapper PRIVATE .)
+target_include_directories(kdmapper PUBLIC "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.29.30037/atlmfc/include")

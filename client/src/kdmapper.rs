@@ -20,6 +20,8 @@ pub fn map_driver() -> Result<()> {
     thread::sleep(Duration::from_millis(1500));
     clean_event_logs().context("Could not clean event logs")?;
 
+    crate::KernelHandle::new()
+
     Ok(())
 }
 
