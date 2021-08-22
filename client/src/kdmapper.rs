@@ -14,13 +14,13 @@ mod ffi {
 // #[cfg(debug_assertions)]
 pub fn map_driver() -> Result<()> {
     debug!("Mapping driver");
-    map_driver_from_bytes(include_bytes!("../../driver/target/x86_64-pc-windows-msvc/debug/driver.dll"))?;
+    map_driver_from_bytes(include_bytes!("../../driver/target/x86_64-pc-windows-msvc/release/driver.dll"))?;
     debug!("Finished mapping driver");
 
     thread::sleep(Duration::from_millis(1500));
     clean_event_logs().context("Could not clean event logs")?;
 
-    crate::KernelHandle::new()
+    crate::KernelHandle::new();
 
     Ok(())
 }
