@@ -36,6 +36,7 @@ pub extern "system" fn __CxxFrameHandler3(_: *mut u8, _: *mut u8, _: *mut u8, _:
 static GLOBAL: KernelAlloc = KernelAlloc;
 
 /// Explanation can be found here: https://github.com/Trantect/win_driver_example/issues/4
+#[used]
 #[export_name = "_fltused"]
 static _FLTUSED: i32 = 0;
 

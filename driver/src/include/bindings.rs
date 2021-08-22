@@ -341,7 +341,8 @@ pub enum _FILE_INFORMATION_CLASS {
     FileLinkInformationExBypassAccessCheck = 73,
     FileStorageReserveIdInformation = 74,
     FileCaseSensitiveInformationForceAccessCheck = 75,
-    FileMaximumInformation = 76,
+    FileKnownFolderInformation = 76,
+    FileMaximumInformation = 77,
 }
 pub use self::_FILE_INFORMATION_CLASS as FILE_INFORMATION_CLASS;
 #[repr(i32)]
@@ -1703,22 +1704,22 @@ impl _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_6__bindgen_ty_2__bindgen_ty_1 
         }
     }
     #[inline]
-    pub fn UmsScheduled(&self) -> BOOLEAN {
+    pub fn Emulation(&self) -> BOOLEAN {
         unsafe { ::core::mem::transmute(self._bitfield_1.get(6usize, 1u8) as u8) }
     }
     #[inline]
-    pub fn set_UmsScheduled(&mut self, val: BOOLEAN) {
+    pub fn set_Emulation(&mut self, val: BOOLEAN) {
         unsafe {
             let val: u8 = ::core::mem::transmute(val);
             self._bitfield_1.set(6usize, 1u8, val as u64)
         }
     }
     #[inline]
-    pub fn UmsPrimary(&self) -> BOOLEAN {
+    pub fn Reserved5(&self) -> BOOLEAN {
         unsafe { ::core::mem::transmute(self._bitfield_1.get(7usize, 1u8) as u8) }
     }
     #[inline]
-    pub fn set_UmsPrimary(&mut self, val: BOOLEAN) {
+    pub fn set_Reserved5(&mut self, val: BOOLEAN) {
         unsafe {
             let val: u8 = ::core::mem::transmute(val);
             self._bitfield_1.set(7usize, 1u8, val as u64)
@@ -1731,8 +1732,8 @@ impl _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_6__bindgen_ty_2__bindgen_ty_1 
         Minimal: BOOLEAN,
         Reserved4: BOOLEAN,
         AltSyscall: BOOLEAN,
-        UmsScheduled: BOOLEAN,
-        UmsPrimary: BOOLEAN,
+        Emulation: BOOLEAN,
+        Reserved5: BOOLEAN,
     ) -> __BindgenBitfieldUnit<[u8; 1usize], u8> {
         let mut __bindgen_bitfield_unit: __BindgenBitfieldUnit<[u8; 1usize], u8> =
             Default::default();
@@ -1757,12 +1758,12 @@ impl _DISPATCHER_HEADER__bindgen_ty_1__bindgen_ty_6__bindgen_ty_2__bindgen_ty_1 
             AltSyscall as u64
         });
         __bindgen_bitfield_unit.set(6usize, 1u8, {
-            let UmsScheduled: u8 = unsafe { ::core::mem::transmute(UmsScheduled) };
-            UmsScheduled as u64
+            let Emulation: u8 = unsafe { ::core::mem::transmute(Emulation) };
+            Emulation as u64
         });
         __bindgen_bitfield_unit.set(7usize, 1u8, {
-            let UmsPrimary: u8 = unsafe { ::core::mem::transmute(UmsPrimary) };
-            UmsPrimary as u64
+            let Reserved5: u8 = unsafe { ::core::mem::transmute(Reserved5) };
+            Reserved5 as u64
         });
         __bindgen_bitfield_unit
     }
@@ -2797,12 +2798,12 @@ pub struct _IRP {
     pub CancelIrql: KIRQL,
     pub ApcEnvironment: CCHAR,
     pub AllocationFlags: UCHAR,
-    pub UserIosb: PIO_STATUS_BLOCK,
+    pub __bindgen_anon_1: _IRP__bindgen_ty_2,
     pub UserEvent: PKEVENT,
-    pub Overlay: _IRP__bindgen_ty_2,
+    pub Overlay: _IRP__bindgen_ty_3,
     pub CancelRoutine: PDRIVER_CANCEL,
     pub UserBuffer: PVOID,
-    pub Tail: _IRP__bindgen_ty_3,
+    pub Tail: _IRP__bindgen_ty_4,
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -2815,61 +2816,75 @@ pub union _IRP__bindgen_ty_1 {
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub union _IRP__bindgen_ty_2 {
-    pub AsynchronousParameters: _IRP__bindgen_ty_2__bindgen_ty_1,
+    pub UserIosb: PIO_STATUS_BLOCK,
+    pub IoRingContext: PVOID,
+    _bindgen_union_align: u64,
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union _IRP__bindgen_ty_3 {
+    pub AsynchronousParameters: _IRP__bindgen_ty_3__bindgen_ty_1,
     pub AllocationSize: LARGE_INTEGER,
     _bindgen_union_align: [u64; 2usize],
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct _IRP__bindgen_ty_2__bindgen_ty_1 {
-    pub __bindgen_anon_1: _IRP__bindgen_ty_2__bindgen_ty_1__bindgen_ty_1,
-    pub UserApcContext: PVOID,
+pub struct _IRP__bindgen_ty_3__bindgen_ty_1 {
+    pub __bindgen_anon_1: _IRP__bindgen_ty_3__bindgen_ty_1__bindgen_ty_1,
+    pub __bindgen_anon_2: _IRP__bindgen_ty_3__bindgen_ty_1__bindgen_ty_2,
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub union _IRP__bindgen_ty_2__bindgen_ty_1__bindgen_ty_1 {
+pub union _IRP__bindgen_ty_3__bindgen_ty_1__bindgen_ty_1 {
     pub UserApcRoutine: PIO_APC_ROUTINE,
     pub IssuingProcess: PVOID,
     _bindgen_union_align: u64,
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub union _IRP__bindgen_ty_3 {
-    pub Overlay: _IRP__bindgen_ty_3__bindgen_ty_1,
+pub union _IRP__bindgen_ty_3__bindgen_ty_1__bindgen_ty_2 {
+    pub UserApcContext: PVOID,
+    pub IoRing: *mut _IORING_OBJECT,
+    _bindgen_union_align: u64,
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union _IRP__bindgen_ty_4 {
+    pub Overlay: _IRP__bindgen_ty_4__bindgen_ty_1,
     pub Apc: KAPC,
     pub CompletionKey: PVOID,
     _bindgen_union_align: [u64; 11usize],
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct _IRP__bindgen_ty_3__bindgen_ty_1 {
-    pub __bindgen_anon_1: _IRP__bindgen_ty_3__bindgen_ty_1__bindgen_ty_1,
+pub struct _IRP__bindgen_ty_4__bindgen_ty_1 {
+    pub __bindgen_anon_1: _IRP__bindgen_ty_4__bindgen_ty_1__bindgen_ty_1,
     pub Thread: PETHREAD,
     pub AuxiliaryBuffer: PCHAR,
-    pub __bindgen_anon_2: _IRP__bindgen_ty_3__bindgen_ty_1__bindgen_ty_2,
+    pub __bindgen_anon_2: _IRP__bindgen_ty_4__bindgen_ty_1__bindgen_ty_2,
     pub OriginalFileObject: PFILE_OBJECT,
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub union _IRP__bindgen_ty_3__bindgen_ty_1__bindgen_ty_1 {
+pub union _IRP__bindgen_ty_4__bindgen_ty_1__bindgen_ty_1 {
     pub DeviceQueueEntry: KDEVICE_QUEUE_ENTRY,
-    pub __bindgen_anon_1: _IRP__bindgen_ty_3__bindgen_ty_1__bindgen_ty_1__bindgen_ty_1,
+    pub __bindgen_anon_1: _IRP__bindgen_ty_4__bindgen_ty_1__bindgen_ty_1__bindgen_ty_1,
     _bindgen_union_align: [u64; 4usize],
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
-pub struct _IRP__bindgen_ty_3__bindgen_ty_1__bindgen_ty_1__bindgen_ty_1 {
+pub struct _IRP__bindgen_ty_4__bindgen_ty_1__bindgen_ty_1__bindgen_ty_1 {
     pub DriverContext: [PVOID; 4usize],
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub struct _IRP__bindgen_ty_3__bindgen_ty_1__bindgen_ty_2 {
+pub struct _IRP__bindgen_ty_4__bindgen_ty_1__bindgen_ty_2 {
     pub ListEntry: LIST_ENTRY,
-    pub __bindgen_anon_1: _IRP__bindgen_ty_3__bindgen_ty_1__bindgen_ty_2__bindgen_ty_1,
+    pub __bindgen_anon_1: _IRP__bindgen_ty_4__bindgen_ty_1__bindgen_ty_2__bindgen_ty_1,
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
-pub union _IRP__bindgen_ty_3__bindgen_ty_1__bindgen_ty_2__bindgen_ty_1 {
+pub union _IRP__bindgen_ty_4__bindgen_ty_1__bindgen_ty_2__bindgen_ty_1 {
     pub CurrentStackLocation: *mut _IO_STACK_LOCATION,
     pub PacketType: ULONG,
     _bindgen_union_align: u64,
@@ -4093,5 +4108,10 @@ extern "C" {
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct _EPROCESS {
+    pub _address: u8,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct _IORING_OBJECT {
     pub _address: u8,
 }
