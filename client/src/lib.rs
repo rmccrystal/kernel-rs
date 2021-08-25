@@ -2,7 +2,7 @@ use std::ffi::c_void;
 
 use winapi::um::libloaderapi::LoadLibraryA;
 
-use types::*;
+pub use types::*;
 use log::*;
 use anyhow::*;
 use crate::driver::HOOKED_FN_NAME;
@@ -16,7 +16,7 @@ pub mod cleaner;
 #[cfg(test)]
 mod tests;
 
-type KernelResult<T> = Result<T, KernelError>;
+pub type KernelResult<T> = Result<T, KernelError>;
 
 pub struct KernelHandle {
     hook: extern "stdcall" fn(*mut c_void),
@@ -80,7 +80,7 @@ macro_rules! request_no_resp {
 }
 
 impl KernelHandle {
-    pub(crate) fn ping(&self) -> KernelResult<()> {
+    pub fn ping(&self) -> KernelResult<()> {
         request_no_resp!(
             self,
             Request::Ping,
