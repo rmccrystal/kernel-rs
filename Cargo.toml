@@ -1,6 +1,7 @@
 [workspace]
 
 members = [
-    "kernel-client",
-    "kernel-server",
+    "client",
+    "driver",
+    "server",
 ]

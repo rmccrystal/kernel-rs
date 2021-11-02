@@ -4,7 +4,7 @@ use anyhow::*;
 use std::ffi::CString;
 use winapi::um::libloaderapi::{GetModuleHandleA, GetProcAddress};
 
-pub const HOOKED_FN_NAME: &str = "NtQueryCompositionSurfaceStatistics";
+pub const HOOKED_FN_NAME: &str = "NtGdiDdDDICheckMultiPlaneOverlaySupport3";
 
 impl KernelHandle {
     pub(crate) unsafe fn init_hook() -> Result<()> {

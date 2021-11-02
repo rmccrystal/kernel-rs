@@ -3,7 +3,6 @@
 #![allow(clippy::missing_safety_doc)]
 #![allow(incomplete_features)]
 #![feature(core_intrinsics)]
-#![feature(const_generics)]
 
 extern crate alloc;
 
@@ -52,14 +51,11 @@ static LOG_LEVEL: LevelFilter = LevelFilter::Trace;
 unsafe fn main() -> Result<u32, KernelError> {
     info!("kernel-rs loaded");
 
-    // info!("Cleaning piddb cache");
-    // interop::bindings::clean_piddb_cache();
-
     let modules = get_kernel_modules()?;
 
     let dxgkrnl = find_kernel_module(&modules, "dxgkrnl.sys").ok_or("could not find dxgkrnl")?;
-    let address = get_kernel_module_export(dxgkrnl, "NtQueryCompositionSurfaceStatistics")
-        .ok_or("could not find NtQueryCompositionSurfaceStatistics")?;
+    let address = get_kernel_module_export(dxgkrnl, "NtGdiDdDDICheckMultiPlaneOverlaySupport3")
+        .ok_or("could not find NtGdiDdDDICheckMultiPlaneOverlaySupport3")?;
 
     kernel::hook_function(address, dispatch::hook);
 

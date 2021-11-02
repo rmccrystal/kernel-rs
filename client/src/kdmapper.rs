@@ -3,6 +3,7 @@ use log::*;
 use crate::cleaner::clean_event_logs;
 use std::time::Duration;
 use std::thread;
+use crate::KernelHandle;
 
 mod ffi {
     #[link(name = "kdmapper", kind = "static")]
@@ -20,7 +21,7 @@ pub fn map_driver() -> Result<()> {
     thread::sleep(Duration::from_millis(1500));
     clean_event_logs().context("Could not clean event logs")?;
 
-    crate::KernelHandle::new();
+    let _ = KernelHandle::new()?;
 
     Ok(())
 }
