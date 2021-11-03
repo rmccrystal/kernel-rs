@@ -1,1 +1,0 @@
-void clean_piddb_cache();

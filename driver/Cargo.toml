@@ -10,24 +10,10 @@ path = "src/lib.rs"
 crate-type = ["cdylib"]
 
 [dependencies]
-#log = { version = "0.4.11", features = ["release_max_level_off"] }
-log = { version = "0.4.11", features = ["max_level_off"] }
-cstr_core = "0.2.2"
-serde = { version = "1.0.118", default-features = false, features = ["alloc"] }
-postcard = { version = "0.5.1", features = ["alloc"] }
-
-[dependencies.winapi]
-git = "https://github.com/Trantect/winapi-rs.git"
-branch = "feature/km"
-features = [
-    "wdm",
-    "ntstatus",
-    "ntdef",
-    "winbase"
-]
+log = { version = "0.4.11", features = ["release_max_level_off"] }
+#log = { version = "0.4.11", features = ["max_level_off"] }
+winkernel = { path = "../../winkernel-rs" }
 
 [build-dependencies]
 winreg = "0.7.0"
 failure = "0.1.8"
-bindgen = "0.56.0"
-cc = "1.0.66"
