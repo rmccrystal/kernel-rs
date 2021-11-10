@@ -1,9 +1,11 @@
-use env_logger::Logger;
-
-mod kdmapper;
-mod cleaner;
+use log::LevelFilter;
 
 fn main() {
-    Logger::from_default_env();
-    kdmapper::map_driver().unwrap();
+    env_logger::init();
+    log::set_max_level(LevelFilter::Trace);
+    unsafe {
+        let driver = kernel_client::driver::Driver::new().unwrap();
+        driver.ping();
+    }
+    println!("success");
 }

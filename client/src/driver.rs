@@ -1,76 +1,86 @@
-use super::*;
-use log::*;
-use anyhow::*;
+#![allow(clippy::missing_safety_doc)]
+
 use std::ffi::CString;
-use winapi::um::libloaderapi::{GetModuleHandleA, GetProcAddress};
+use std::os::raw::c_void;
+use std::thread;
+use std::time::Duration;
+use anyhow::*;
+use rand::distributions::Alphanumeric;
+use rand::Rng;
+use winreg::enums::{HKEY_LOCAL_MACHINE, KEY_ALL_ACCESS};
+use winreg::RegKey;
+use crate::shared::*;
 
-pub const HOOKED_FN_NAME: &str = "NtGdiDdDDICheckMultiPlaneOverlaySupport3";
+pub struct Driver {
+    key: String,
+    reg_folder: RegKey,
+}
 
-impl KernelHandle {
-    pub(crate) unsafe fn init_hook() -> Result<()> {
-        LoadLibraryA(CString::new("user32.dll")?.as_ptr());
-        LoadLibraryA(CString::new("win32u.dll")?.as_ptr());
-        if GetModuleHandleA(CString::new("win32u.dll")?.as_ptr()).is_null() {
-            bail!("win32u.dll failed to load");
-        }
+#[cfg(debug_assertions)]
+const DRIVER_BYTES: &[u8] = include_bytes!("../../target/x86_64-pc-windows-msvc/debug/driver.dll").as_slice();
+#[cfg(not(debug_assertions))]
+const DRIVER_BYTES: &[u8] = include_bytes!("../../target/x86_64-pc-windows-msvc/release/driver.dll").as_slice();
 
-        trace!("Loaded user32.dll and win32u.dll");
+impl Driver {
+    pub unsafe fn new() -> Result<Self> {
+        // let key: String = rand::thread_rng()
+        //     .sample_iter(&Alphanumeric)
+        //     .take(10)
+        //     .map(char::from)
+        //     .collect();
+        let key = "TestKey1".to_string();
 
-        Ok(())
-    }
-    pub(crate) unsafe fn get_hook() -> Result<extern "stdcall" fn(*mut c_void)> {
-        let addr = GetProcAddress(
-            GetModuleHandleA(CString::new("win32u.dll")?.as_ptr()),
-            CString::new(HOOKED_FN_NAME)?.as_ptr(),
-        );
-        Ok(std::mem::transmute(
-            addr.as_mut()
-                .ok_or(anyhow!("Could not find {}", HOOKED_FN_NAME))?,
-        ))
-    }
+        let key_cstr = CString::new(key.clone()).unwrap();
 
-    fn call_hook(&self, data: &mut Data) {
-        let hook = self.hook;
-        hook(data as *mut _ as _)
-    }
+        let hklm = RegKey::predef(HKEY_LOCAL_MACHINE);
+        let reg_folder = hklm.open_subkey_with_flags("SOFTWARE\\Microsoft\\Windows\\Dwm", winreg::enums::KEY_ALL_ACCESS)?;
+        // let reg_key = hklm.open_subkey("SOFTWARE\\Microsoft\\Windows\\Dwm")?;
 
-    pub(crate) fn send_request(&self, req: Request) -> KernelResult<Response> {
-        // make the request
-        let mut response = RunRequestResponse::Null;
-        let mut data = Data::RunRequest {
-            req,
-            response: &mut response as _,
+        let driver = Self {
+            key,
+            reg_folder,
         };
-        self.call_hook(&mut data);
 
-        match response {
-            RunRequestResponse::Null => Err(KernelError::text("request was not handled in kernel")),
-            RunRequestResponse::AllocBuffer(len) => {
-                // get the buffer
-                let mut data = Data::WriteBuffer {
-                    buffer: Vec::with_capacity(len),
-                };
-                self.call_hook(&mut data);
+        driver.unregister();
 
-                let buffer = if let Data::WriteBuffer { buffer } = data {
-                    buffer
-                } else {
-                    return Err(KernelError::text(
-                        "WriteBuffer request was turned into a different type of data enum",
-                    ));
-                };
-
-                if buffer.len() != len {
-                    return Err(KernelError::text(&format!(
-                        "Kernel wrote {} bytes while the response was {} bytes",
-                        buffer.len(),
-                        len
-                    )));
-                }
-
-                postcard::from_bytes(&buffer).unwrap()
+        if !driver.ping() {
+            log::info!("Could not ping driver, mapping");
+            kdmapper::kdmapper(DRIVER_BYTES, false, true, false, 0, 0).ok_or_else(|| anyhow!("Could not map driver"))?;
+            if !driver.ping() {
+                bail!("Could not ping driver after loading");
             }
-            RunRequestResponse::Response(resp) => resp,
         }
+
+        Ok(driver)
+    }
+
+    pub unsafe fn ping(&self) -> bool {
+        self.send_request(Request::Ping) == Some(Ok(Response::Ping))
+    }
+
+    pub unsafe fn unregister(&self) {
+        self.send_request(Request::Unregister);
+    }
+
+    unsafe fn call_hook(&self, ptr: *mut c_void) -> Option<()> {
+        let result = self.reg_folder.set_value(&self.key, &(ptr as u64));
+        if result.is_err() { Some(()) } else { None }
+    }
+
+    pub unsafe fn send_request(&self, req: Request) -> Option<core::result::Result<Response, KernelError>> {
+        let mut dispatch = Dispatch::Request(req);
+        self.call_hook(&mut dispatch as *mut _ as _)?;
+        match dispatch {
+            Dispatch::Request(_) => {
+                None
+            }
+            Dispatch::Response(r) => Some(r)
+        }
+    }
+}
+
+impl Drop for Driver {
+    fn drop(&mut self) {
+        // let _ = self.reg_folder.delete_value(&self.key);
     }
 }

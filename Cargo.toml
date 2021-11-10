@@ -3,5 +3,4 @@
 members = [
     "client",
     "driver",
-    "server",
 ]

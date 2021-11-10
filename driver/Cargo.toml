@@ -11,9 +11,10 @@ crate-type = ["cdylib"]
 
 [dependencies]
 log = { version = "0.4.11", features = ["release_max_level_off"] }
-#log = { version = "0.4.11", features = ["max_level_off"] }
+# TODO: Make this a git dep
 winkernel = { path = "../../winkernel-rs" }
+cstr_core = "0.2.4"
 
 [build-dependencies]
 winreg = "0.7.0"
-failure = "0.1.8"
+anyhow = "1.0.45"

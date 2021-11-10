@@ -6,21 +6,26 @@
 #![feature(alloc_prelude)]
 #![feature(option_result_contains)]
 
+pub mod dispatch;
+pub mod shared;
+
 extern crate alloc;
 
 use core::intrinsics::abort;
 use alloc::prelude::v1::*;
+use core::convert::TryInto;
 use log::*;
 use winkernel::allocator::KernelAlloc;
 use winkernel::string::UnicodeString;
 use winkernel::log::KernelLogger;
 use winkernel::basedef::{ntstatus, NTSTATUS, PVOID};
 use winkernel::dbg;
-use winkernel::kernel::{get_kernel_modules, get_process_list, RegNotifyClass, create_registry_callback, safe_copy, RegistryCallbackFunc, RegistryCallback, RegSetValueKeyInformation, get_object_name, query_performance_counter};
+use winkernel::kernel::{get_kernel_modules, get_process_list, RegNotifyClass, create_registry_callback, safe_copy, RegistryCallbackFunc, RegistryCallback, RegSetValueKeyInformation, get_object_name, query_performance_counter, is_valid_ptr, is_address_valid};
 use winkernel::basedef::winapi::ctypes::c_void;
 use core::mem;
 use core::ptr::null_mut;
-use winkernel::process::Process;
+use cstr_core::CStr;
+use winkernel::process::PeProcess;
 
 /// When using the alloc crate it seems like it does some unwinding. Adding this
 /// export satisfies the compiler but may introduce undefined behaviour when a
@@ -54,71 +59,68 @@ pub struct Context {
 static mut CONTEXT: Context = Context { count: 0, callback: RegistryCallback(0) };
 
 unsafe extern "C" fn handler(ctx: &mut Context, class: RegNotifyClass, operation: *mut PVOID) -> NTSTATUS {
-    ctx.count += 1;
-
-    let mut status = ntstatus::STATUS_SUCCESS;
-
-    if ctx.count > 15000 {
-        info!("unregistered");
-        ctx.callback.unregister();
-        return status;
-    }
-
-    // info!("class = {:?}", class);
-    // return status;
-
-    // if operation.is_null() {
-    //     return status;
-    // }
-
-    // let object = *operation;
-    // info!("{:p}", object);
-    // return status;
-    // let name = get_object_name(object);
-    // if name.is_err() {
-    //     return status;
-    // }
-    // let name = name.unwrap();
-
-    // info!("name = {}", name);
-    // return status;
+    let status = ntstatus::STATUS_SUCCESS;
 
     if class != RegNotifyClass::RegNtPreSetValueKey {
         return status;
     }
 
     let set_value = match (operation as *mut RegSetValueKeyInformation).as_ref() {
-        None => return status,
-        Some(n) => n
+        Some(n) => n,
+        None => return status
     };
-    // info!("val = {:p}", set_value.object);
-    // let name = get_object_name(set_value.object);
-    // info!("name: {:?}", name);
-    info!("{:?}", set_value);
 
-    info!("data: {:?}", set_value.data());
-
-    if set_value.value_name.try_to_string().contains(&"TestKey1") {
-        info!("{}", Process::current().file_name());
-        return ntstatus::STATUS_ACCESS_DENIED;
+    if !set_value.value_name.try_to_string().contains(&REGISTRY_KEY.as_deref().unwrap_or("TestKey1")) || !set_value.data().len() == 8 {
+        return status;
     }
 
-    0
+    let ptr = u64::from_ne_bytes(set_value.data().try_into().unwrap());
+    info!("Received registry buf: {:#X}", ptr);
+
+    let result = dispatch::dispatch(ptr as _);
+
+    if result {
+        ntstatus::STATUS_ACCESS_DENIED
+    } else {
+        status
+    }
 }
 
-unsafe fn main() -> Result<u32, NTSTATUS> {
+static mut REGISTRY_KEY: Option<String> = None;
+
+/*
+unsafe fn init_registry_key(param1: usize) -> bool {
+    if param1 == 0 {
+        error!("param1 was 0");
+        return false;
+    }
+
+    if !is_address_valid(param1) {
+        error!("{:#X} is not a valid read address for REGISTRY_KEY", param1);
+        return false;
+    }
+
+    if let Ok(key) = CStr::from_ptr(param1 as _).to_str() {
+        REGISTRY_KEY = Some(key.to_string());
+        info!("Found registry key {}", key.to_string());
+        true
+    } else {
+        error!("Could not parse ptr for REGISTRY_KEY");
+        false
+    }
+}
+ */
+
+unsafe fn main(param1: usize, param2: usize) -> Result<u32, NTSTATUS> {
     info!("kernel-rs loaded");
     // RegistryCallback(132803733244794080).unregister();
-    // RegistryCallback(132803733244794081).unregister();
     // return Ok(0);
 
-    let vigembus = get_kernel_modules()?.into_iter().find(|n| n.full_path().ends_with("ViGEmBus.sys"));
-    if vigembus.is_none() {
-        error!("Could not find ViGEmBus.sys")
-    }
-    let vigembus = vigembus.unwrap();
+    // if !init_registry_key(param1) {
+    //     return Err(-1);
+    // }
 
-    dbg!(vigembus.image_base);
+    let vigembus = get_kernel_modules()?.into_iter().find(|n| n.full_path().ends_with("ViGEmBus.sys")).ok_or(1)?;
 
     const OFFSET: usize = 0x10D2A;
     let codecave = vigembus.image_base + OFFSET;
@@ -127,8 +129,8 @@ unsafe fn main() -> Result<u32, NTSTATUS> {
     let dest = handler as *const () as usize;
     let add_offset = query_performance_counter() as u16;
     let rax_start = dest.wrapping_sub(add_offset as _);
-    // rax_start + add_offset = dest
 
+    // rax_start + add_offset = dest
     // FIXME: Do we need to store rax?
     let mut bytecode = [
         0x48_u8, 0xB8,  // mov rax, rax_start
@@ -138,32 +140,34 @@ unsafe fn main() -> Result<u32, NTSTATUS> {
         0xFF, 0xE0 // jmp rax
     ];
     bytecode[2..10].clone_from_slice(&rax_start.to_le_bytes());
-    bytecode[12..16].clone_from_slice(&add_offset.to_le_bytes());
+    bytecode[12..14].clone_from_slice(&add_offset.to_le_bytes());
+    // let bytecode = [ 0xC3_u8 ];
     info!("bytecode: {:X?}", bytecode);
 
     safe_copy(bytecode.as_ptr(), codecave as _, bytecode.len())?;
+    info!("codecave 2: {:X?}", core::ptr::read(codecave as *const [u8; 30]));
 
     let func: RegistryCallbackFunc<_> = mem::transmute(codecave);
-    let callback = create_registry_callback(func, &mut CONTEXT);
+    let callback = create_registry_callback(func, &mut CONTEXT)?;
     CONTEXT.callback = callback;
 
-    // let status = func(&mut CONTEXT, RegNotifyClass::RegNtDeleteKey, null_mut());
+    // let status = func(&mut CONTEXT, RegNotifyClass::RegNtPreDeleteKey, null_mut());
     info!("callback: {}", callback.0);
 
     Ok(0)
 }
 
 #[no_mangle]
-pub extern "system" fn driver_entry(driver_object: *mut c_void, _registry_path: *const UnicodeString) -> u32 {
+pub extern "system" fn driver_entry(param1: usize, param2: usize) -> u32 {
     if let Err(e) = KernelLogger::init(LOG_LEVEL, "kernel-rs") {
         error!("Error setting logger: {:?}", e);
     }
 
-    match unsafe { main() } {
+    match unsafe { main(param1, param2) } {
         Ok(code) => code,
         Err(err) => {
             error!("{:#X}", err as u32);
-            1
+            err as _
         }
     }
 }

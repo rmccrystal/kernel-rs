@@ -1,13 +1,13 @@
-use failure::{format_err, Error};
 use std::{
     env::var,
     path::{Path, PathBuf},
 };
+use anyhow::*;
 use winreg::{enums::*, RegKey};
 
 /// Returns the path to the `Windows Kits` directory. It's by default at
 /// `C:\Program Files (x86)\Windows Kits\10`.
-fn get_windows_kits_dir() -> Result<PathBuf, Error> {
+fn get_windows_kits_dir() -> Result<PathBuf> {
     let hklm = RegKey::predef(HKEY_LOCAL_MACHINE);
     let key = r"SOFTWARE\Microsoft\Windows Kits\Installed Roots";
     let dir: String = hklm.open_subkey(key)?.get_value("KitsRoot10")?;
@@ -17,7 +17,7 @@ fn get_windows_kits_dir() -> Result<PathBuf, Error> {
 
 /// Returns the path to the kernel mode libraries. The path may look like this:
 /// `C:\Program Files (x86)\Windows Kits\10\lib\10.0.18362.0\km`.
-fn get_km_dir(windows_kits_dir: &PathBuf) -> Result<PathBuf, Error> {
+fn get_km_dir(windows_kits_dir: &PathBuf) -> Result<PathBuf> {
     let readdir = Path::new(windows_kits_dir).join("lib").read_dir()?;
 
     let max_libdir = readdir
@@ -38,7 +38,7 @@ fn get_km_dir(windows_kits_dir: &PathBuf) -> Result<PathBuf, Error> {
 
 /// Returns the path to the user mode libraries. The path may look like this:
 /// `C:\Program Files (x86)\Windows Kits\10\lib\10.0.18362.0\um`.
-fn get_um_dir(windows_kits_dir: &PathBuf) -> Result<PathBuf, Error> {
+fn get_um_dir(windows_kits_dir: &PathBuf) -> Result<PathBuf> {
     let readdir = Path::new(windows_kits_dir).join("lib").read_dir()?;
 
     let max_libdir = readdir
@@ -57,7 +57,7 @@ fn get_um_dir(windows_kits_dir: &PathBuf) -> Result<PathBuf, Error> {
     Ok(max_libdir.join("um"))
 }
 
-fn get_km_include_dir(windows_kits_dir: &PathBuf) -> Result<PathBuf, Error> {
+fn get_km_include_dir(windows_kits_dir: &PathBuf) -> Result<PathBuf> {
     let readdir = Path::new(windows_kits_dir).join("include").read_dir()?;
     let max_libdir = readdir
         .filter_map(|dir| dir.ok())

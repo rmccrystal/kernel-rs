@@ -15,9 +15,9 @@ fn get_handle() -> KernelHandle {
     KernelHandle::new().unwrap()
 }
 
-struct Process{
+struct Process {
     proc: process::Child,
-    name: String
+    name: String,
 }
 
 impl Process {
@@ -25,7 +25,7 @@ impl Process {
         let mut proc = Command::new(&process_name).spawn().unwrap();
         thread::sleep(Duration::from_millis(50));
 
-        Self{proc, name: process_name.to_owned()}
+        Self { proc, name: process_name.to_owned() }
     }
 
     pub fn notepad() -> Self {
