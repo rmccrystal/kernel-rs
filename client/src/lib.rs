@@ -3,7 +3,7 @@ use memflow::prelude::*;
 use memflow::prelude::cache::TimedCacheValidator;
 use memflow_win32::prelude::*;
 use pelite::pe::exports::GetProcAddress;
-use crate::driver::Driver;
+use crate::driver::DriverHandle;
 
 pub mod driver;
 #[path = "../../driver/src/shared.rs"]
@@ -13,7 +13,7 @@ pub mod shared;
 mod tests;
 
 pub struct KernelHandle {
-    pub kernel: Win32Kernel<CachedPhysicalMemory<'static, Driver, TimedCacheValidator>, CachedVirtualTranslate<DirectTranslate, TimedCacheValidator>>,
+    pub kernel: Win32Kernel<CachedPhysicalMemory<'static, DriverHandle, TimedCacheValidator>, CachedVirtualTranslate<DirectTranslate, TimedCacheValidator>>,
 }
 
 #[derive(Debug, Clone)]
@@ -25,13 +25,17 @@ pub struct ModuleInfo {
 
 impl KernelHandle {
     pub fn new() -> anyhow::Result<Self> {
-        let driver = unsafe { Driver::new() }?;
+        let driver = unsafe { DriverHandle::new() }?;
 
         let kernel = Win32KernelBuilder::new(driver)
             .build_default_caches()
             .build()?;
 
         Ok(Self { kernel })
+    }
+
+    pub fn pid_by_name(&self, name: &str) -> Option<u64> {
+        self.kernel.clone().process_info_by_name(name).map(|p| p.pid as _).ok()
     }
 
     pub fn get_modules(&self, pid: u64) -> anyhow::Result<Vec<ModuleInfo>> {

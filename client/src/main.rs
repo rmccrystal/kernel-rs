@@ -1,7 +1,7 @@
 #![feature(core_intrinsics)]
 use std::time::Duration;
 use log::LevelFilter;
-use kernel_client::driver::Driver;
+use kernel_client::driver::DriverHandle;
 use kernel_client::shared::Request;
 
 fn main() {

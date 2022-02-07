@@ -21,10 +21,6 @@ pub unsafe fn dispatch(req: *mut Dispatch) -> bool {
         return false;
     }
 
-    if let Dispatch { handled: false, data: Data::Request(Request::ReadPhysical { address: 1761280, .. }) } = req {
-        log::trace!("Hello :D: {:#X?}", req);
-    }
-
     #[cfg(debug_assertions)]
     log::trace!("Got dispatch: {:#X?}", req);
 

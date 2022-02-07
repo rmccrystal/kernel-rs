@@ -30,18 +30,18 @@ impl Clone for TempRegKey {
 }
 
 #[derive(Clone)]
-pub struct Driver {
+pub struct DriverHandle {
     key: Rc<TempRegKey>,
 }
 
-unsafe impl Send for Driver {}
+unsafe impl Send for DriverHandle {}
 
 #[cfg(debug_assertions)]
 const DRIVER_BYTES: &[u8] = include_bytes!("../../target/x86_64-pc-windows-msvc/debug/driver.dll").as_slice();
 #[cfg(not(debug_assertions))]
 const DRIVER_BYTES: &[u8] = include_bytes!("../../target/x86_64-pc-windows-msvc/release/driver.dll").as_slice();
 
-impl Driver {
+impl DriverHandle {
     pub unsafe fn new() -> anyhow::Result<Self> {
         // let key: String = rand::thread_rng()
         //     .sample_iter(&Alphanumeric)
@@ -134,7 +134,6 @@ impl Driver {
         self.call_hook(&mut dispatch as *mut _ as _)?;
         match dispatch.data {
             Data::Request(_) => {
-                #[cfg(debug_assertions)]
                 Err(anyhow::anyhow!("Could not send request to kernel"))
             }
             Data::Response(r) => Ok(r)
@@ -144,7 +143,7 @@ impl Driver {
 
 use memflow::prelude::*;
 
-impl PhysicalMemory for Driver {
+impl PhysicalMemory for DriverHandle {
     fn phys_read_raw_iter<'a>(&mut self, data: CIterator<PhysicalReadData<'a>>, out_fail: &mut ReadFailCallback<'_, 'a>) -> memflow::prelude::Result<()> {
         unsafe {
             for MemData(addr, mut out) in data {
