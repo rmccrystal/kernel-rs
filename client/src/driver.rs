@@ -2,6 +2,7 @@
 
 use std::ffi::CString;
 use std::os::raw::c_void;
+use std::rc::Rc;
 use std::thread;
 use std::time::Duration;
 use rand::Rng;
@@ -9,22 +10,31 @@ use winreg::enums::{HKEY_LOCAL_MACHINE, KEY_ALL_ACCESS};
 use winreg::RegKey;
 use crate::shared::*;
 
-pub struct Driver {
-    key: String,
-    reg_folder: RegKey,
+/// Wrapper for RegKey. Deletes the key when dropped
+struct TempRegKey(RegKey, String);
+
+impl Drop for TempRegKey {
+    fn drop(&mut self) {
+        let _ = self.0.delete_value(&self.1);
+    }
 }
 
-unsafe impl Send for Driver {}
-
-impl Clone for Driver {
+impl Clone for TempRegKey {
     fn clone(&self) -> Self {
         unsafe {
             let mut reg_folder = std::mem::zeroed();
-            std::ptr::copy(&self.reg_folder, &mut reg_folder, std::mem::size_of::<RegKey>());
-            Self { key: self.key.clone(), reg_folder }
+            std::ptr::copy(&self.0, &mut reg_folder, std::mem::size_of::<RegKey>());
+            Self(reg_folder, self.1.clone())
         }
     }
 }
+
+#[derive(Clone)]
+pub struct Driver {
+    key: Rc<TempRegKey>,
+}
+
+unsafe impl Send for Driver {}
 
 #[cfg(debug_assertions)]
 const DRIVER_BYTES: &[u8] = include_bytes!("../../target/x86_64-pc-windows-msvc/debug/driver.dll").as_slice();
@@ -44,8 +54,7 @@ impl Driver {
         let reg_folder = hklm.open_subkey_with_flags("SOFTWARE\\Microsoft\\Windows\\Dwm", winreg::enums::KEY_ALL_ACCESS)?;
 
         let driver = Self {
-            key: KEY.to_string(),
-            reg_folder,
+            key: Rc::new(TempRegKey(reg_folder, KEY.to_string()))
         };
 
         // driver.unregister();
@@ -66,7 +75,7 @@ impl Driver {
     }
 
     pub unsafe fn ping(&self) -> bool {
-        self.send_request(Request::Ping) == Some(Ok(Response::Ping))
+        matches!(self.send_request(Request::Ping), Ok(Ok(Response::Ping)))
     }
 
     pub unsafe fn unregister(&self) {
@@ -76,13 +85,13 @@ impl Driver {
     pub unsafe fn read_physical(&self, address: u64, buf: &mut [u8]) -> core::result::Result<(), KernelError> {
         // println!("Reading {:#X} into {:p}", address, buf);
         // std::thread::sleep(Duration::from_secs_f32(0.5));
-        self.send_request(Request::ReadPhysical { address, buf: buf.as_mut_ptr(), len: buf.len() }).expect("Could not send request to kernel").map(|_| ())
+        self.send_request(Request::ReadPhysical { address, buf: buf.as_mut_ptr(), len: buf.len() }).unwrap().map(|_| ())
     }
 
     const CHUNK_SIZE: usize = 0x1000;
 
     pub unsafe fn read_physical_chunked(&self, address: u64, buf: &mut [u8]) {
-        if buf.len() < Self::CHUNK_SIZE {
+        if buf.len() <= Self::CHUNK_SIZE {
             let result = self.read_physical(address, buf);
             if let Err(e) = result {
                 log::debug!("Error reading {:#X} - {:#X}: {:#X?}", address, address + buf.len() as u64, e);
@@ -108,29 +117,27 @@ impl Driver {
     }
 
     pub unsafe fn write_physical(&self, address: u64, buf: &[u8]) -> core::result::Result<(), KernelError> {
-        self.send_request(Request::WritePhysical { address, buf: buf.as_ptr(), len: buf.len() }).expect("Could not send request to kernel").map(|_| ())
+        self.send_request(Request::WritePhysical { address, buf: buf.as_ptr(), len: buf.len() }).unwrap().map(|_| ())
     }
 
-    pub unsafe fn call_hook(&self, ptr: *mut c_void) -> Option<()> {
-        let result = self.reg_folder.set_value(&self.key, &(ptr as u64));
-        if result.is_err() { Some(()) } else { None }
-    }
-
-    pub unsafe fn send_request(&self, req: Request) -> Option<core::result::Result<Response, KernelError>> {
-        let mut dispatch = Dispatch { handled: false, data: Data::Request(req) };
-        let prev = dispatch.clone();
-        self.call_hook(&mut dispatch as *mut _ as _)?;
-        if dispatch == prev {
-            dbg!(prev, dispatch);
-            panic!("why");
+    pub unsafe fn call_hook(&self, ptr: *mut c_void) -> anyhow::Result<()> {
+        let result = self.key.0.set_value(&self.key.1, &(ptr as u64));
+        match result {
+            Ok(_) => Err(anyhow::anyhow!("Success returned when writing reg key. Is the hook installed?")),
+            Err(e) if e.raw_os_error() != Some(5) => Err(anyhow::anyhow!("Did not get permission denied error, instead got {:?}", e)),
+            Err(_) => Ok(())
         }
+    }
+
+    pub unsafe fn send_request(&self, req: Request) -> anyhow::Result<core::result::Result<Response, KernelError>> {
+        let mut dispatch = Dispatch { handled: false, data: Data::Request(req) };
+        self.call_hook(&mut dispatch as *mut _ as _)?;
         match dispatch.data {
             Data::Request(_) => {
                 #[cfg(debug_assertions)]
-                log::error!("Could not send request to kernel. dispatch = {:?}", dispatch);
-                None
+                Err(anyhow::anyhow!("Could not send request to kernel"))
             }
-            Data::Response(r) => Some(r)
+            Data::Response(r) => Ok(r)
         }
     }
 }
@@ -162,11 +169,5 @@ impl PhysicalMemory for Driver {
 
     fn set_mem_map(&mut self, mem_map: &[PhysicalMemoryMapping]) {
         dbg!(mem_map);
-    }
-}
-
-impl Drop for Driver {
-    fn drop(&mut self) {
-        let _ = self.reg_folder.delete_value(&self.key);
     }
 }
