@@ -3,29 +3,22 @@
 #![allow(clippy::missing_safety_doc)]
 #![allow(incomplete_features)]
 #![feature(core_intrinsics)]
-#![feature(alloc_prelude)]
 #![feature(option_result_contains)]
-
-pub mod dispatch;
-pub mod shared;
 
 extern crate alloc;
 
-use core::intrinsics::abort;
-use alloc::prelude::v1::*;
+use alloc::string::String;
 use core::convert::TryInto;
+use core::mem;
+
 use log::*;
 use winkernel::allocator::KernelAlloc;
-use winkernel::string::UnicodeString;
-use winkernel::log::KernelLogger;
 use winkernel::basedef::{ntstatus, NTSTATUS, PVOID};
-use winkernel::dbg;
-use winkernel::kernel::{get_kernel_modules, get_process_list, RegNotifyClass, create_registry_callback, safe_copy, RegistryCallbackFunc, RegistryCallback, RegSetValueKeyInformation, get_object_name, query_performance_counter, is_valid_ptr, is_address_valid};
-use winkernel::basedef::winapi::ctypes::c_void;
-use core::mem;
-use core::ptr::null_mut;
-use cstr_core::CStr;
-use winkernel::process::PeProcess;
+use winkernel::kernel::{create_registry_callback, get_kernel_modules, get_object_name, get_process_list, is_address_valid, is_valid_ptr, query_performance_counter, RegistryCallback, RegistryCallbackFunc, RegNotifyClass, RegSetValueKeyInformation, safe_copy};
+use winkernel::log::KernelLogger;
+
+pub mod dispatch;
+pub mod shared;
 
 /// When using the alloc crate it seems like it does some unwinding. Adding this
 /// export satisfies the compiler but may introduce undefined behaviour when a
@@ -49,7 +42,7 @@ fn panic(info: &core::panic::PanicInfo) -> ! {
     loop {}
 }
 
-static LOG_LEVEL: LevelFilter = LevelFilter::Trace;
+static LOG_LEVEL: LevelFilter = LevelFilter::Debug;
 
 pub struct Context {
     pub count: u64,
@@ -75,7 +68,7 @@ unsafe extern "C" fn handler(ctx: &mut Context, class: RegNotifyClass, operation
     }
 
     let ptr = u64::from_ne_bytes(set_value.data().try_into().unwrap());
-    info!("Received registry buf: {:#X}", ptr);
+    trace!("Received registry buf: {:#X}", ptr);
 
     let result = dispatch::dispatch(ptr as _);
 

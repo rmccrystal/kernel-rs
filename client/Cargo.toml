@@ -4,6 +4,9 @@ version = "0.1.0"
 authors = ["Ryan McCrystal <rrmccrystal@gmail.com>"]
 edition = "2018"
 
+[profile.release]
+panic = "abort"
+
 [dependencies]
 winreg = "0.10.1"
 anyhow = "1.0.38"
@@ -11,5 +14,8 @@ log = "0.4.13"
 env_logger = "0.8.2"
 rand = "0.8.4"
 kdmapper = { git = "https://github.com/rmccrystal/kdmapper-rs", features = ["disable-output"] }
-memflow = "0.1.5"
-memflow-win32 = "0.1.5"
+memflow = { git = "https://github.com/memflow/memflow", branch = "next", features = ["plugins"] }
+memflow-win32 = { git = "https://github.com/memflow/memflow-win32" }
+#reflow = { git = "https://github.com/memflow/reflow" }
+#reflow = { path = "../../reflow" }
+pelite = "0.9.0"

@@ -5,7 +5,7 @@ use std::process::Command;
 use std::time::Duration;
 
 fn init() {
-    let _ = env_logger::builder().is_test(true).filter_level(LevelFilter::Trace).try_init();
+    let _ = env_logger::builder().is_test(true).filter_level(LevelFilter::Debug).try_init();
 }
 
 // Runs init() and gets a handle (or panics)
@@ -37,10 +37,10 @@ impl Process {
     }
 
     pub fn base(&self, handle: &KernelHandle) -> u64 {
-        handle.module_info(self.pid())
+        handle.get_modules(self.pid())
             .unwrap()
             .iter()
-            .find(|m| m.module_name.to_lowercase() == self.name())
+            .find(|m| m.name.to_lowercase() == self.name())
             .expect("Could not find module base")
             .base_address
     }
@@ -54,16 +54,6 @@ impl Drop for Process {
     fn drop(&mut self) {
         self.proc.kill().unwrap();
     }
-}
-
-#[test]
-fn test_map_driver() {
-    crate::kdmapper::map_driver().unwrap();
-}
-
-#[test]
-fn test_clean_events() {
-    crate::cleaner::clean_event_logs().unwrap();
 }
 
 #[test]
@@ -86,7 +76,7 @@ fn test_modules() {
     let handle = get_handle();
     let process = Process::notepad();
 
-    let modules = handle.module_info(process.pid()).unwrap();
+    let modules = handle.get_modules(process.pid()).unwrap();
     debug!("Found {} modules", modules.len());
     assert!(!modules.is_empty());
 }
@@ -96,23 +86,9 @@ fn test_peb_base() {
     let handle = get_handle();
     let process = Process::notepad();
 
-    let peb = handle.get_peb_address(process.pid()).unwrap();
+    let peb = handle.get_peb_base(process.pid()).unwrap();
     dbg!(peb);
     assert_ne!(peb, 0);
-}
-
-#[test]
-fn test_process_bitness() {
-    let handle = get_handle();
-    let process = Process::notepad();
-
-    let bitness = handle.get_process_bitness(process.pid()).unwrap();
-    dbg!(bitness);
-    assert_eq!(bitness, 64);
-
-    let bitness = handle.get_process_bitness(14120).unwrap();
-    dbg!(bitness);
-    assert_eq!(bitness, 32);
 }
 
 #[test]
