@@ -1,5 +1,6 @@
 #![cfg_attr(test, feature(test))]
 
+use std::cell::RefCell;
 use anyhow::*;
 use memflow::os::Process;
 use memflow::prelude::*;
@@ -32,7 +33,7 @@ impl KernelHandle {
     }
 
     pub fn attach_pid(&self, pid: u64) -> anyhow::Result<KernelProcess> {
-        Ok(KernelProcess(self.0.clone().into_process_by_pid(pid as _)?))
+        Ok(KernelProcess::new(self.0.clone().into_process_by_pid(pid as _)?))
     }
 }
 
@@ -46,15 +47,22 @@ impl memlib::ProcessAttach for KernelHandle {
     type ProcessType = KernelProcess;
 
     fn attach(&self, process_name: &str) -> anyhow::Result<Self::ProcessType> {
-        Ok(KernelProcess(self.0.clone().into_process_by_name(process_name)?))
+        Ok(KernelProcess::new(self.0.clone().into_process_by_name(process_name)?))
     }
 }
 
-pub struct KernelProcess(MemflowProcess);
+pub struct KernelProcess(RefCell<MemflowProcess>);
+
+impl KernelProcess {
+    pub fn new(proc: MemflowProcess) -> Self {
+        Self(RefCell::new(proc))
+    }
+}
 
 impl KernelProcess {
     pub fn get_main_module(&self) -> Module {
-        self.0.clone().primary_module()
+        self.0.borrow_mut()
+            .primary_module()
             .map(|m| memlib::Module { name: m.name.to_string(), base: m.base.to_umem(), size: m.size })
             .unwrap()
     }
@@ -62,8 +70,7 @@ impl KernelProcess {
 
 impl memlib::MemoryRead for KernelProcess {
     fn try_read_bytes_into(&self, address: u64, buffer: &mut [u8]) -> Option<()> {
-        self.0.virt_mem
-            .clone()
+        self.0.borrow_mut().virt_mem
             .read_raw_into(Address::from(address), buffer)
             .ok()
     }
@@ -71,8 +78,8 @@ impl memlib::MemoryRead for KernelProcess {
 
 impl memlib::MemoryWrite for KernelProcess {
     fn try_write_bytes(&self, address: u64, buffer: &[u8]) -> Option<()> {
-        self.0.virt_mem
-            .clone()
+        self.0.borrow_mut()
+            .virt_mem
             .write_raw(Address::from(address), buffer)
             .ok()
     }
@@ -80,7 +87,8 @@ impl memlib::MemoryWrite for KernelProcess {
 
 impl memlib::ModuleList for KernelProcess {
     fn get_module_list(&self) -> Vec<Module> {
-        self.0.clone().module_list().unwrap()
+        self.0.borrow_mut()
+            .module_list().unwrap()
             .into_iter()
             .map(|m| memlib::Module { name: m.name.to_string(), base: m.base.to_umem(), size: m.size })
             .collect()
@@ -89,10 +97,10 @@ impl memlib::ModuleList for KernelProcess {
 
 impl memlib::ProcessInfo for KernelProcess {
     fn process_name(&self) -> String {
-        self.0.clone().primary_module().unwrap().name.to_string()
+        self.0.clone().borrow_mut().primary_module().unwrap().name.to_string()
     }
 
     fn peb_base_address(&self) -> u64 {
-        self.0.clone().proc_info.peb().unwrap().to_umem()
+        self.0.clone().borrow_mut().proc_info.peb().unwrap().to_umem()
     }
 }
