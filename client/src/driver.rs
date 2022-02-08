@@ -62,8 +62,8 @@ impl DriverHandle {
         // std::thread::sleep(Duration::from_millis(1000));
         // log::info!("sleep end");
 
-        if !driver.ping() {
-            log::info!("Could not ping driver, mapping");
+        if !driver.ping() || cfg!(feature = "remap") {
+            log::info!("Mapping driver");
             kdmapper::kdmapper(DRIVER_BYTES, false, true, false, 0, 0).ok_or_else(|| anyhow::anyhow!("Could not map driver"))?;
             if !driver.ping() {
                 anyhow::bail!("Could not ping driver after loading");

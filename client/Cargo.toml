@@ -4,6 +4,10 @@ version = "0.1.0"
 authors = ["Ryan McCrystal <rrmccrystal@gmail.com>"]
 edition = "2018"
 
+[features]
+# If this is enabled the driver will remap every time it loads
+remap = []
+
 [profile.release]
 panic = "abort"
 
