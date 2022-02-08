@@ -3,6 +3,11 @@ use log::*;
 use std::{process, thread};
 use std::process::Command;
 use std::time::Duration;
+use memlib::*;
+
+extern crate test;
+
+use test::Bencher;
 
 fn init() {
     let _ = env_logger::builder().is_test(true).filter_level(LevelFilter::Debug).try_init();
@@ -36,15 +41,6 @@ impl Process {
         &self.name
     }
 
-    pub fn base(&self, handle: &KernelHandle) -> u64 {
-        handle.get_modules(self.pid())
-            .unwrap()
-            .iter()
-            .find(|m| m.name.to_lowercase() == self.name())
-            .expect("Could not find module base")
-            .base_address
-    }
-
     pub fn pid(&self) -> u64 {
         self.proc.id() as _
     }
@@ -64,19 +60,12 @@ fn test_create_handle() {
 }
 
 #[test]
-fn test_invalid_pid() {
-    init();
-
-    let handle = KernelHandle::new().unwrap();
-    assert!(handle.write_memory(99999999, 0, &[0]).is_err());
-}
-
-#[test]
 fn test_modules() {
     let handle = get_handle();
-    let process = Process::notepad();
+    let notepad = Process::notepad();
+    let proc = handle.attach_pid(notepad.pid()).unwrap();
 
-    let modules = handle.get_modules(process.pid()).unwrap();
+    let modules = proc.get_module_list();
     debug!("Found {} modules", modules.len());
     assert!(!modules.is_empty());
 }
@@ -84,9 +73,10 @@ fn test_modules() {
 #[test]
 fn test_peb_base() {
     let handle = get_handle();
-    let process = Process::notepad();
+    let notepad = Process::notepad();
+    let proc = handle.attach_pid(notepad.pid()).unwrap();
 
-    let peb = handle.get_peb_base(process.pid()).unwrap();
+    let peb = proc.peb_base_address();
     dbg!(peb);
     assert_ne!(peb, 0);
 }
@@ -94,29 +84,49 @@ fn test_peb_base() {
 #[test]
 fn test_read_memory() {
     let handle = get_handle();
-    let process = Process::notepad();
+    let notepad = Process::notepad();
+    let proc = handle.attach_pid(notepad.pid()).unwrap();
 
-    let base = process.base(&handle);
+    let base = proc.get_main_module().base;
 
     // Read the first 64 bytes from base
     let mut buf = vec![0u8; 64];
-    handle.read_memory(process.pid(), base, &mut buf).unwrap();
+    proc.try_read_bytes_into(base, &mut buf).unwrap();
     dbg!(buf);
 }
 
 #[test]
 fn test_write_memory() {
     let handle = get_handle();
-    let process = Process::notepad();
+    let notepad = Process::notepad();
+    let proc = handle.attach_pid(notepad.pid()).unwrap();
 
-    let base = process.base(&handle);
+    let base = proc.get_main_module().base;
 
     let test_data = [1u8, 2, 3, 4, 5, 6];
 
-    handle.write_memory(process.pid(), base, &test_data).unwrap();
+    let mut orig_data = vec![0u8; test_data.len()];
+    proc.try_read_bytes_into(base, &mut orig_data).unwrap();
+
+    proc.try_write_bytes(base, &test_data).unwrap();
 
     let mut actual_data = vec![0u8; test_data.len()];
-    handle.read_memory(process.pid(), base, &mut actual_data).unwrap();
+    proc.try_read_bytes_into(base, &mut actual_data).unwrap();
+
+    proc.try_write_bytes(base, &orig_data).unwrap();
 
     assert_eq!(&test_data[..], &actual_data);
+}
+
+#[bench]
+fn bench_read(b: &mut Bencher) {
+    let handle = get_handle();
+    let notepad = Process::notepad();
+    let proc = handle.attach_pid(notepad.pid()).unwrap();
+    let base = proc.get_main_module().base;
+
+    let mut buf = [0u8; 0x100];
+    b.iter(|| {
+        proc.try_read_bytes_into(base, &mut buf);
+    });
 }

@@ -20,6 +20,5 @@ rand = "0.8.4"
 kdmapper = { git = "https://github.com/rmccrystal/kdmapper-rs", features = ["disable-output"] }
 memflow = { git = "https://github.com/memflow/memflow", branch = "next", features = ["plugins"] }
 memflow-win32 = { git = "https://github.com/memflow/memflow-win32" }
-#reflow = { git = "https://github.com/memflow/reflow" }
-#reflow = { path = "../../reflow" }
+memlib = { path = "../../memlib-rs"}
 pelite = "0.9.0"

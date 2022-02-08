@@ -23,7 +23,7 @@ impl Clone for TempRegKey {
     fn clone(&self) -> Self {
         unsafe {
             let mut reg_folder = std::mem::zeroed();
-            std::ptr::copy(&self.0, &mut reg_folder, std::mem::size_of::<RegKey>());
+            std::ptr::copy(&self.0, &mut reg_folder, 1);
             Self(reg_folder, self.1.clone())
         }
     }
