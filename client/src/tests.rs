@@ -130,3 +130,12 @@ fn bench_read(b: &mut Bencher) {
         proc.try_read_bytes_into(base, &mut buf);
     });
 }
+
+#[bench]
+fn bench_create_handle(b: &mut Bencher) {
+    init();
+
+    b.iter(|| {
+        KernelHandle::new().unwrap();
+    });
+}
