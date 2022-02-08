@@ -78,10 +78,6 @@ impl DriverHandle {
         matches!(self.send_request(Request::Ping), Ok(Ok(Response::Ping)))
     }
 
-    pub unsafe fn unregister(&self) {
-        self.send_request(Request::Unregister);
-    }
-
     pub unsafe fn read_physical(&self, address: u64, buf: &mut [u8]) -> core::result::Result<(), KernelError> {
         // println!("Reading {:#X} into {:p}", address, buf);
         // std::thread::sleep(Duration::from_secs_f32(0.5));
