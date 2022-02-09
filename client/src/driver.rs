@@ -36,9 +36,9 @@ pub struct DriverHandle {
 
 unsafe impl Send for DriverHandle {}
 
-#[cfg(debug_assertions)]
+#[cfg(all(debug_assertions, feature = "debug"))]
 const DRIVER_BYTES: &[u8] = include_bytes!("../../target/x86_64-pc-windows-msvc/debug/driver.dll").as_slice();
-#[cfg(not(debug_assertions))]
+#[cfg(not(all(debug_assertions, feature = "debug")))]
 const DRIVER_BYTES: &[u8] = include_bytes!("../../target/x86_64-pc-windows-msvc/release/driver.dll").as_slice();
 
 impl DriverHandle {
