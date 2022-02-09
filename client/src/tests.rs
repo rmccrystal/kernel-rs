@@ -96,6 +96,19 @@ fn test_read_memory() {
 }
 
 #[test]
+fn test_dump_module() {
+    let handle = get_handle();
+    let notepad = Process::notepad();
+    let proc = handle.attach_pid(notepad.pid()).unwrap();
+
+    let main_mod = proc.get_main_module();
+
+    let mut buf = vec![0u8; main_mod.size as _];
+    proc.try_read_bytes_into(main_mod.base, &mut buf).unwrap();
+    assert_eq!(buf[0..2], [0x4Du8, 0x5A]);
+}
+
+#[test]
 fn test_write_memory() {
     let handle = get_handle();
     let notepad = Process::notepad();
