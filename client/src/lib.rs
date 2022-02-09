@@ -1,6 +1,6 @@
 #![cfg_attr(test, feature(test))]
 
-use std::cell::RefCell;
+use std::cell::{RefCell, RefMut};
 use anyhow::*;
 use memflow::os::Process;
 use memflow::prelude::*;
@@ -15,6 +15,8 @@ pub mod shared;
 
 #[cfg(test)]
 mod tests;
+
+pub use memflow;
 
 type MemflowKernel = Win32Kernel<CachedPhysicalMemory<'static, DriverHandle, TimedCacheValidator>, CachedVirtualTranslate<DirectTranslate, TimedCacheValidator>>;
 type MemflowProcess = Win32Process<VirtualDma<CachedPhysicalMemory<'static, DriverHandle, TimedCacheValidator>, CachedVirtualTranslate<DirectTranslate, TimedCacheValidator>, Win32VirtualTranslate>>;
@@ -57,11 +59,15 @@ impl KernelProcess {
     pub fn new(proc: MemflowProcess) -> Self {
         Self(RefCell::new(proc))
     }
+
+    pub fn memflow(&self) -> RefMut<'_, MemflowProcess> {
+        self.0.borrow_mut()
+    }
 }
 
 impl KernelProcess {
     pub fn get_main_module(&self) -> Module {
-        self.0.borrow_mut()
+        self.memflow()
             .primary_module()
             .map(|m| memlib::Module { name: m.name.to_string(), base: m.base.to_umem(), size: m.size })
             .unwrap()
@@ -70,24 +76,35 @@ impl KernelProcess {
 
 impl memlib::MemoryRead for KernelProcess {
     fn try_read_bytes_into(&self, address: u64, buffer: &mut [u8]) -> Option<()> {
-        self.0.borrow_mut().virt_mem
-            .read_raw_into(Address::from(address), buffer)
-            .ok()
+        let result = self.memflow().virt_mem
+            .read_raw_into(Address::from(address), buffer);
+
+        if let Err(e) = &result {
+            log::error!("Could not read bytes: {:?}", e);
+        }
+
+        result.ok()
+        // Some(())
     }
 }
 
 impl memlib::MemoryWrite for KernelProcess {
     fn try_write_bytes(&self, address: u64, buffer: &[u8]) -> Option<()> {
-        self.0.borrow_mut()
+        let result = self.memflow()
             .virt_mem
-            .write_raw(Address::from(address), buffer)
-            .ok()
+            .write_raw(Address::from(address), buffer);
+
+        if let Err(e) = &result {
+            log::error!("Could not write bytes: {:?}", e);
+        }
+
+        result.ok()
     }
 }
 
 impl memlib::ModuleList for KernelProcess {
     fn get_module_list(&self) -> Vec<Module> {
-        self.0.borrow_mut()
+        self.memflow()
             .module_list().unwrap()
             .into_iter()
             .map(|m| memlib::Module { name: m.name.to_string(), base: m.base.to_umem(), size: m.size })
@@ -97,10 +114,10 @@ impl memlib::ModuleList for KernelProcess {
 
 impl memlib::ProcessInfo for KernelProcess {
     fn process_name(&self) -> String {
-        self.0.clone().borrow_mut().primary_module().unwrap().name.to_string()
+        self.memflow().primary_module().unwrap().name.to_string()
     }
 
     fn peb_base_address(&self) -> u64 {
-        self.0.clone().borrow_mut().proc_info.peb().unwrap().to_umem()
+        self.memflow().proc_info.peb().unwrap().to_umem()
     }
 }
