@@ -162,7 +162,5 @@ impl PhysicalMemory for DriverHandle {
         PhysicalMemoryMetadata { readonly: false, ideal_batch_size: 0x1000, real_size: 0xFFFFFFFFFFFFFFFF, max_address: 0xFFFFFFFFFFFFFFFF_u64.into() }
     }
 
-    fn set_mem_map(&mut self, mem_map: &[PhysicalMemoryMapping]) {
-        dbg!(mem_map);
-    }
+    fn set_mem_map(&mut self, mem_map: &[PhysicalMemoryMapping]) {}
 }
