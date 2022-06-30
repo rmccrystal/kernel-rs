@@ -19,7 +19,5 @@ log = "0.4.13"
 env_logger = "0.8.2"
 rand = "0.8.4"
 kdmapper = { git = "https://github.com/rmccrystal/kdmapper-rs", features = ["disable-output"] }
-memflow = { git = "https://github.com/memflow/memflow", branch = "next", features = ["plugins"] }
-memflow-win32 = { git = "https://github.com/memflow/memflow-win32" }
-memlib = { path = "../../memlib-rs"}
+memlib = { git = "https://github.com/rmccrystal/memlib-rs", features = ["kernel"] }
 pelite = "0.9.0"

@@ -137,30 +137,14 @@ impl DriverHandle {
     }
 }
 
-use memflow::prelude::*;
-
-impl PhysicalMemory for DriverHandle {
-    fn phys_read_raw_iter<'a>(&mut self, data: CIterator<PhysicalReadData<'a>>, out_fail: &mut ReadFailCallback<'_, 'a>) -> memflow::prelude::Result<()> {
-        unsafe {
-            for MemData(addr, mut out) in data {
-                self.read_physical_chunked(addr.address().to_umem(), out.as_bytes_mut());
-            }
-            Ok(())
-        }
+impl memlib::kernel::PhysicalMemoryRead for DriverHandle {
+    fn try_read_bytes_physical_into(&self, physical_address: u64, buffer: &mut [u8]) -> Option<()> {
+        unsafe { self.read_physical(physical_address, buffer).ok() }
     }
+}
 
-    fn phys_write_raw_iter<'a>(&mut self, data: CIterator<PhysicalWriteData<'a>>, out_fail: &mut WriteFailCallback<'_, 'a>) -> memflow::prelude::Result<()> {
-        unsafe {
-            for MemData(addr, out) in data {
-                self.write_physical(addr.address().to_umem(), out.as_bytes()).unwrap();
-            }
-            Ok(())
-        }
+impl memlib::kernel::PhysicalMemoryWrite for DriverHandle {
+    fn try_write_bytes_physical(&self, physical_address: u64, buffer: &[u8]) -> Option<()> {
+        unsafe { self.write_physical(physical_address, buffer).ok() }
     }
-
-    fn metadata(&self) -> PhysicalMemoryMetadata {
-        PhysicalMemoryMetadata { readonly: false, ideal_batch_size: 0x1000, real_size: 0xFFFFFFFFFFFFFFFF, max_address: 0xFFFFFFFFFFFFFFFF_u64.into() }
-    }
-
-    fn set_mem_map(&mut self, mem_map: &[PhysicalMemoryMapping]) {}
 }
